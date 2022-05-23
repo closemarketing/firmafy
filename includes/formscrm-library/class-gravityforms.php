@@ -10,7 +10,7 @@
  * @version    1.0
  */
 
-if ( ! class_exists( 'GFCRM' ) {
+if ( ! class_exists( 'GFCRM' ) ) {
 	GFForms::include_feed_addon_framework();
 	global $formscrm_api;
 
