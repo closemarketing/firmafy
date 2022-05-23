@@ -20,7 +20,7 @@ if ( ! function_exists( 'is_plugin_active' ) ) {
 	include_once ABSPATH . 'wp-admin/includes/plugin.php';
 }
 
-if ( is_plugin_active( 'gravityforms/gravityforms.php' ) || is_plugin_active( 'gravity-forms/gravityforms.php' ) ) {
+if ( ( is_plugin_active( 'gravityforms/gravityforms.php' ) || is_plugin_active( 'gravity-forms/gravityforms.php' ) ) && ! class_exists( 'FC_CRM_Bootstrap' ) ) {
 	add_action( 'gform_loaded', array( 'FC_CRM_Bootstrap', 'load' ), 5 );
 	class FC_CRM_Bootstrap {
 
@@ -42,27 +42,11 @@ if ( is_plugin_active( 'gravityforms/gravityforms.php' ) || is_plugin_active( 'g
 }
 
 // ContactForms7.
-if ( is_plugin_active( 'contact-form-7/wp-contact-form-7.php' ) ) {
+if ( is_plugin_active( 'contact-form-7/wp-contact-form-7.php' ) && ! class_exists( 'FORMSCRM_CF7_Settings' ) ) {
 	require_once 'class-contactform7.php';
 }
 
 // WooCommerce.
-if ( is_plugin_active( 'woocommerce/woocommerce.php' ) ) {
+if ( is_plugin_active( 'woocommerce/woocommerce.php' ) && ! class_exists( 'FormsCRM_WooCommerce' ) ) {
 	require_once 'class-woocommerce.php';
-}
-
-// Visitor Key.
-add_action( 'init', 'formscrm_visitorkey_session', 1 );
-/**
- * Adds visitor key to the session.
- *
- * @return void
- */
-function formscrm_visitorkey_session() {
-	global $wp_session;
-
-	$visitor_key = isset( $_COOKIE['vk'] ) ? sanitize_text_field( $_COOKIE['vk'] ) : '';
-	if ( $visitor_key && ! isset( $wp_session['clientify_visitor_key'] ) ) {
-		$wp_session['clientify_visitor_key'] = $visitor_key;
-	}
 }
