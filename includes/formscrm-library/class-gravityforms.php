@@ -71,12 +71,9 @@ class GFCRM extends GFFeedAddOn {
 	/**
 	 * Plugin settings
 	 *
-	 * @return void
+	 * @return array
 	 */
 	public function plugin_settings_fields() {
-
-		global $formscrm_api;
-
 		return array(
 			array(
 				'title'       => __( 'CRM Account Information', 'formscrm' ),
@@ -127,11 +124,10 @@ class GFCRM extends GFFeedAddOn {
 					),
 					array(
 						'name'          => 'fc_crm_apipassword',
-						'label'         => __('API Password for User', 'formscrm'),
+						'label'         => __( 'API Password for User', 'formscrm' ),
 						'type'          => 'api_key',
 						'class'         => 'medium',
-						//'feedback_callback' => $this->login_api_crm(),
-						'tooltip'       => __('Find the API Password in the profile of the user in CRM.', 'formscrm'),
+						'tooltip'       => __( 'Find the API Password in the profile of the user in CRM.', 'formscrm' ),
 						'tooltip_class' => 'tooltipclass',
 						'dependency'    => array(
 							'field' => 'fc_crm_type',
@@ -326,48 +322,74 @@ class GFCRM extends GFFeedAddOn {
 		$merge_vars = array();
 		$field_maps = $this->get_field_map_fields( $feed, 'listFields' );
 
-		foreach ( $field_maps as $var_key => $field_id ) {
-			$field = RGFormsModel::get_field( $form, $field_id );
-
-			if ( isset( $field['type'] ) && GFCommon::is_product_field( $field['type'] ) && rgar( $field, 'enablePrice' ) ) {
-				$ary          = explode('|', $entry[ $field_id ] );
-				$product_name = count($ary) > 0 ? $ary[0] : '';
-				$merge_vars[] = array('name' => $var_key, 'value' => $product_name);
-			} elseif ( $field && RGFormsModel::get_input_type( $field ) == 'checkbox' ) {
-				$value = '';
-				foreach ( $field['inputs'] as $input ) {
-					$index   = (string) $input['id'];
-					$value_n = apply_filters( 'formscrm_field_value', rgar( $entry, $index ), $form['id'], $field_id, $entry );
-					$value .= $value_n;
-					if ( $value_n ) {
-						$value .= '|';
+		if ( ! empty( $field_maps ) ) {
+			// Normal WAY.
+			foreach ( $field_maps as $var_key => $field_id ) {
+				$field = RGFormsModel::get_field( $form, $field_id );
+	
+				if ( isset( $field['type'] ) && GFCommon::is_product_field( $field['type'] ) && rgar( $field, 'enablePrice' ) ) {
+					$ary          = explode('|', $entry[ $field_id ] );
+					$product_name = count($ary) > 0 ? $ary[0] : '';
+					$merge_vars[] = array(
+						'name' => $var_key,
+						'value' => $product_name,
+					);
+				} elseif ( $field && RGFormsModel::get_input_type( $field ) == 'checkbox' ) {
+					$value = '';
+					foreach ( $field['inputs'] as $input ) {
+						$index   = (string) $input['id'];
+						$value_n = apply_filters( 'formscrm_field_value', rgar( $entry, $index ), $form['id'], $field_id, $entry );
+						$value .= $value_n;
+						if ( $value_n ) {
+							$value .= '|';
+						}
 					}
-				}
-				$value        = substr( $value, 0, -1 );
-				$merge_vars[] = array(
-					'name'  => $var_key,
-					'value' => $value,
-				);
-			} elseif ( $field && RGFormsModel::get_input_type( $field ) == 'multiselect' ) {
-				$value = apply_filters( 'formscrm_field_value', rgar( $entry, $field_id ), $form['id'], $field_id, $entry );
-				$value = str_replace( ',', '|', $value );
+					$value        = substr( $value, 0, -1 );
+					$merge_vars[] = array(
+						'name'  => $var_key,
+						'value' => $value,
+					);
+				} elseif ( $field && RGFormsModel::get_input_type( $field ) == 'multiselect' ) {
+					$value = apply_filters( 'formscrm_field_value', rgar( $entry, $field_id ), $form['id'], $field_id, $entry );
+					$value = str_replace( ',', '|', $value );
 
-				$merge_vars[] = array(
-					'name'  => $var_key,
-					'value' => $value,
-				);
-			} elseif ( $field && RGFormsModel::get_input_type( $field ) == 'textarea' ) {
-				$value        = apply_filters( 'formscrm_field_value', rgar( $entry, $field_id ), $form['id'], $field_id, $entry );
-				$value        = str_replace( array( "\r", "\n" ), ' ', $value );
-				$merge_vars[] = array(
-					'name'  => $var_key,
-					'value' => $value,
-				);
-			} else {
-				$merge_vars[] = array(
-					'name'  => $var_key,
-					'value' => apply_filters( 'formscrm_field_value', rgar( $entry, $field_id ), $form['id'], $field_id, $entry ),
-				);
+					$merge_vars[] = array(
+						'name'  => $var_key,
+						'value' => $value,
+					);
+				} elseif ( $field && RGFormsModel::get_input_type( $field ) == 'textarea' ) {
+					$value        = apply_filters( 'formscrm_field_value', rgar( $entry, $field_id ), $form['id'], $field_id, $entry );
+					$value        = str_replace( array( "\r", "\n" ), ' ', $value );
+					$merge_vars[] = array(
+						'name'  => $var_key,
+						'value' => $value,
+					);
+				} else {
+					$merge_vars[] = array(
+						'name'  => $var_key,
+						'value' => apply_filters( 'formscrm_field_value', rgar( $entry, $field_id ), $form['id'], $field_id, $entry ),
+					);
+				}
+			}
+		} else {
+			// Dynamic Fields.
+			foreach ( $form['fields'] as $field ) {
+				if ( ! empty( $field->adminLabel ) && ! empty( $entry[ $field->id ] ) ) {
+					$merge_vars[] = array(
+						'name'  => $field->adminLabel,
+						'value' => $entry[ $field->id ],
+					);
+				} elseif ( $field && RGFormsModel::get_input_type( $field ) == 'checkbox' ) {
+					$value = array();
+					foreach ( $field['inputs'] as $input ) {
+						$index   = (string) $input['id'];
+						$value[] = ! empty( $entry[ $index ] ) ? $entry[ $index ] : '';
+					}
+					$merge_vars[] = array(
+						'name'  => $field->adminLabel,
+						'value' => $value,
+					);
+				}
 			}
 		}
 
@@ -391,10 +413,12 @@ class GFCRM extends GFFeedAddOn {
 			$merge_vars = $this->remove_blank_custom_fields( $merge_vars );
 		}
 
-		$settings = $this->get_plugin_settings();
-
 		formscrm_debug_message( $settings );
 		formscrm_debug_message( $merge_vars );
+
+		if ( isset( $feed['meta']['fc_crm_module'] ) ) {
+			$settings['fc_crm_module'] =  $feed['meta']['fc_crm_module'];
+		}
 
 		$response_result = $this->crmlib->create_entry( $settings, $merge_vars );
 		$api_status      = isset( $response_result['status'] ) ? $response_result['status'] : '';
