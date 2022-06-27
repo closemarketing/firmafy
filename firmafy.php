@@ -28,6 +28,13 @@ define( 'FIRMAFY_PLUGIN', __FILE__ );
 define( 'FIRMAFY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'FIRMAFY_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
 
+if ( ! defined( 'FORMSCRM_VERSION' ) ) {
+	define( 'FORMSCRM_VERSION', '3.7.0' );
+	define( 'FORMSCRM_PLUGIN', __FILE__ );
+	define( 'FORMSCRM_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
+	define( 'FORMSCRM_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
+}
+
 add_action( 'plugins_loaded', 'firmafy_plugin_init' );
 /**
  * Load localization files
@@ -37,6 +44,13 @@ add_action( 'plugins_loaded', 'firmafy_plugin_init' );
 function firmafy_plugin_init() {
 	load_plugin_textdomain( 'firmafy', false, dirname( plugin_basename( __FILE__ ) ) . '/languages' );
 }
+
+add_filter(
+	'formscrm_load_options',
+	function() {
+		return false;
+	}
+);
 
 add_filter(
 	'formscrm_choices',
@@ -51,7 +65,7 @@ add_filter(
 );
 
 add_filter(
-	'formscrm_dependency_apipassword',
+	'formscrm_dependency_password',
 	function( $choices ) {
 
 		$choices[] = 'firmafy';
@@ -69,5 +83,10 @@ add_filter(
 	}
 );
 
-// Include files.
-require_once FIRMAFY_PLUGIN_PATH . '/includes/formscrm-library/loader.php';
+
+/**
+ * # Includes
+ * ---------------------------------------------------------------------------------------------------- */
+require_once FIRMAFY_PLUGIN_PATH . 'includes/class-api-firmafy.php';
+require_once FIRMAFY_PLUGIN_PATH . 'includes/formscrm-library/loader.php';
+require_once FIRMAFY_PLUGIN_PATH . 'includes/class-firmafy-admin-settings.php';
