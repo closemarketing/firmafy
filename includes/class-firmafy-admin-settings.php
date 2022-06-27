@@ -68,7 +68,7 @@ class FIRMAFY_ADMIN_SETTINGS {
 				'page_title'  => __( 'Templates', 'firmafy' ),
 				'menu_title'  => __( 'Templates', 'firmafy' ),
 				'capability'  => 'manage_options',
-				'menu_slug'   => 'edit.php?post_type=template',
+				'menu_slug'   => 'edit.php?post_type=firmafy_template',
 				'function'    => null,
 			),
 		);
@@ -239,30 +239,16 @@ class FIRMAFY_ADMIN_SETTINGS {
 			'publicly_queryable' => true,
 			'show_ui'            => true,
 			'show_in_menu'       => false,
-			'show_in_rest'       => true, // Adds gutenberg support.
+			'show_in_rest'       => true,
 			'query_var'          => true,
-			'rewrite'            => false,
 			'has_archive'        => false,
 			'capability_type'    => 'post',
 			'hierarchical'       => false,
 			'menu_position'      => 5,
-			'menu_icon'          => 'dashicons-admin-users', // https://developer.wordpress.org/resource/dashicons/.
 			'supports'           => array( 'title', 'editor', 'revisions' ),
 		);
-		register_post_type( 'template', $args );
+		register_post_type( 'firmafy_template', $args );
 	}
 }
 
-if ( is_admin() ) {
-	new FIRMAFY_ADMIN_SETTINGS();
-}
-
-add_filter( 'gettext', 'change_publish_button', 10, 2 );
-
-function change_publish_button( $translation, $text ) {
-if ( 'firmafy_template' == get_post_type())
-if ( $text == 'Publish' )
-    return 'Save';
-
-return $translation;
-}
+new FIRMAFY_ADMIN_SETTINGS();
