@@ -1,0 +1,17 @@
+.firmafy-header {
+	background-color: #067495;
+	margin-left: -20px;
+	padding: 20px;
+	display: flex;
+	justify-content: space-between;
+	color: white;
+}
+.firmafy-header .logo {
+	min-width: 20%;
+}
+.firmafy-header h2 {
+	float: right;
+	color: white;
+	padding: 10px 0 0 30px;
+	margin: 0;
+}

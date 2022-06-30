@@ -32,11 +32,26 @@ class FIRMAFY_ADMIN_SETTINGS {
 	 * Construct of class
 	 */
 	public function __construct() {
+		add_action( 'admin_enqueue_scripts', array( $this, 'firmafy_scripts' ) );
 		add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
 		add_action( 'admin_init', array( $this, 'page_init' ) );
 
 		// Register CPT Templates.
 		add_action( 'init', array( $this, 'create_firmafy_templates_type' ) );
+	}
+
+	/**
+	* function_description
+	*
+	* @return void
+	*/
+	function firmafy_scripts() {
+		wp_enqueue_style(
+			'firmafy-admin',
+			FIRMAFY_PLUGIN_URL . '/includes/assets/admin.css',
+			array(),
+			FIRMAFY_VERSION
+		);
 	}
 	/**
 	 * Adds plugin page.
@@ -51,7 +66,7 @@ class FIRMAFY_ADMIN_SETTINGS {
 			'manage_options',
 			'settings_firmafy',
 			array( $this, 'create_admin_page' ),
-			'dashicons-edit-page'
+			'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTgiIGhlaWdodD0iMTgiIHZpZXdCb3g9IjAgMCAxOCAxOCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTE0LjgxODcgMlY1LjUzNTQxSDcuOTY0NTlWOC4xMzE3M0gxNC4xOTgzVjExLjY2NzFINy45NjQ1OVYxN0g0VjJIMTQuODE4N1oiIGZpbGw9IiMwNjc0OTUiLz4KPC9zdmc+Cg=='
 		);
 
 		$submenu_pages = array(
@@ -94,9 +109,32 @@ class FIRMAFY_ADMIN_SETTINGS {
 	public function create_admin_page() {
 		$this->firmafy_settings = get_option( 'firmafy_options' );
 		?>
+		<div class="header-wrap">
+			<div class="wrapper">
+				<h2 style="display: none;"></h2>
+				<div id="nag-container"></div>
+				<div class="header firmafy-header">
+					<div class="logo">
+						<img src="<?php echo FIRMAFY_PLUGIN_URL . 'includes/assets/logo.svg'; ?>" height="35" width="154"/>
+						<h2><?php esc_html_e( 'Firmafy Settings', 'firmafy' ); ?></h2>
+					</div>
+					<div class="connection">
+						<p><?php
+							$login_result = $this->check_login( $this->firmafy_settings['username'], $this->firmafy_settings['password'], 'login' );
+							if ( 'error' === $login_result['status'] ) {
+								esc_html_e( 'ERROR: We could not connect to Firmafy.', 'firmafy' );
+								echo esc_html( $login_result['data'] );
+							} else {
+								esc_html_e( 'Connected to Firmafy', 'firmafy' );
+							}
+							?>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
 
 		<div class="wrap">
-			<h2><?php esc_html_e( 'Firmafy Settings', 'firmafy' ); ?></h2>
 			<p></p>
 			<?php settings_errors(); ?>
 
@@ -107,15 +145,6 @@ class FIRMAFY_ADMIN_SETTINGS {
 					submit_button();
 				?>
 			</form>
-			<?php
-			$login_result = $this->check_login( $this->firmafy_settings['username'], $this->firmafy_settings['password'], 'login' );
-			if ( 'error' === $login_result['status'] ) {
-				esc_html_e( 'ERROR: We could not connect to Firmafy.', 'firmafy' );
-				echo esc_html( $login_result['data'] );
-			} else {
-				esc_html_e( 'Connected to Firmafy', 'firmafy' );
-			}
-			?>
 		</div>
 		<?php
 	}
@@ -260,9 +289,9 @@ if ( is_admin() ) {
 add_filter( 'gettext', 'change_publish_button', 10, 2 );
 
 function change_publish_button( $translation, $text ) {
-if ( 'firmafy_template' == get_post_type())
-if ( $text == 'Publish' )
-    return 'Save';
+	if ( 'firmafy_template' == get_post_type())
+	if ( $text == 'Publish' )
+		return 'Save';
 
-return $translation;
+	return $translation;
 }
