@@ -17,7 +17,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * @since 1.0
  */
-class API_Firmafy {
+class Helpers_Firmafy {
 	/**
 	 * # Functions
 	 * ---------------------------------------------------------------------------------------------------- */
@@ -30,7 +30,7 @@ class API_Firmafy {
 	 * @param string $query Query.
 	 * @return array
 	 */
-	public function post( $username, $password, $action, $query = array() ) {
+	public function api_post( $username, $password, $action, $query = array() ) {
 		if ( ! $username && ! $password ) {
 			return array(
 				'status' => 'error',
@@ -80,7 +80,7 @@ class API_Firmafy {
 		$posts_array   = get_posts( $args_query );
 		foreach ( $posts_array as $post_id ) {
 			$templates[] = array(
-				'name'  => $post_id,
+				'value' => $post_id,
 				'label' => get_the_title( $post_id ),
 			);
 		}
@@ -93,10 +93,20 @@ class API_Firmafy {
 	 *
 	 * @return array
 	 */
-	public function get_variables_template( $settings, $template_id ) {
-
-		
+	public function get_variables_template( $template_id ) {
+		$fields   = array();
+		$template = get_post( $template_id );
+		preg_match_all( '#\{(.*?)\}#', $template->post_content, $matches);
+		if ( ! empty( $matches[1] ) && is_array( $matches[1] ) ) {
+			foreach ( $matches[1] as $field ) {
+				$fields[] = array(
+					'name'  => $field,
+					'label' => $field,
+				);
+			}
+			return $fields;
+		}
 	}
 }
 
-$api_firmafy_connector = new API_Firmafy();
+$helpers_firmafy = new Helpers_Firmafy();

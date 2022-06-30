@@ -97,7 +97,7 @@ if ( ! class_exists( 'GFCRM' ) ) {
 		}
 
 		public function feed_settings_fields() {
-			global $api_firmafy_connector;
+			global $helpers_firmafy;
 			$settings = $this->get_plugin_settings();
 
 			return array(
@@ -119,14 +119,14 @@ if ( ! class_exists( 'GFCRM' ) ) {
 							'type'     => 'select',
 							'class'    => 'medium',
 							'onchange' => 'jQuery(this).parents("form").submit();',
-							'choices'  => $api_firmafy_connector->get_templates(),
+							'choices'  => $helpers_firmafy->get_templates(),
 						),
 						array(
 							'name'       => 'listFields',
 							'label'      => __( 'Map Fields', 'firmafy' ),
 							'type'       => 'field_map',
-							'dependency' => 'fc_crm_module',
-							'field_map'  => $api_firmafy_connector->get_variables_template( $settings, $this->get_setting( 'firmafy_template' ) ),
+							'dependency' => 'firmafy_template',
+							'field_map'  => $helpers_firmafy->get_variables_template( $this->get_setting( 'firmafy_template' ) ),
 							'tooltip'    => '<h6>' . __( 'Map Fields', 'firmafy' ) . '</h6>' . __('Associate your CRM custom fields to the appropriate Gravity Form fields by selecting the appropriate form field from the list.', 'firmafy' ),
 						),
 					),

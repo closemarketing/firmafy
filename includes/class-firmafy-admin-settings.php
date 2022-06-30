@@ -239,9 +239,9 @@ class FIRMAFY_ADMIN_SETTINGS {
 	}
 
 	private function check_login( $username, $password ) {
-		global $api_firmafy_connector;
+		global $helpers_firmafy;
 
-		return $api_firmafy_connector->post( $username, $password, 'login' );
+		return $helpers_firmafy->api_post( $username, $password, 'login' );
 	}
 
 	/**
