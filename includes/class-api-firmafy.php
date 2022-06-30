@@ -64,6 +64,39 @@ class API_Firmafy {
 			);
 		}
 	}
+
+	/**
+	 * Get Firmafy Templates
+	 *
+	 * @return array
+	 */
+	public function get_templates() {
+		$templates  = array();
+		$args_query = array(
+			'post_type'      => 'firmafy_template',
+			'posts_per_page' => -1,
+			'fields'         => 'ids',
+		);
+		$posts_array   = get_posts( $args_query );
+		foreach ( $posts_array as $post_id ) {
+			$templates[] = array(
+				'name'  => $post_id,
+				'label' => get_the_title( $post_id ),
+			);
+		}
+		return $templates;
+	}
+
+
+	/**
+	 * Get Firmafy Templates
+	 *
+	 * @return array
+	 */
+	public function get_variables_template( $settings, $template_id ) {
+
+		
+	}
 }
 
 $api_firmafy_connector = new API_Firmafy();

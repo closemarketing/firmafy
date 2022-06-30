@@ -10,31 +10,31 @@
  * @version  1.0.0
  */
 
-if ( ! function_exists( 'formscrm_debug_message' ) ) {
+if ( ! function_exists( 'firmafy_debug_message' ) ) {
 	/**
 	 * Debug message in log
 	 *
 	 * @param array $message Message.
 	 * @return void
 	 */
-	function formscrm_debug_message( $message ) {
+	function firmafy_debug_message( $message ) {
 		if ( true === WP_DEBUG ) {
 			if ( is_array( $message ) ) {
 				$message = print_r( $message, true ); //phpcs:ignore
 			}
-			error_log( 'FORMSCRM: ' . esc_html__( 'Message Debug Mode', 'formscrm' ) . ' ' . esc_html( $message ) );
+			error_log( 'FORMSCRM: ' . esc_html__( 'Message Debug Mode', 'firmafy' ) . ' ' . esc_html( $message ) );
 		}
 	}
 }
 
-if ( ! function_exists( 'formscrm_get_module' ) ) {
+if ( ! function_exists( 'firmafy_get_module' ) ) {
 	/**
 	 * Gets default module in forms
 	 *
 	 * @param string $default_module To avoid.
 	 * @return string
 	 */
-	function formscrm_get_module( $default_module ) {
+	function firmafy_get_module( $default_module ) {
 		if ( isset( $_POST['_gform_setting_fc_crm_module'] ) ) {
 			$module = sanitize_text_field( $_POST['_gform_setting_fc_crm_module'] );
 		} elseif ( isset( $settings['fc_crm_module'] ) ) {
@@ -47,7 +47,7 @@ if ( ! function_exists( 'formscrm_get_module' ) ) {
 	}
 }
 
-if ( ! function_exists( 'formscrm_error_admin_message' ) ) {
+if ( ! function_exists( 'firmafy_error_admin_message' ) ) {
 	/**
 	 * Shows in WordPress error message
 	 *
@@ -55,7 +55,7 @@ if ( ! function_exists( 'formscrm_error_admin_message' ) ) {
 	 * @param string $message Message.
 	 * @return void
 	 */
-	function formscrm_error_admin_message( $code, $message ) {
+	function firmafy_error_admin_message( $code, $message ) {
 		if ( true === WP_DEBUG ) {
 			error_log( 'FORMSCRM: API ERROR ' . esc_html( $code ) . ': ' . esc_html( $message ) );
 		}
@@ -63,7 +63,7 @@ if ( ! function_exists( 'formscrm_error_admin_message' ) ) {
 }
 
 // * Sends an email to administrator when it not creates the lead
-if ( ! function_exists( 'formscrm_debug_email_lead' ) ) {
+if ( ! function_exists( 'firmafy_debug_email_lead' ) ) {
 	/**
 	 * Sends error to admin
 	 *
@@ -72,10 +72,10 @@ if ( ! function_exists( 'formscrm_debug_email_lead' ) ) {
 	 * @param array  $data  Data of error.
 	 * @return void
 	 */
-	function formscrm_debug_email_lead( $crm, $error, $data ) {
+	function firmafy_debug_email_lead( $crm, $error, $data ) {
 		$to      = get_option( 'admin_email' );
-		$subject = 'FormsCRM - ' . __( 'Error creating the Lead', 'formscrm' );
-		$body    = '<p>' . __( 'There was an error creating the Lead in the CRM', 'formscrm' ) . ' ' . $crm . ':</p><p><strong>' . $error . '</strong></p><p>' . __( 'Lead Data', 'formscrm' ) . ':</p>';
+		$subject = 'FormsCRM - ' . __( 'Error creating the Lead', 'firmafy' );
+		$body    = '<p>' . __( 'There was an error creating the Lead in the CRM', 'firmafy' ) . ' ' . $crm . ':</p><p><strong>' . $error . '</strong></p><p>' . __( 'Lead Data', 'firmafy' ) . ':</p>';
 		foreach ( $data as $dataitem ) {
 			$body .= '<p><strong>' . $dataitem['name'] . ': </strong>' . $dataitem['value'] . '</p>';
 		}
@@ -86,28 +86,28 @@ if ( ! function_exists( 'formscrm_debug_email_lead' ) ) {
 	}
 }
 
-if ( ! function_exists( 'formscrm_testserver' ) ) {
+if ( ! function_exists( 'firmafy_testserver' ) ) {
 	/**
 	 * Error message
 	 *
 	 * @return void
 	 */
-	function formscrm_testserver() {
+	function firmafy_testserver() {
 		// test curl.
 		if ( ! function_exists( 'curl_version' ) && true === WP_DEBUG ) {
-			error_log( 'FORMSCRM: ' . __( 'curl is not Installed in your server. It is needed to work with CRM Libraries.', 'formscrm' ) );
+			error_log( 'FORMSCRM: ' . __( 'curl is not Installed in your server. It is needed to work with CRM Libraries.', 'firmafy' ) );
 		}
 	}
 }
 
-if ( ! function_exists( 'formscrm_check_url_crm' ) ) {
+if ( ! function_exists( 'firmafy_check_url_crm' ) ) {
 	/**
 	 * Checks CRM URL to see that is correct
 	 *
 	 * @param string $url URL to check.
 	 * @return url
 	 */
-	function formscrm_check_url_crm( $url ) {
+	function firmafy_check_url_crm( $url ) {
 
 		if ( ! isset( $url ) ) {
 			$url = '';
