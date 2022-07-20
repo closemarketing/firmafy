@@ -34,7 +34,7 @@ class Helpers_Firmafy {
 		if ( ! $username && ! $password ) {
 			return array(
 				'status' => 'error',
-				'data'   => 'No API Key',
+				'data'   => 'No credentials',
 			);
 		}
 		$args     = array(
@@ -63,6 +63,20 @@ class Helpers_Firmafy {
 				'data'   => isset( $body['data'] ) ? $body['data'] : '',
 			);
 		}
+	}
+
+	/**
+	 * Login settings
+	 *
+	 * @param array $settings
+	 * @return void
+	 */
+	public function login() {
+		$settings = get_option( 'firmafy_options' );
+		$username = isset( $settings['username'] ) ? $settings['username'] : '';
+		$password = isset( $settings['password'] ) ? $settings['password'] : '';
+
+		return $this->api_post( $username, $password, 'login' );
 	}
 
 	/**
@@ -99,13 +113,49 @@ class Helpers_Firmafy {
 		preg_match_all( '#\{(.*?)\}#', $template->post_content, $matches);
 		if ( ! empty( $matches[1] ) && is_array( $matches[1] ) ) {
 			foreach ( $matches[1] as $field ) {
-				$fields[] = array(
-					'name'  => $field,
-					'label' => $field,
-				);
+				if ( $this->not_strange_string( $field ) ) {
+					$fields[] = array(
+						'name'  => $field,
+						'label' => $field,
+					);
+				}
 			}
 			return $fields;
 		}
+	}
+
+	/**
+	 * detects strange string
+	 *
+	 * @param [type] $string
+	 * @return boolean
+	 */
+	private function not_strange_string( $string ) {
+		if ( false !== strpos( $string, '"' ) ) {
+			return false;
+		}
+		if ( false !== strpos( $string, 'fecha' ) ) {
+			return false;
+		}
+		if ( false !== strpos( $string, ':' ) ) {
+			return false;
+		}
+		return true;
+	}
+
+	/**
+	 * Login settings
+	 *
+	 * @param string $template
+	 * @return void
+	 */
+	public function create_entry( $template, $merge_vars ) {
+
+		
+		$module  = isset( $settings['fc_crm_module'] ) ? $settings['fc_crm_module'] : 'Contacts';
+
+		die();
+		return $this->api_post( $settings['username'], $settings['password'], 'login' );
 	}
 }
 

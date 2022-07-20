@@ -99,23 +99,3 @@ if ( ! function_exists( 'firmafy_testserver' ) ) {
 		}
 	}
 }
-
-if ( ! function_exists( 'firmafy_check_url_crm' ) ) {
-	/**
-	 * Checks CRM URL to see that is correct
-	 *
-	 * @param string $url URL to check.
-	 * @return url
-	 */
-	function firmafy_check_url_crm( $url ) {
-
-		if ( ! isset( $url ) ) {
-			$url = '';
-		}
-		if ( substr( $url, -1 ) !== '/' ) {
-			$url .= '/'; // adds slash to url.
-		}
-
-		return $url;
-	}
-}

@@ -107,7 +107,7 @@ class FIRMAFY_ADMIN_SETTINGS {
 	 * @return void
 	 */
 	public function create_admin_page() {
-		$this->firmafy_settings = get_option( 'firmafy_options' );
+		global $helpers_firmafy;
 		?>
 		<div class="header-wrap">
 			<div class="wrapper">
@@ -119,15 +119,16 @@ class FIRMAFY_ADMIN_SETTINGS {
 						<h2><?php esc_html_e( 'Firmafy Settings', 'firmafy' ); ?></h2>
 					</div>
 					<div class="connection">
-						<p><?php
-							$login_result = $this->check_login( $this->firmafy_settings['username'], $this->firmafy_settings['password'], 'login' );
-							if ( 'error' === $login_result['status'] ) {
-								esc_html_e( 'ERROR: We could not connect to Firmafy.', 'firmafy' );
-								echo esc_html( $login_result['data'] );
-							} else {
-								esc_html_e( 'Connected to Firmafy', 'firmafy' );
-							}
-							?>
+						<p>
+						<?php
+						$login_result = $helpers_firmafy->login();
+						if ( 'error' === $login_result['status'] ) {
+							esc_html_e( 'ERROR: We could not connect to Firmafy.', 'firmafy' );
+							echo esc_html( $login_result['data'] );
+						} else {
+							esc_html_e( 'Connected to Firmafy', 'firmafy' );
+						}
+						?>
 						</p>
 					</div>
 				</div>
@@ -236,12 +237,6 @@ class FIRMAFY_ADMIN_SETTINGS {
 			'<input class="regular-text" type="password" name="firmafy_options[password]" id="password" value="%s">',
 			isset( $this->firmafy_settings['password'] ) ? esc_attr( $this->firmafy_settings['password'] ) : ''
 		);
-	}
-
-	private function check_login( $username, $password ) {
-		global $helpers_firmafy;
-
-		return $helpers_firmafy->api_post( $username, $password, 'login' );
 	}
 
 	/**

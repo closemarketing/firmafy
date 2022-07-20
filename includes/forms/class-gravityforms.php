@@ -134,6 +134,19 @@ if ( ! class_exists( 'GFCRM' ) ) {
 			);
 		}
 
+		/**
+		 * Return the plugin's icon for the plugin/form settings menu.
+		 *
+		 * @since 1.8
+		 *
+		 * @return string
+		 */
+		public function get_menu_icon() {
+
+			return file_get_contents( FIRMAFY_PLUGIN_PATH . 'includes/assets/imagotipo.svg' );
+
+		}
+
 		public function ensure_upgrade() {
 
 			if (get_option('fc_crm_upgrade')) {
@@ -157,8 +170,12 @@ if ( ! class_exists( 'GFCRM' ) ) {
 		}
 
 		public function process_feed( $feed, $entry, $form ) {
+			global $helpers_firmafy;
+
 			// Ensures valid credentials were entered in the settings page.
-			if ( false == $this->login_api_crm() ) {
+			$login_result = $helpers_firmafy->login();
+
+			if ( false == $login_result ) {
 				return;
 			}
 
@@ -173,8 +190,7 @@ if ( ! class_exists( 'GFCRM' ) ) {
 		 * @return void
 		 */
 		public function export_feed( $entry, $form, $feed ) {
-			$settings = $this->get_plugin_settings();
-			$this->include_library( $settings['fc_crm_type'] );
+			global $helpers_firmafy;
 
 			if ( ! empty( $feed['meta']['listFields_first_name'] ) ) {
 				$name = $this->get_name( $entry, $feed['meta']['listFields_first_name'] );
@@ -232,41 +248,6 @@ if ( ! class_exists( 'GFCRM' ) ) {
 						);
 					}
 				}
-			} else {
-				// Dynamic Fields.
-				foreach ( $form['fields'] as $field ) {
-					if ( ! empty( $field->adminLabel ) && ! empty( $entry[ $field->id ] ) ) {
-						$merge_vars[] = array(
-							'name'  => $field->adminLabel,
-							'value' => $entry[ $field->id ],
-						);
-					} elseif ( $field && RGFormsModel::get_input_type( $field ) == 'checkbox' ) {
-						$value = array();
-						foreach ( $field['inputs'] as $input ) {
-							$index   = (string) $input['id'];
-							$value[] = ! empty( $entry[ $index ] ) ? $entry[ $index ] : '';
-						}
-						$merge_vars[] = array(
-							'name'  => $field->adminLabel,
-							'value' => $value,
-						);
-					}
-				}
-			}
-
-			// Adds Clientify visitor key.
-			if ( 'clientify' === $settings['fc_crm_type'] ) {
-				foreach ( $form['fields'] as $field ) {
-					if ( isset( $field->adminLabel ) && 'clientify_visitor_key' === $field->adminLabel ) {
-						$field_clientify_id = $field->id;
-					}
-				}
-				if ( isset( $entry[ $field_clientify_id ] ) && ! empty( $entry[ $field_clientify_id ] ) ) {
-					$merge_vars[] = array(
-						'name'  => 'visitor_key',
-						'value' => $entry[ $field_clientify_id ],
-					);
-				}
 			}
 
 			$override_custom_fields = apply_filters( 'firmafy_override_blank_custom_fields', false, $entry, $form, $feed );
@@ -274,21 +255,15 @@ if ( ! class_exists( 'GFCRM' ) ) {
 				$merge_vars = $this->remove_blank_custom_fields( $merge_vars );
 			}
 
-			firmafy_debug_message( $settings );
-			firmafy_debug_message( $merge_vars );
-
-			if ( isset( $feed['meta']['fc_crm_module'] ) ) {
-				$settings['fc_crm_module'] =  $feed['meta']['fc_crm_module'];
-			}
-
-			$response_result = $this->crmlib->create_entry( $settings, $merge_vars );
+			$template        = isset( $feed['meta']['firmafy_template'] ) ? $feed['meta']['firmafy_template'] : '';
+			$response_result = $helpers_firmafy->create_entry( $template, $merge_vars );
 			$api_status      = isset( $response_result['status'] ) ? $response_result['status'] : '';
 
 			if ( 'error' === $api_status ) {
-				firmafy_debug_email_lead( $settings['fc_crm_type'], 'Error ' . $response_result['message'], $merge_vars );
+				firmafy_debug_email_lead( 'Firmafy', 'Error ' . $response_result['message'], $merge_vars );
 				$this->add_note( $entry['id'], 'Error ' . $response_result['message'], 'error' );
 			} else {
-				$this->add_note( $entry['id'], 'Success creating ' . esc_html( $settings['fc_crm_type'] ) . ' Entry ID:' . $response_result['id'], 'success' );
+				$this->add_note( $entry['id'], 'Success creating ' . esc_html( 'Firmafy' ) . ' Entry ID:' . $response_result['id'], 'success' );
 				firmafy_debug_message( $response_result['id'] );
 			}
 		}
@@ -334,29 +309,6 @@ if ( ! class_exists( 'GFCRM' ) ) {
 			$name .= ! empty( $name ) && ! empty( $suffix ) ? " $suffix" : $suffix;
 
 			return $name;
-		}
-
-		/**
-		 * Logins to the CRM.
-		 *
-		 * @return boolean
-		 */
-		private function login_api_crm() {
-			$login_result = false;
-
-			// Logins to CRM.
-			$settings = $this->get_plugin_settings();
-
-			if ( isset( $settings['fc_crm_type'] ) ) {
-				$this->include_library( $settings['fc_crm_type'] );
-			}
-
-			if ( isset( $this->crmlib ) ) {
-				$login_result = $this->crmlib->login( $settings );
-				firmafy_debug_message( $login_result );
-			}
-
-			return $login_result;
 		}
 
 	} //from main class
