@@ -260,11 +260,9 @@ if ( ! class_exists( 'GFCRM' ) ) {
 			$api_status      = isset( $response_result['status'] ) ? $response_result['status'] : '';
 
 			if ( 'error' === $api_status ) {
-				firmafy_debug_email_lead( 'Firmafy', 'Error ' . $response_result['message'], $merge_vars );
 				$this->add_note( $entry['id'], 'Error ' . $response_result['message'], 'error' );
 			} else {
 				$this->add_note( $entry['id'], 'Success creating ' . esc_html( 'Firmafy' ) . ' Entry ID:' . $response_result['id'], 'success' );
-				firmafy_debug_message( $response_result['id'] );
 			}
 		}
 
