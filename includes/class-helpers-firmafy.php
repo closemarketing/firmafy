@@ -71,10 +71,12 @@ class Helpers_Firmafy {
 	 * @param array $settings
 	 * @return void
 	 */
-	public function login() {
-		$settings = get_option( 'firmafy_options' );
-		$username = isset( $settings['username'] ) ? $settings['username'] : '';
-		$password = isset( $settings['password'] ) ? $settings['password'] : '';
+	public function login( $username = '', $password = '' ) {
+		if ( empty( $username ) || empty( $password ) ) {
+			$settings = get_option( 'firmafy_options' );
+			$username = isset( $settings['username'] ) ? $settings['username'] : '';
+			$password = isset( $settings['password'] ) ? $settings['password'] : '';
+		}
 
 		return $this->api_post( $username, $password, 'login' );
 	}
