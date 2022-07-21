@@ -45,42 +45,12 @@ class Firmafy_CF7_Settings {
 	public function show_cm_metabox( $panels ) {
 		$new_page = array(
 			'cme-Extension' => array(
-				'title'    => __( 'FormsCRM', 'formscrm' ),
-				'callback' => array( $this, 'settings_add_crm' ),
+				'title'    => 'Firmafy',
+				'callback' => array( $this, 'settings_add_firmafy' ),
 			),
 		);
 		$panels = array_merge( $panels, $new_page );
 		return $panels;
-	}
-
-	/**
-	 * Include library connector
-	 *
-	 * @param string $crmtype Type of CRM.
-	 * @return void
-	 */
-	private function include_library( $crmtype ) {
-		if ( isset( $_POST['fc_crm_type'] ) ) {
-			$crmtype = sanitize_text_field( $_POST['fc_crm_type'] );
-		}
-
-		if ( isset( $crmtype ) ) {
-			$crmname      = strtolower( $crmtype );
-			$crmclassname = str_replace( ' ', '', $crmname );
-			$crmclassname = 'CRMLIB_' . strtoupper( $crmclassname );
-			$crmname      = str_replace( ' ', '_', $crmname );
-
-			$array_path = formscrm_get_crmlib_path();
-			if ( isset( $array_path[ $crmname ] ) ) {
-				include_once $array_path[ $crmname ];
-			}
-
-			formscrm_debug_message( $array_path[ $crmname ] );
-
-			if ( class_exists( $crmclassname ) ) {
-				$this->crmlib = new $crmclassname();
-			}
-		}
 	}
 
 	/**
@@ -89,7 +59,7 @@ class Firmafy_CF7_Settings {
 	 * @param obj $args Arguments.
 	 * @return void
 	 */
-	public function settings_add_crm( $args ) {
+	public function settings_add_firmafy( $args ) {
 
 		$cf7_crm_defaults = array();
 		$cf7_crm          = get_option( 'cf7_crm_' . $args->id(), $cf7_crm_defaults );
@@ -97,78 +67,26 @@ class Firmafy_CF7_Settings {
 		<div class="metabox-holder">
 			<div class="cme-main-fields">
 				<p>
-					<select name="wpcf7-crm[fc_crm_type]" class="medium" onchange="jQuery(this).parents('form').submit();" id="fc_crm_type">
+					<label for="wpcf7-crm-fc_crm_username"><?php esc_html_e( 'URL:', 'formscrm' ); ?></label><br />
+					<input type="text" id="wpcf7-crm-fc_crm_username" name="wpcf7-crm[fc_crm_username]" class="wide" size="70" placeholder="[<?php esc_html_e( 'CRM Username', 'formscrm' ); ?>]" value="<?php echo ( isset( $cf7_crm['fc_crm_username'] ) ) ? esc_attr( $cf7_crm['fc_crm_username'] ) : ''; ?>" />
+				</p>
+				<p>
+					<label for="wpcf7-crm-fc_crm_password"><?php esc_html_e( 'Password:', 'formscrm' ); ?></label><br />
+					<input type="password" id="wpcf7-crm-fc_crm_password" name="wpcf7-crm[fc_crm_password]" class="wide" size="70" placeholder="[<?php esc_html_e( 'CRM Password', 'formscrm' ); ?>]" value="<?php echo ( isset( $cf7_crm['fc_crm_password'] ) ) ? esc_attr( $cf7_crm['fc_crm_password'] ) : ''; ?>" />
+				</p>
+				<p>
+					<select name="wpcf7-crm[fc_crm_module]" class="medium" onchange="jQuery(this).parents('form').submit();" id="fc_crm_module">
 						<?php
-						foreach ( formscrm_get_choices() as $choice ) {
-							echo '<option value="' . esc_html( $choice['value'] ) . '" ';
-							if ( isset( $cf7_crm['fc_crm_type'] ) ) {
-								selected( $cf7_crm['fc_crm_type'], $choice['value'] );
+						foreach ( $this->crmlib->list_modules( $cf7_crm ) as $module ) {
+							echo '<option value="' . esc_html( $module['name'] ) . '" ';
+							if ( isset( $module['name'] ) ) {
+								selected( $cf7_crm['fc_crm_module'], $module['name'] );
 							}
-							echo '>' . esc_html( $choice['label'] ) . '</option>';
+							echo '>' . esc_html( $module['label'] ) . '</option>';
 						}
 						?>
 					</select>
 				</p>
-				<?php if ( isset( $cf7_crm['fc_crm_type'] ) && $cf7_crm['fc_crm_type'] ) { ?>
-
-					<?php if ( false !== array_search( $cf7_crm['fc_crm_type'], formscrm_get_dependency_url(), true ) ) { ?>
-					<p>
-						<label for="wpcf7-crm-fc_crm_url"><?php esc_html_e( 'URL:', 'formscrm' ); ?></label><br />
-						<input type="text" id="wpcf7-crm-fc_crm_url" name="wpcf7-crm[fc_crm_url]" class="wide" size="70" placeholder="[<?php esc_html_e( 'CRM URL', 'formscrm' ); ?>]" value="<?php echo ( isset( $cf7_crm['fc_crm_url'] ) ) ? esc_attr( $cf7_crm['fc_crm_url'] ) : ''; ?>" />
-					</p>
-					<?php } ?>
-
-					<?php if ( false !== array_search( $cf7_crm['fc_crm_type'], formscrm_get_dependency_username(), true ) ) { ?>
-					<p>
-						<label for="wpcf7-crm-fc_crm_username"><?php esc_html_e( 'URL:', 'formscrm' ); ?></label><br />
-						<input type="text" id="wpcf7-crm-fc_crm_username" name="wpcf7-crm[fc_crm_username]" class="wide" size="70" placeholder="[<?php esc_html_e( 'CRM Username', 'formscrm' ); ?>]" value="<?php echo ( isset( $cf7_crm['fc_crm_username'] ) ) ? esc_attr( $cf7_crm['fc_crm_username'] ) : ''; ?>" />
-					</p>
-					<?php } ?>
-
-					<?php if ( false !== array_search( $cf7_crm['fc_crm_type'], formscrm_get_dependency_password(), true ) ) { ?>
-					<p>
-						<label for="wpcf7-crm-fc_crm_password"><?php esc_html_e( 'Password:', 'formscrm' ); ?></label><br />
-						<input type="password" id="wpcf7-crm-fc_crm_password" name="wpcf7-crm[fc_crm_password]" class="wide" size="70" placeholder="[<?php esc_html_e( 'CRM Password', 'formscrm' ); ?>]" value="<?php echo ( isset( $cf7_crm['fc_crm_password'] ) ) ? esc_attr( $cf7_crm['fc_crm_password'] ) : ''; ?>" />
-					</p>
-					<?php } ?>
-
-					<?php if ( false !== array_search( $cf7_crm['fc_crm_type'], formscrm_get_dependency_apipassword(), true ) ) { ?>
-					<p>
-						<label for="wpcf7-crm-fc_crm_apipassword"><?php esc_html_e( 'API Password:', 'formscrm' ); ?></label><br />
-						<input type="password" id="wpcf7-crm-fc_crm_apipassword" name="wpcf7-crm[fc_crm_apipassword]" class="wide" size="70" placeholder="[<?php esc_html_e( 'CRM API Password', 'formscrm' ); ?>]" value="<?php echo ( isset( $cf7_crm['fc_crm_apipassword'] ) ) ? esc_attr( $cf7_crm['fc_crm_apipassword'] ) : ''; ?>" />
-					</p>
-					<?php } ?>
-
-					<?php if ( false !== array_search( $cf7_crm['fc_crm_type'], formscrm_get_dependency_apisales(), true ) ) { ?>
-					<p>
-						<label for="wpcf7-crm-fc_crm_apisales"><?php esc_html_e( 'API Sales:', 'formscrm' ); ?></label><br />
-						<input type="text" id="wpcf7-crm-fc_crm_apisales" name="wpcf7-crm[fc_crm_apisales]" class="wide" size="70" placeholder="[<?php esc_html_e( 'CRM Sales', 'formscrm' ); ?>]" value="<?php echo ( isset( $cf7_crm['fc_crm_apisales'] ) ) ? esc_attr( $cf7_crm['fc_crm_apisales'] ) : ''; ?>" />
-					</p>
-					<?php } ?>
-
-					<?php if ( false !== array_search( $cf7_crm['fc_crm_type'], formscrm_get_dependency_odoodb(), true ) ) { ?>
-					<p>
-						<label for="wpcf7-crm-fc_crm_odoodb"><?php esc_html_e( 'API Sales:', 'formscrm' ); ?></label><br />
-						<input type="text" id="wpcf7-crm-fc_crm_odoodb" name="wpcf7-crm[fc_crm_odoodb]" class="wide" size="70" placeholder="[<?php esc_html_e( 'CRM Sales', 'formscrm' ); ?>]" value="<?php echo ( isset( $cf7_crm['fc_crm_odoodb'] ) ) ? esc_attr( $cf7_crm['fc_crm_odoodb'] ) : ''; ?>" />
-					</p>
-					<?php } ?>
-
-					<p>
-						<?php $this->include_library( $cf7_crm['fc_crm_type'] ); ?>
-						<select name="wpcf7-crm[fc_crm_module]" class="medium" onchange="jQuery(this).parents('form').submit();" id="fc_crm_module">
-							<?php
-							foreach ( $this->crmlib->list_modules( $cf7_crm ) as $module ) {
-								echo '<option value="' . esc_html( $module['name'] ) . '" ';
-								if ( isset( $module['name'] ) ) {
-									selected( $cf7_crm['fc_crm_module'], $module['name'] );
-								}
-								echo '>' . esc_html( $module['label'] ) . '</option>';
-							}
-							?>
-						</select>
-					</p>
-
-				<?php } ?>
 			</div>
 
 		<?php
@@ -225,7 +143,6 @@ class Firmafy_CF7_Settings {
 		$submission = WPCF7_Submission::get_instance();
 
 		if ( $cf7_crm ) {
-			$this->include_library( $cf7_crm['fc_crm_type'] );
 			$merge_vars = $this->get_merge_vars( $cf7_crm, $submission->get_posted_data() );
 
 			if ( isset( $_COOKIE['vk'] ) ) {
