@@ -1,0 +1,381 @@
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Firmafy\n"
+"POT-Creation-Date: 2022-07-21 09:08+0200\n"
+"PO-Revision-Date: 2022-07-21 09:06+0200\n"
+"Last-Translator: David <david@closemarketing.es>\n"
+"Language-Team: David <david@closemarketing.es>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=INTEGER; plural=EXPRESSION;\n"
+"X-Generator: Poedit 3.1.1\n"
+"X-Poedit-Basepath: ..\n"
+"X-Poedit-Flags-xgettext: --add-comments=translators:\n"
+"X-Poedit-WPHeader: firmafy.php\n"
+"X-Poedit-SourceCharset: UTF-8\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
+"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
+"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
+"X-Poedit-SearchPath-0: .\n"
+"X-Poedit-SearchPathExcluded-0: *.min.js\n"
+"X-Poedit-SearchPathExcluded-1: vendor\n"
+
+#. Plugin Name of the plugin/theme
+#: includes/class-firmafy-admin-settings.php:64
+#: includes/class-firmafy-admin-settings.php:65
+msgid "Firmafy"
+msgstr ""
+
+#: includes/class-firmafy-admin-settings.php:75
+#: includes/class-firmafy-admin-settings.php:76
+msgid "Settings"
+msgstr ""
+
+#: includes/class-firmafy-admin-settings.php:83
+#: includes/class-firmafy-admin-settings.php:84
+#: includes/class-firmafy-admin-settings.php:253
+msgid "Templates"
+msgstr ""
+
+#: includes/class-firmafy-admin-settings.php:120
+msgid "Firmafy Settings"
+msgstr ""
+
+#: includes/class-firmafy-admin-settings.php:128
+msgid "ERROR: We could not connect to Firmafy."
+msgstr ""
+
+#: includes/class-firmafy-admin-settings.php:132
+msgid "Connected to Firmafy"
+msgstr ""
+
+#: includes/class-firmafy-admin-settings.php:174
+msgid "Settings for integration to Firmafy"
+msgstr ""
+
+#: includes/class-firmafy-admin-settings.php:181
+#: includes/forms/class-woocommerce.php:136
+msgid "Username"
+msgstr ""
+
+#: includes/class-firmafy-admin-settings.php:189
+#: includes/forms/class-woocommerce.php:144
+msgid "Password"
+msgstr ""
+
+#: includes/class-firmafy-admin-settings.php:229
+msgid "Put the connection API key settings in order to connect external data."
+msgstr ""
+
+#: includes/class-firmafy-admin-settings.php:254
+#: includes/forms/class-gravityforms.php:118
+msgid "Template"
+msgstr ""
+
+#: includes/class-firmafy-admin-settings.php:255
+#: includes/class-firmafy-admin-settings.php:256
+msgid "Add New Template"
+msgstr ""
+
+#: includes/class-firmafy-admin-settings.php:257
+msgid "Edit Template"
+msgstr ""
+
+#: includes/class-firmafy-admin-settings.php:258
+msgid "New Template"
+msgstr ""
+
+#: includes/class-firmafy-admin-settings.php:259
+msgid "View Template"
+msgstr ""
+
+#: includes/class-firmafy-admin-settings.php:260
+msgid "Search Templates"
+msgstr ""
+
+#: includes/class-firmafy-admin-settings.php:261
+msgid "Not found Template"
+msgstr ""
+
+#: includes/class-firmafy-admin-settings.php:262
+msgid "Not found Template in trash"
+msgstr ""
+
+#: includes/forms/class-contactform7.php:48
+#: includes/forms/class-woocommerce.php:84
+msgid "FormsCRM"
+msgstr ""
+
+#: includes/forms/class-contactform7.php:116
+#: includes/forms/class-contactform7.php:123
+msgid "URL:"
+msgstr ""
+
+#: includes/forms/class-contactform7.php:117
+#: includes/forms/class-woocommerce.php:130
+msgid "CRM URL"
+msgstr ""
+
+#: includes/forms/class-contactform7.php:124
+#: includes/forms/class-woocommerce.php:138
+msgid "CRM Username"
+msgstr ""
+
+#: includes/forms/class-contactform7.php:130
+msgid "Password:"
+msgstr ""
+
+#: includes/forms/class-contactform7.php:131
+msgid "CRM Password"
+msgstr ""
+
+#: includes/forms/class-contactform7.php:137
+msgid "API Password:"
+msgstr ""
+
+#: includes/forms/class-contactform7.php:138
+msgid "CRM API Password"
+msgstr ""
+
+#: includes/forms/class-contactform7.php:144
+#: includes/forms/class-contactform7.php:151
+msgid "API Sales:"
+msgstr ""
+
+#: includes/forms/class-contactform7.php:145
+#: includes/forms/class-contactform7.php:152
+msgid "CRM Sales"
+msgstr ""
+
+#: includes/forms/class-contactform7.php:181
+msgid "Field CRM"
+msgstr ""
+
+#: includes/forms/class-contactform7.php:182
+msgid "Form Field"
+msgstr ""
+
+#: includes/forms/class-contactform7.php:192
+msgid "Name of your field"
+msgstr ""
+
+#: includes/forms/class-gravityforms.php:105
+msgid "Firmafy Feed"
+msgstr ""
+
+#: includes/forms/class-gravityforms.php:110
+#: includes/forms/class-gravityforms.php:114
+#: includes/forms/class-gravityforms.php:168
+msgid "Name"
+msgstr ""
+
+#: includes/forms/class-gravityforms.php:114
+msgid "Enter a template name to uniquely identify this setup."
+msgstr ""
+
+#: includes/forms/class-gravityforms.php:126
+#: includes/forms/class-gravityforms.php:130
+msgid "Map Fields"
+msgstr ""
+
+#: includes/forms/class-gravityforms.php:130
+msgid ""
+"Associate your CRM custom fields to the appropriate Gravity Form fields by "
+"selecting the appropriate form field from the list."
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:49
+msgid "Customer Note"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:50
+msgid "Billing First name"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:51
+msgid "Billing Last name"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:52
+msgid "Billing Company"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:53
+msgid "Billing Address 1"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:54
+msgid "Billing Address 2"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:55
+msgid "Billing City"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:56
+msgid "Billing State"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:57
+msgid "Billing Postcode"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:58
+msgid "Billing Country"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:59
+msgid "Billing Email"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:60
+msgid "Billing Phone"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:61
+msgid "Shipping First name"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:62
+msgid "Shipping Last name"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:63
+msgid "Shipping Company"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:64
+msgid "Shipping Address 1"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:65
+msgid "Shipping Address 2"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:66
+msgid "Shipping City"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:67
+msgid "Shipping State"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:68
+msgid "Shipping Postcode"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:69
+msgid "Shipping Country"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:70
+msgid "Formatted Billing Full Name"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:71
+msgid "Formatted Shipping Full Name"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:72
+msgid "Customer ID"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:73
+msgid "User ID"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:112
+msgid "CRM Settings"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:118
+msgid "CRM"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:120
+msgid "Select your CRM"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:128
+msgid "URL"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:146
+msgid "Password of CRM"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:152
+msgid "API Password"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:154
+msgid "API Password of CRM"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:160
+msgid "API Sales"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:162
+msgid "API Sales of CRM"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:168
+msgid "Odoo Db"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:170
+msgid "Odoo DB name"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:182
+msgid "Module"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:184
+msgid "Select your Module"
+msgstr ""
+
+#: includes/forms/class-woocommerce.php:199
+msgid "Field Settings"
+msgstr ""
+
+#: includes/forms/debug.php:25 includes/forms/helpers-functions.php:25
+msgid "Message Debug Mode"
+msgstr ""
+
+#: includes/forms/debug.php:78 includes/forms/helpers-functions.php:77
+msgid "Error creating the Lead"
+msgstr ""
+
+#: includes/forms/debug.php:79 includes/forms/helpers-functions.php:78
+msgid "There was an error creating the Lead in the CRM"
+msgstr ""
+
+#: includes/forms/debug.php:79 includes/forms/helpers-functions.php:78
+msgid "Lead Data"
+msgstr ""
+
+#: includes/forms/debug.php:99 includes/forms/helpers-functions.php:98
+msgid ""
+"curl is not Installed in your server. It is needed to work with CRM "
+"Libraries."
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://firmafy.com"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Validate legally your forms in WordPress."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Closetechnology"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://close.technology"
+msgstr ""
