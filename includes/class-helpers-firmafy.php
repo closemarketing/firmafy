@@ -116,11 +116,16 @@ class Helpers_Firmafy {
 		if ( ! empty( $matches[1] ) && is_array( $matches[1] ) ) {
 			foreach ( $matches[1] as $field ) {
 				if ( $this->not_strange_string( $field ) ) {
-					$fields[] = array(
-						'name'  => $field,
-						'label' => $field,
-					);
+					$fields[] = $field;
 				}
+			}
+			$fields_to_convert = array_unique( $fields );
+			$fields   = array();
+			foreach ( $fields_to_convert as $field ) {
+				$fields[] = array(
+					'name'  => $field,
+					'label' => $field,
+				);
 			}
 			return $fields;
 		}
