@@ -169,18 +169,6 @@ if ( ! class_exists( 'GFCRM' ) ) {
 			);
 		}
 
-		public function process_feed( $feed, $entry, $form ) {
-			global $helpers_firmafy;
-
-			// Ensures valid credentials were entered in the settings page.
-			$login_result = $helpers_firmafy->login();
-
-			if ( false == $login_result ) {
-				return;
-			}
-
-			$this->export_feed( $entry, $form, $feed );
-		}
 		/**
 		 * Sends data to API
 		 *
@@ -189,7 +177,7 @@ if ( ! class_exists( 'GFCRM' ) ) {
 		 * @param array  $feed Feed data.
 		 * @return void
 		 */
-		public function export_feed( $entry, $form, $feed ) {
+		public function process_feed( $feed, $entry, $form ) {
 			global $helpers_firmafy;
 
 			if ( ! empty( $feed['meta']['listFields_first_name'] ) ) {
