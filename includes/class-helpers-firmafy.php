@@ -50,7 +50,7 @@ class Helpers_Firmafy {
 		}
 		$result      = wp_remote_post( 'https://app.firmafy.com/ApplicationProgrammingInterface.php', $args );
 		$result_body = wp_remote_retrieve_body( $result );
-		$body   = json_decode( $result_body, true );
+		$body        = json_decode( $result_body, true );
 
 		if ( isset( $body['error'] ) && $body['error'] ) {
 			return array(
@@ -160,6 +160,7 @@ class Helpers_Firmafy {
 		$settings = get_option( 'firmafy_options' );
 		$username = isset( $settings['username'] ) ? $settings['username'] : '';
 		$password = isset( $settings['password'] ) ? $settings['password'] : '';
+		$id_show  = isset( $settings['id_show'] ) ? $settings['id_show'] : '';
 		$font     = isset( $settings['font'] ) ? $settings['font'] : 'helvetica';
 		$signer   = array();
 
@@ -169,7 +170,9 @@ class Helpers_Firmafy {
 		foreach ( $merge_vars as $variable ) {
 			if ( ! empty( $variable['name'] ) ) {
 				$template_content = str_replace( '{' . $variable['name'] . '}', $variable['value'], $template_content );
-				if ( $this->signer_tags( $variable['name'] ) ) {
+				if ( $this->signer_tags( $variable['name'] ) && 'nif' === $variable['name'] ) {
+					$signer[ $variable['name'] ] = str_replace( '.', '', $variable['value'] );
+				} elseif ( $this->signer_tags( $variable['name'] ) ) {
 					$signer[ $variable['name'] ] = $variable['value'];
 				}
 			}
@@ -228,13 +231,13 @@ class Helpers_Firmafy {
 			error_log( 'Unexpected Error!<br>Can not load PDF this time! ' . $formatter->getHtmlMessage() );
 		}
 
+		$token = $this->login();
 		// Sends to Firmafy
 		$query = array(
-			'id_show' => 'id_show',
-			'signer'  => array(
-				$signer,
-			),
-			'pdf'     => file_get_contents( $filename_path ),
+			'id_show' => $id_show,
+			'token'   => isset( $token['data'] ) ? $token['data'] : '',
+			'signer'  => wp_json_encode( array( $signer ) ),
+			'pdf'     => curl_file_create( $filename_path ),
 		);
 		return $this->api_post( $username, $password, 'request', $query );
 	}

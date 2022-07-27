@@ -191,6 +191,14 @@ class FIRMAFY_ADMIN_SETTINGS {
 			'firmafy_options',
 			'admin_firmafy_settings'
 		);
+
+		add_settings_field(
+			'firmafy_id_show',
+			__( 'Public API Key', 'firmafy' ),
+			array( $this, 'id_show_callback' ),
+			'firmafy_options',
+			'admin_firmafy_settings'
+		);
 	}
 
 	/**
@@ -213,6 +221,10 @@ class FIRMAFY_ADMIN_SETTINGS {
 
 		if ( isset( $input['password'] ) ) {
 			$sanitary_values['password'] = sanitize_text_field( $input['password'] );
+		}
+
+		if ( isset( $input['id_show'] ) ) {
+			$sanitary_values['id_show'] = sanitize_text_field( $input['id_show'] );
 		}
 
 		$helpers_firmafy->login( $sanitary_values['username'], $sanitary_values['password'] );
@@ -240,6 +252,13 @@ class FIRMAFY_ADMIN_SETTINGS {
 		printf(
 			'<input class="regular-text" type="password" name="firmafy_options[password]" id="password" value="%s">',
 			isset( $this->firmafy_settings['password'] ) ? esc_attr( $this->firmafy_settings['password'] ) : ''
+		);
+	}
+
+	public function id_show_callback() {
+		printf(
+			'<input class="regular-text" type="password" name="firmafy_options[id_show]" id="id_show" value="%s">',
+			isset( $this->firmafy_settings['id_show'] ) ? esc_attr( $this->firmafy_settings['id_show'] ) : ''
 		);
 	}
 
