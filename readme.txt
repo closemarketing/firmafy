@@ -2,6 +2,7 @@
 Contributors: closetechnology, davidperez, sacrajaimez
 Tags: firmafy, forms
 Requires at least: 4.0
+Requires PHP: 5.6
 Tested up to: 6.0
 Stable tag: 1.0
 Version: 1.0
@@ -11,6 +12,50 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Validate legaly your forms created with main plugins in the market.
 
 == Description ==
+
+Your clients will be able to sign any document through a form that you insert in your website with Wordpress.
+
+And the signed document will have full legal validity.
+
+Firmafy is an advanced electronic signature system that collects 6 evicendes to guarantee the signatory identity and the signed document validity.
+
+The document is generated as a result of the data inserted by your clients in your Wordpress form.
+
+Firmafy connects with the most popular and reliable Wordpress form plugins:
+
+
+- [Contact Form](https://wordpress.org/plugins/contact-form-7/) (free version).
+- [Gravity Form](https://www.gravityforms.com/pricing/).
+
+And it can be also connected with your [Woocommerce](https://wordpress.org/plugins/woocommerce/).
+
+**How does the Firmafy plugin work?**
+
+1. Create an account on [Firmafy](https://firmafy.com/solicitud-plan-gratuito-firmafy-planfree/%3Futm_source=plugin%26utm_medium=enlace%26utm_campaign=plugin_wordpress_firmafy).
+2. Download your Firmafy plugin and connect it with [Contact Form](https://wordpress.org/plugins/contact-form-7/) or [Gravity Form](https://www.gravityforms.com/pricing/).
+3. Create a template with Firmafy with the document you need to have signed.
+4. Create a form with Contact Form or Gravity Form and publish it on your website. And ready to work!
+
+Once your client fills out the form, a document will be generated with their data on it. That document will arrive ready to be signed straight away to their email.
+
+The signature process will start as soon as your client clics on the email link.
+
+Both of you will receive an email with the signed document copy. That signature will have a full legal validity.
+
+Please, watch this video with the step by step configuration:
+
+
+**Firmafy use examples:**
+
+Does you client need to sign a direct debit document? You can create a direct debit template with Firmafy and getting it signed automatically in your Wordpress, without doing anything.
+
+Do you sell an expensive product like machinery or houses? Would you like to close that sale with a signed contract? Your client only has to complete a data form in your website and the contract signature will starts inmediatly.
+
+Does your client sign an informed consent, a data protection document or an insurance policy?
+
+All this and much more can be signed online in a simple and legal way with Firmafy.
+
+Firmafy has a free trial plan. Download our plugin and try it!
 
 == Installation ==
 
@@ -28,6 +73,5 @@ WordPress installation and then activate the Plugin from Plugins page.
 == Links ==
 
 *	[Firmafy](https://firmafy.com/)
-*	[Closemarketing](https://close.marketing/)
 *	[Closetechnology](https://close.technology/)
-*	[All Closemarketing Plugins](https://profiles.wordpress.org/closemarketing/#content-plugins)
+*	[All Closetechnology Plugins](https://profiles.wordpress.org/closetechnology/#content-plugins)
