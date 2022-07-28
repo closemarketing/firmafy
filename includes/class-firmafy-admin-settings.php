@@ -35,9 +35,13 @@ class FIRMAFY_ADMIN_SETTINGS {
 		add_action( 'admin_enqueue_scripts', array( $this, 'firmafy_scripts' ) );
 		add_action( 'admin_menu', array( $this, 'add_plugin_page' ) );
 		add_action( 'admin_init', array( $this, 'page_init' ) );
+		add_action( 'admin_notices', array( $this, 'admin_notices_action' ) );
 
 		// Register CPT Templates.
 		add_action( 'init', array( $this, 'create_firmafy_templates_type' ) );
+
+		add_filter( 'manage_edit-firmafy_template_columns', array( $this, 'add_new_firmafy_template_columns' ) );
+		add_action( 'manage_firmafy_template_posts_custom_column', array( $this, 'manage_firmafy_template_columns' ), 10, 2 );
 	}
 
 	/**
@@ -99,6 +103,9 @@ class FIRMAFY_ADMIN_SETTINGS {
 				$submenu['function']
 			);
 		}
+	}
+	function admin_notices_action() {
+		settings_errors( 'firmafy_notification_error' );
 	}
 
 	/**
@@ -199,6 +206,14 @@ class FIRMAFY_ADMIN_SETTINGS {
 			'firmafy_options',
 			'admin_firmafy_settings'
 		);
+
+		add_settings_field(
+			'firmafy_notification',
+			__( 'Notification settings', 'firmafy' ),
+			array( $this, 'notification_callback' ),
+			'firmafy_options',
+			'admin_firmafy_settings'
+		);
 	}
 
 	/**
@@ -225,6 +240,21 @@ class FIRMAFY_ADMIN_SETTINGS {
 
 		if ( isset( $input['id_show'] ) ) {
 			$sanitary_values['id_show'] = sanitize_text_field( $input['id_show'] );
+		}
+
+		if ( isset( $_POST['notification'] ) && is_array( $_POST['notification'] ) ) {
+			foreach ( $_POST['notification'] as $notification ) {
+				$sanitary_values['notification'][] = sanitize_text_field( $notification );
+			}
+		}
+
+		if ( empty( $sanitary_values['notification'] ) ) {
+			add_settings_error(
+				'firmafy_notification_error',
+				esc_attr( 'settings_updated' ),
+				__( 'Notifications option cannot be empty', 'firmafy' ),
+				'error'
+			);
 		}
 
 		$helpers_firmafy->login( $sanitary_values['username'], $sanitary_values['password'] );
@@ -262,6 +292,16 @@ class FIRMAFY_ADMIN_SETTINGS {
 		);
 	}
 
+	public function notification_callback() {
+		$notification = isset( $this->firmafy_settings['notification'] ) ? (array) $this->firmafy_settings['notification'] : [];
+		echo '<input type="checkbox" name="notification[]" value="sms" ';
+		echo checked( in_array( 'sms', $notification ), 1 ) . ' />';
+		echo '<label for="notification">SMS</label>';
+		echo '<br/><input type="checkbox" name="notification[]" value="email" ';
+		echo checked( in_array( 'email', $notification ), 1 ) . ' />';
+		echo '<label for="notification">Email</label>';
+	}
+
 	/**
 	 * Register Post Type Templates
 	 *
@@ -295,6 +335,41 @@ class FIRMAFY_ADMIN_SETTINGS {
 			'supports'           => array( 'title', 'editor', 'revisions' ),
 		);
 		register_post_type( 'firmafy_template', $args );
+	}
+
+	/**
+	 * Adds columns to post type firmafy_template
+	 *
+	 * @param array $firmafy_template_columns  Header of admin post type list.
+	 * @return array $firmafy_template_columns New elements for header.
+	 */
+	function add_new_firmafy_template_columns( $firmafy_template_columns ) {
+		$new_columns['cb']    = '<input type="checkbox" />';
+		$new_columns['title'] = __( 'Title', 'firmafy' );
+		$new_columns['variables'] = __( 'Variables', 'firmafy' );
+	
+		return $new_columns;
+	}
+
+	/**
+	 * Add columns content
+	 *
+	 * @param array $column_name Column name of actual.
+	 * @param array $id Post ID.
+	 * @return void
+	 */
+	function manage_firmafy_template_columns( $column_name, $id ) {
+		global $helpers_firmafy;
+	
+		switch ( $column_name ) {
+			case 'variables':
+				$variables = $helpers_firmafy->get_variables_template( $id );
+				echo implode( ', ', array_column( $variables, 'label' ) );
+				break;
+	
+			default:
+				break;
+		} // end switch
 	}
 }
 

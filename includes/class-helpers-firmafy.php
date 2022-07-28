@@ -177,20 +177,13 @@ class Helpers_Firmafy {
 				}
 			}
 		}
-		$signer['type_notifications'] = 'email';
+		$notification = isset( $settings['notification'] ) ? (array) $settings['notification'] : ['email'];
+		$signer['type_notifications'] = implode( ',', $notification );
 
 		$template_content = $this->replace_tags( $template_content );
 
 		// Generates PDF
 		$filename   = 'firmafy-' . sanitize_title( get_bloginfo( 'name' ) ) . '-' . date( 'Y-m-d-H-i' ) . '.pdf';
-		$upload_dir = wp_upload_dir();
-		$dirname    = $upload_dir['basedir'] . '/firmafy/';
-		if ( ! file_exists( $dirname ) ) {
-			wp_mkdir_p( $dirname );
-		}
-
-		$pdf_url       = $upload_dir['baseurl'] . '/firmafy/' . $filename;
-		$filename_path = $dirname . $filename;
 
 		$content = '<page style="margin-top:10mm;" backcolor="#fff">';
 		$content .= '<style>';
@@ -224,7 +217,7 @@ class Helpers_Firmafy {
 			$html2pdf->setDefaultFont( $font );
 			$html2pdf->setTestTdInOnePage( false );
 			$html2pdf->writeHTML( $content );
-			$html2pdf->Output( $filename_path, 'F' );
+			$pdf_content = $html2pdf->Output( $filename, 'S' );
 		} catch ( Html2PdfException $e ) { //phpcs:ignore
 			//error
 			$formatter = new ExceptionFormatter( $e ); //phpcs:ignore
@@ -237,7 +230,10 @@ class Helpers_Firmafy {
 			'id_show' => $id_show,
 			'token'   => isset( $token['data'] ) ? $token['data'] : '',
 			'signer'  => wp_json_encode( array( $signer ) ),
-			'pdf'     => curl_file_create( $filename_path ),
+			//'pdf'     => new CURLFile( file_get_contents( $filename_path ), 'application/pdf' ),
+			'pdf_name' => $filename,
+			'pdf_base64' => chunk_split( base64_encode( $pdf_content ) ),
+
 		);
 		return $this->api_post( $username, $password, 'request', $query );
 	}
