@@ -1,6 +1,6 @@
 === Firmafy ===
 Contributors: closetechnology, davidperez, sacrajaimez
-Tags: firmafy, forms
+Tags: forms, signature, gravityforms, contact form 7, woocommerce
 Requires at least: 4.0
 Requires PHP: 5.6
 Tested up to: 6.0
