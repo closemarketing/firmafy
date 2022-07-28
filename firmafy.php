@@ -75,8 +75,3 @@ if ( ( is_plugin_active( 'gravityforms/gravityforms.php' ) || is_plugin_active( 
 if ( is_plugin_active( 'contact-form-7/wp-contact-form-7.php' ) && ! class_exists( 'FORMSCRM_CF7_Settings' ) ) {
 	require_once FIRMAFY_PLUGIN_PATH . 'includes/forms/class-contactform7.php';
 }
-
-// WooCommerce.
-if ( is_plugin_active( 'woocommerce/woocommerce.php' ) && ! class_exists( 'FormsCRM_WooCommerce' ) ) {
-	require_once FIRMAFY_PLUGIN_PATH . 'includes/forms/class-woocommerce.php';
-}
