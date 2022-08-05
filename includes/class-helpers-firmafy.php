@@ -123,12 +123,39 @@ class Helpers_Firmafy {
 			$fields   = array();
 			foreach ( $fields_to_convert as $field ) {
 				$fields[] = array(
-					'name'  => $field,
-					'label' => $field,
+					'name'     => $field,
+					'label'    => $field,
+					'required' => $this->is_field_required( $field ),
 				);
 			}
 			return $fields;
 		}
+	}
+
+	/**
+	 * Shows is field is required
+	 *
+	 * @param array $field
+	 * @return boolean
+	 */
+	private function is_field_required( $field ) {
+		$firmafy_settings = get_option('firmafy_options');
+
+		if ( 'nombre' === $field ||
+			'nif' === $field
+		) {
+			return true;
+		}
+
+		if ( 'telefono' === $field && false !== array_search( 'sms', $firmafy_settings['notification'] ) ) {
+			return true;
+		}
+		
+		if ( 'email' === $field && false !== array_search( 'email', $firmafy_settings['notification'] ) ) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
