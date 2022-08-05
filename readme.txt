@@ -31,7 +31,7 @@ And it can be also connected with your [Woocommerce](https://wordpress.org/plugi
 
 **How does the Firmafy plugin work?**
 
-1. Create an account on [Firmafy](https://firmafy.com/solicitud-plan-gratuito-firmafy-planfree/%3Futm_source=plugin%26utm_medium=enlace%26utm_campaign=plugin_wordpress_firmafy).
+1. Create an account on [Firmafy](https://firmafy.com/solicitud-plan-gratuito-firmafy-planfree/?utm_source=plugin&utm_medium=enlace&utm_campaign=plugin_wordpress_firmafy).
 2. Download your Firmafy plugin and connect it with [Contact Form](https://wordpress.org/plugins/contact-form-7/) or [Gravity Form](https://www.gravityforms.com/pricing/).
 3. Create a template with Firmafy with the document you need to have signed.
 4. Create a form with Contact Form or Gravity Form and publish it on your website. And ready to work!
@@ -43,7 +43,7 @@ The signature process will start as soon as your client clics on the email link.
 Both of you will receive an email with the signed document copy. That signature will have a full legal validity.
 
 Please, watch this video with the step by step configuration:
-
+[youtube https://www.youtube.com/watch?v=PbC-KIEw-4M]
 
 **Firmafy use examples:**
 
