@@ -214,6 +214,16 @@ class FIRMAFY_ADMIN_SETTINGS {
 			'firmafy_options',
 			'admin_firmafy_settings'
 		);
+
+		if ( class_exists( 'WooCommerce' ) ) {
+			add_settings_field(
+				'firmafy_woocommerce',
+				__( 'Sign WooCommerce orders with Firmafy?', 'firmafy' ),
+				array( $this, 'woocommerce_callback' ),
+				'firmafy_options',
+				'admin_firmafy_settings'
+			);
+		}
 	}
 
 	/**
@@ -240,6 +250,10 @@ class FIRMAFY_ADMIN_SETTINGS {
 
 		if ( isset( $input['id_show'] ) ) {
 			$sanitary_values['id_show'] = sanitize_text_field( $input['id_show'] );
+		}
+
+		if ( isset( $input['woocommerce'] ) ) {
+			$sanitary_values['woocommerce'] = sanitize_text_field( $input['woocommerce'] );
 		}
 
 		if ( isset( $_POST['notification'] ) && is_array( $_POST['notification'] ) ) {
@@ -300,6 +314,27 @@ class FIRMAFY_ADMIN_SETTINGS {
 		echo '<br/><input type="checkbox" name="notification[]" value="email" ';
 		echo checked( in_array( 'email', $notification ), 1 ) . ' />';
 		echo '<label for="notification">Email</label>';
+	}
+
+	public function woocommerce_callback() {
+		?>
+		<select name="firmafy_options[woocommerce]" id="woocommerce">
+			<?php $selected = ( isset( $this->firmafy_settings['woocommerce'] ) && $this->firmafy_settings['woocommerce'] === 'yes' ) ? 'selected' : ''; ?>
+			<option value="no" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'No', 'firmafy' ); ?></option>
+			<option value="yes" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'Yes', 'firmafy' ); ?></option>
+			<?php $selected = ( isset( $this->firmafy_settings['woocommerce'] ) && $this->firmafy_settings['woocommerce'] === 'no' ) ? 'selected' : ''; ?>
+		</select><br/>
+		<label for="woocommerce"><?php esc_html_e( 'This adds a NIF field required for Firmafy and signs the order when the order is placed.', 'firmafy' ); ?></label>
+		<br/>
+		<label for="woocommerce">
+			<?php
+			echo sprintf(
+				__( 'You will need to setup the <a href="%s">Terms and conditions page</a>', 'firmafy' ),
+				admin_url('admin.php?page=wc-settings&tab=advanced')
+			);
+			?>
+		</label>
+		<?php
 	}
 
 	/**
