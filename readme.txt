@@ -13,15 +13,15 @@ Validate legaly your forms created with main plugins in the market.
 
 == Description ==
 
-Your clients will be able to sign any document through a form that you insert in your website with Wordpress.
+Your clients will be able to sign any document through a form that you insert in your website with WordPress.
 
 And the signed document will have full legal validity.
 
 Firmafy is an advanced electronic signature system that collects 6 evicendes to guarantee the signatory identity and the signed document validity.
 
-The document is generated as a result of the data inserted by your clients in your Wordpress form.
+The document is generated as a result of the data inserted by your clients in your WordPress form.
 
-Firmafy connects with the most popular and reliable Wordpress form plugins:
+Firmafy connects with the most popular and reliable WordPress form plugins:
 
 
 - [Contact Form](https://wordpress.org/plugins/contact-form-7/) (free version).
@@ -47,7 +47,7 @@ Please, watch this video with the step by step configuration:
 
 **Firmafy use examples:**
 
-Does you client need to sign a direct debit document? You can create a direct debit template with Firmafy and getting it signed automatically in your Wordpress, without doing anything.
+Does you client need to sign a direct debit document? You can create a direct debit template with Firmafy and getting it signed automatically in your WordPress, without doing anything.
 
 Do you sell an expensive product like machinery or houses? Would you like to close that sale with a signed contract? Your client only has to complete a data form in your website and the contract signature will starts inmediatly.
 
