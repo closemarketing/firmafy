@@ -27,7 +27,7 @@ Firmafy connects with the most popular and reliable WordPress form plugins:
 - [Contact Form](https://wordpress.org/plugins/contact-form-7/) (free version).
 - [Gravity Form](https://www.gravityforms.com/pricing/).
 
-And it can be also connected with your [Woocommerce](https://wordpress.org/plugins/woocommerce/).
+And it can be also connected with your [WooCommerce](https://wordpress.org/plugins/woocommerce/).
 
 **How does the Firmafy plugin work?**
 
