@@ -23,7 +23,6 @@ The document is generated as a result of the data inserted by your clients in yo
 
 Firmafy connects with the most popular and reliable WordPress form plugins:
 
-
 - [Contact Form](https://wordpress.org/plugins/contact-form-7/) (free version).
 - [Gravity Form](https://www.gravityforms.com/pricing/).
 
@@ -66,6 +65,10 @@ WordPress installation and then activate the Plugin from Plugins page.
 [Official Repository GitHub](https://github.com/closemarketing/firmafy/)
 
 == Changelog ==
+
+= 1.1.0 =
+*	Added support to WooCommerce.
+*	Added templates: SEPA, New user RGPD.
 
 = 1.0.0 =
 *	First version

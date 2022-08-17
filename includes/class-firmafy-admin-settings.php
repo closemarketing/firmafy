@@ -42,6 +42,8 @@ class FIRMAFY_ADMIN_SETTINGS {
 
 		add_filter( 'manage_edit-firmafy_template_columns', array( $this, 'add_new_firmafy_template_columns' ) );
 		add_action( 'manage_firmafy_template_posts_custom_column', array( $this, 'manage_firmafy_template_columns' ), 10, 2 );
+
+		register_activation_hook( FIRMAFY_PLUGIN, array( $this, 'loads_templates_cpt' ) );
 	}
 
 	/**
@@ -399,12 +401,52 @@ class FIRMAFY_ADMIN_SETTINGS {
 		switch ( $column_name ) {
 			case 'variables':
 				$variables = $helpers_firmafy->get_variables_template( $id );
-				echo implode( ', ', array_column( $variables, 'label' ) );
+				if ( is_array( $variables ) ) {
+					echo implode( ', ', array_column( $variables, 'label' ) );
+				}
+				
 				break;
 	
 			default:
 				break;
 		} // end switch
+	}
+
+	/**
+	 * Creates predefined templates
+	 *
+	 * @return void
+	 */
+	public function loads_templates_cpt() {
+		$initial_templates = array(
+			array(
+				'slug'  => 'sepa',
+				'title' => __( 'Sign SEPA', 'firmafy' ),
+			),
+			array(
+				'slug'  => 'rgpd',
+				'title' => __( 'RGPD New user', 'firmafy' ),
+			),
+		);
+
+		foreach ( $initial_templates as $template ) {
+			$file_template = FIRMAFY_PLUGIN_PATH . '/includes/templates/' . $template['slug'] . '.html';
+			$post_exists   = get_page_by_path( $template['slug'], OBJECT, 'firmafy_template' );
+
+			if ( file_exists( $file_template ) && ! $post_exists ) {
+				$template_post = array(
+					'post_title'    => wp_strip_all_tags( $template['title'] ),
+					'post_name'     => $template['slug'],
+					'post_content'  => file_get_contents( $file_template ),
+					'post_status'   => 'publish',
+					'post_type'     => 'firmafy_template',
+				);
+				  
+				// Insert the post into the database
+				wp_insert_post( $template_post );
+			}
+		}
+
 	}
 }
 
