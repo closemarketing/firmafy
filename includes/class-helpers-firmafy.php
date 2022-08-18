@@ -171,6 +171,12 @@ class Helpers_Firmafy {
 		if ( false !== strpos( $string, 'fecha' ) ) {
 			return false;
 		}
+		if ( false !== strpos( $string, 'fecha_texto' ) ) {
+			return false;
+		}
+		if ( false !== strpos( $string, 'referencia' ) ) {
+			return false;
+		}
 		if ( false !== strpos( $string, ':' ) ) {
 			return false;
 		}
@@ -207,7 +213,7 @@ class Helpers_Firmafy {
 		$notification = isset( $settings['notification'] ) ? (array) $settings['notification'] : ['email'];
 		$signer['type_notifications'] = implode( ',', $notification );
 
-		$template_content = $this->replace_tags( $template_content );
+		$template_content = $this->replace_tags( $template_content, $template_id );
 
 		// Generates PDF
 		$filename   = 'firmafy-' . sanitize_title( get_bloginfo( 'name' ) ) . '-' . date( 'Y-m-d-H-i' ) . '.pdf';
@@ -284,10 +290,25 @@ class Helpers_Firmafy {
 	/**
 	 * Replaces variables in document with allowed tags and core variables
 	 *
-	 * @param string $content
+	 * @param string $content  Content to replace
+	 * @param integer $post_id Reference post
 	 * @return string
 	 */
-	private function replace_tags( $content ) {
+	private function replace_tags( $content, $post_id ) {
+		$months = array(
+			1  => __( 'January', 'firmafy' ),
+			2  => __( 'February', 'firmafy' ),
+			3  => __( 'March', 'firmafy' ),
+			4  => __( 'April', 'firmafy' ),
+			5  => __( 'May', 'firmafy' ),
+			6  => __( 'June', 'firmafy' ),
+			7  => __( 'July', 'firmafy' ),
+			8  => __( 'August', 'firmafy' ),
+			9  => __( 'September', 'firmafy' ),
+			10 => __( 'October', 'firmafy' ),
+			11 => __( 'November', 'firmafy' ),
+			12 => __( 'December', 'firmafy' ),
+		);
 
 		// Replace for known tags.
 		$content = str_replace( '<figure', '<div', $content );
@@ -295,6 +316,19 @@ class Helpers_Firmafy {
 
 		// Replace date.
 		$content = str_replace( '{fecha}', date( 'd-m-Y' ), $content );
+
+		// Replace date text.
+		$date_text = sprintf(
+			/* translators: 1: day 2: month 3: year */
+			esc_html__( '%1s of %2s of %3s', 'textdomain' ),
+			date( 'd' ),
+			$months[ (int) date('m') ],
+			date( 'Y' )
+		);
+		$content = str_replace( '{fecha_texto}', $date_text, $content );
+
+		// Replace reference.
+		$content = str_replace( '{referencia}', $post_id, $content );
 
 		return $content;
 	}
