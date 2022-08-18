@@ -1,11 +1,11 @@
 <?php
 /**
- * Contact Forms 7 Wrapper
+ * WooCommerce Wrapper
  *
  * @package   WordPress
  * @author    David Perez <david@closemarketing.es>
- * @copyright 2021 Closemarketing
- * @version   3.3
+ * @copyright 2022 Closemarketing
+ * @version   1.0
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -15,60 +15,27 @@ defined( 'ABSPATH' ) || exit;
  *
  * @package    WordPress
  * @author     David Perez <david@closemarketing.es>
- * @copyright  2019 Closemarketing
+ * @copyright  2022 Closemarketing
  * @version    1.0
  */
-class FormsCRM_WooCommerce {
-
-	/**
-	 * CRM LIB external
-	 *
-	 * @var obj
-	 */
-	private $crmlib;
-
+class Firmafy_WooCommerce {
 	/**
 	 * Construct of class
 	 */
 	public function __construct() {
-		add_action( 'woocommerce_new_order', array( $this, 'crm_process_entry' ), 1, 1 );
-	}
+		$settings = get_option( 'firmafy_options' );
+		$firmafy_woocommerce = isset( $settings['woocommerce'] ) ? $settings['woocommerce'] : 'no';
+		if ( 'yes' === $firmafy_woocommerce ) {
+			add_action( 'woocommerce_new_order', array( $this, 'crm_process_entry' ), 10, 2 );
 
-	/**
-	 * Get Woocommerce Fields.
-	 *
-	 * @return array
-	 */
-	private function get_woocommerce_order_fields() {
-		// Function name and Label.
-		return array(
-			''                             => '',
-			'customer_note'                => __( 'Customer Note', 'formscrm' ),
-			'billing_first_name'           => __( 'Billing First name', 'formscrm' ),
-			'billing_last_name'            => __( 'Billing Last name', 'formscrm' ),
-			'billing_company'              => __( 'Billing Company', 'formscrm' ),
-			'billing_address_1'            => __( 'Billing Address 1', 'formscrm' ),
-			'billing_address_2'            => __( 'Billing Address 2', 'formscrm' ),
-			'billing_city'                 => __( 'Billing City', 'formscrm' ),
-			'billing_state'                => __( 'Billing State', 'formscrm' ),
-			'billing_postcode'             => __( 'Billing Postcode', 'formscrm' ),
-			'billing_country'              => __( 'Billing Country', 'formscrm' ),
-			'billing_email'                => __( 'Billing Email', 'formscrm' ),
-			'billing_phone'                => __( 'Billing Phone', 'formscrm' ),
-			'shipping_first_name'          => __( 'Shipping First name', 'formscrm' ),
-			'shipping_last_name'           => __( 'Shipping Last name', 'formscrm' ),
-			'shipping_company'             => __( 'Shipping Company', 'formscrm' ),
-			'shipping_address_1'           => __( 'Shipping Address 1', 'formscrm' ),
-			'shipping_address_2'           => __( 'Shipping Address 2', 'formscrm' ),
-			'shipping_city'                => __( 'Shipping City', 'formscrm' ),
-			'shipping_state'               => __( 'Shipping State', 'formscrm' ),
-			'shipping_postcode'            => __( 'Shipping Postcode', 'formscrm' ),
-			'shipping_country'             => __( 'Shipping Country', 'formscrm' ),
-			'formatted_billing_full_name'  => __( 'Formatted Billing Full Name', 'formscrm' ),
-			'formatted_shipping_full_name' => __( 'Formatted Shipping Full Name', 'formscrm' ),
-			'customer_id'                  => __( 'Customer ID', 'formscrm' ),
-			'user_id'                      => __( 'User ID', 'formscrm' ),
-		);
+			// EU VAT.
+			add_filter( 'woocommerce_billing_fields', array( $this, 'add_billing_fields' ) );
+			add_filter( 'woocommerce_admin_billing_fields', array( $this, 'add_billing_shipping_fields_admin' ) );
+			add_filter( 'woocommerce_admin_shipping_fields', array( $this, 'add_billing_shipping_fields_admin' ) );
+			add_filter( 'woocommerce_load_order_data', array( $this, 'add_var_load_order_data' ) );
+			add_action( 'woocommerce_email_after_order_table', array( $this, 'email_key_notification' ), 10, 1 );
+			add_filter( 'wpo_wcpdf_billing_address', array( $this, 'add_vat_invoices' ) );
+		}
 	}
 
 	/**
@@ -77,49 +44,112 @@ class FormsCRM_WooCommerce {
 	 * @param int $order_id Order ID.
 	 * @return void
 	 */
-	public function crm_process_entry( $order_id ) {
-		$wc_formscrm = get_option( 'wc_formscrm' );
-		$order       = new WC_Order( $order_id );
+	public function crm_process_entry( $order_id, $order ){
+		global $helpers_firmafy;
+		$merge_vars = array(
+			array(
+				'name'  => 'nombre',
+				'value' => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
+			),
+			array(
+				'name'  => 'nif',
+				'value' => get_post_meta( $order_id, '_billing_vat', true ),
+			),
+			array(
+				'name'  => 'email',
+				'value' => $order->get_billing_email(),
+			),
+			array(
+				'name'  => 'telefono',
+				'value' => $order->get_billing_phone(),
+			),
+		);
 
-		if ( $wc_formscrm ) {
-			$this->include_library( $wc_formscrm['fc_crm_type'] );
-			$merge_vars = $this->get_merge_vars( $wc_formscrm, $order );
+		$template_id = wc_terms_and_conditions_page_id();
+		$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, true );
 
-			$response_result = $this->crmlib->create_entry( $wc_formscrm, $merge_vars );
-
-			if ( 'error' === $response_result['status'] ) {
-				formscrm_debug_email_lead( $wc_formscrm['fc_crm_type'], 'Error ' . $response_result['message'], $merge_vars );
-			} else {
-				error_log( $response_result['id'] );
-			}
+		if ( 'error' === $response_result['status'] ) {
+			$order_msg = __( 'Order sent correctly to Firmafy', 'firmafy' );
+		} else {
+			$order_msg = __( 'There was an error sending the order to Firmafy', 'firmafy' );
 		}
+		$order->add_order_note( $order_msg );
 	}
 
 	/**
-	 * Extract merge variables
+	 * Insert element before of a specific array position
 	 *
-	 * @param array  $wc_formscrm Array settings from CRM.
-	 * @param object $order Submitted data.
 	 * @return array
+	 * @since 1.0.0
 	 */
-	private function get_merge_vars( $wc_formscrm, $order ) {
-		$merge_vars = array();
+	public function array_splice_assoc( &$source, $need, $previous ) {
+		$return = array();
 
-		foreach ( $wc_formscrm as $key => $value ) {
-			if ( false !== strpos( $key, 'fc_crm_field' ) ) {
-				$crm_key   = str_replace( 'fc_crm_field-', '', $key );
-				$method_wc = 'get_' . $value;
-				if ( $method_wc && method_exists( $order, $method_wc ) ) {
-					$merge_vars[] = array(
-						'name'  => $crm_key,
-						'value' => $order->$method_wc(),
-					);
-				}
+		foreach ( $source as $key => $value ) {
+			if ( $key == $previous ) {
+				$need_key   = array_keys( $need );
+				$key_need   = array_shift( $need_key );
+				$value_need = $need[ $key_need ];
+
+				$return[ $key_need ] = $value_need;
 			}
+
+			$return[ $key ] = $value;
 		}
 
-		return $merge_vars;
+		$source = $return;
+	}
+
+	public function add_billing_fields( $fields ) {
+
+		$field = array(
+			'billing_vat' => array(
+				'label'       => apply_filters( 'vatssn_label', __( 'VAT No', 'firmafy' ) ),
+				'placeholder' => apply_filters( 'vatssn_label_x', __( 'VAT No', 'firmafy' ) ),
+				'required'    => true,
+				'class'       => array( 'form-row-wide' ),
+				'clear'       => true,
+			),
+		);
+
+		$this->array_splice_assoc( $fields, $field, 'billing_address_1' );
+		return $fields;
+	}
+
+	public function add_billing_shipping_fields_admin( $fields ) {
+		$fields['vat'] = array(
+			'label' => apply_filters( 'vatssn_label', __( 'VAT No', 'firmafy' ) ),
+		);
+
+		return $fields;
+	}
+
+	public function add_var_load_order_data( $fields ) {
+		$fields['billing_vat'] = '';
+		return $fields;
+	}
+
+	/**
+	 * Adds NIF in email notification
+	 *
+	 * @param object $order Order object.
+	 * @return void
+	 */
+	public function email_key_notification( $order ) {
+		echo '<p><strong>' . __( 'VAT No', 'firmafy' ) .':</strong> ';
+		echo esc_html( get_post_meta( $order->get_id(), '_billing_vat', true ) ) . '</p>';
+	}
+
+	/**
+	 * Adds VAT info in WooCommerce PDF Invoices & Packing Slips
+	 */
+	public function add_vat_invoices( $address ) {
+		global $wpo_wcpdf;
+
+		echo $address . '<p>';
+		$wpo_wcpdf->custom_field( 'billing_vat', __( 'VAT info:', 'firmafy' ) );
+		echo '</p>';
 	}
 }
 
-new FormsCRM_WooCommerce();
+new Firmafy_WooCommerce();
