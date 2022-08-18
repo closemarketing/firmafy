@@ -189,16 +189,24 @@ class Helpers_Firmafy {
 	 * @param string $template
 	 * @return void
 	 */
-	public function create_entry( $template_id, $merge_vars ) {
-		$settings = get_option( 'firmafy_options' );
-		$username = isset( $settings['username'] ) ? $settings['username'] : '';
-		$password = isset( $settings['password'] ) ? $settings['password'] : '';
-		$id_show  = isset( $settings['id_show'] ) ? $settings['id_show'] : '';
-		$font     = isset( $settings['font'] ) ? $settings['font'] : 'helvetica';
-		$signer   = array();
+	public function create_entry( $template_id, $merge_vars, $add_header = false ) {
+		$settings         = get_option( 'firmafy_options' );
+		$username         = isset( $settings['username'] ) ? $settings['username'] : '';
+		$password         = isset( $settings['password'] ) ? $settings['password'] : '';
+		$id_show          = isset( $settings['id_show'] ) ? $settings['id_show'] : '';
+		$font             = isset( $settings['font'] ) ? $settings['font'] : 'helvetica';
+		$signer           = array();
+		$temp_content_pre = '';
+
+		if ( $add_header ) {
+			$temp_content_pre .= '<!-- wp:table -->
+			<div class="wp-block-table"><table><tbody><tr><td><strong>NOMBRE Y APELLIDOS</strong></td><td>{nombre}</td></tr><tr><td><strong>D.N.I.</strong></td><td><strong>{nif}</strong></td></tr><tr><td><strong>DIRECCION EMAIL ASIGNADA</strong></td><td><strong>{email}</strong></td></tr><tr><td><strong>TELÉFONO</strong></td><td><strong>{telefono}</strong></td></tr><tr><td><strong>FECHA</strong></td><td>{fecha}</td></tr></tbody></table></div>
+			<!-- /wp:table -->';
+		}
+		$temp_content_pre .= get_the_content( '', false, $template_id );
 
 		// Replace merge vars for values
-		$template_content = apply_filters( 'the_content', get_the_content( '', false, $template_id ) );
+		$template_content = apply_filters( 'the_content', $temp_content_pre );
 
 		foreach ( $merge_vars as $variable ) {
 			if ( ! empty( $variable['name'] ) ) {
