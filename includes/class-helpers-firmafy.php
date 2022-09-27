@@ -139,7 +139,8 @@ class Helpers_Firmafy {
 	 * @return boolean
 	 */
 	private function is_field_required( $field ) {
-		$firmafy_settings = get_option('firmafy_options');
+		$firmafy_settings     = get_option('firmafy_options');
+		$firmafy_notification = ! empty( $firmafy_settings['notification'] ) ? $firmafy_settings['notification'] : array(); 
 
 		if ( 'nombre' === $field ||
 			'nif' === $field
@@ -147,11 +148,11 @@ class Helpers_Firmafy {
 			return true;
 		}
 
-		if ( 'telefono' === $field && false !== array_search( 'sms', $firmafy_settings['notification'] ) ) {
+		if ( 'telefono' === $field && false !== array_search( 'sms', $firmafy_notification ) ) {
 			return true;
 		}
 		
-		if ( 'email' === $field && false !== array_search( 'email', $firmafy_settings['notification'] ) ) {
+		if ( 'email' === $field && false !== array_search( 'email', $firmafy_notification ) ) {
 			return true;
 		}
 
