@@ -75,21 +75,6 @@ class GFFirmafy extends GFFeedAddOn {
 	 * @return void
 	 */
 	public function feed_edit_page( $form, $feed_id ) {
-		// Ensures valid credentials were entered in the settings page.
-		/*
-		if ( false == $this->login_api_crm() ) {
-			?>
-			<div class="notice notice-error">
-				<?php 
-				esc_html_e( 'We are unable to login to CRM.', 'firmafy' );
-				echo ' <a href="' . esc_url( $this->get_plugin_settings_url() ) . '">' . esc_html__( 'Use Settings Page', 'firmafy' ) . '</a>';
-				?>
-			</div>
-			<?php
-			return;
-		}
-		*/
-
 		echo '<script type="text/javascript">var form = ' . esc_html( GFCommon::json_encode( $form ) ) . ';</script>';
 
 		parent::feed_edit_page( $form, $feed_id );
