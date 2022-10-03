@@ -41,8 +41,11 @@ The signature process will start as soon as your client clics on the email link.
 
 Both of you will receive an email with the signed document copy. That signature will have a full legal validity.
 
-Please, watch this video with the step by step configuration:
+Please, watch this video with to know what's Firmafy:
 [youtube https://www.youtube.com/watch?v=PbC-KIEw-4M]
+
+And watch this video with the step by step to step for the setup:
+[youtube https://www.youtube.com/watch?v=ZJ2ljXgLW_s]
 
 **Firmafy use examples:**
 
