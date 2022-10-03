@@ -82,7 +82,6 @@ class GFFirmafy extends GFFeedAddOn {
 
 	public function feed_settings_fields() {
 		global $helpers_firmafy;
-		$settings = $this->get_plugin_settings();
 
 		return array(
 			array(
