@@ -4,8 +4,8 @@ Tags: forms, signature, gravityforms, contact form 7, woocommerce
 Requires at least: 4.0
 Requires PHP: 5.6
 Tested up to: 6.1
-Stable tag: 1.1.1
-Version: 1.1.1
+Stable tag: 1.1.2
+Version: 1.1.2
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -65,6 +65,8 @@ WordPress installation and then activate the Plugin from Plugins page.
 [Official Repository GitHub](https://github.com/closemarketing/firmafy/)
 
 == Changelog ==
+= 1.1.2 =
+*	Fix: Conflict with FormsCRM settings.
 
 = 1.1.1 =
 *	Fix: Error in templates first time web.
