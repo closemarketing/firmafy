@@ -37,7 +37,7 @@ class Firmafy_CF7_Settings {
 	 */
 	public function show_cm_metabox( $panels ) {
 		$new_page = array(
-			'cme-Extension' => array(
+			'firmafy-extension' => array(
 				'title'    => 'Firmafy',
 				'callback' => array( $this, 'settings_add_firmafy' ),
 			),
