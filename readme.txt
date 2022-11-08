@@ -68,6 +68,10 @@ WordPress installation and then activate the Plugin from Plugins page.
 [Official Repository GitHub](https://github.com/closemarketing/firmafy/)
 
 == Changelog ==
+= 1.2.0 =
+*	Added Self signers for company users.
+*  Added Sign contract by product.
+
 = 1.1.2 =
 *	Fix: Conflict with FormsCRM settings.
 
