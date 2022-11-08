@@ -21,7 +21,7 @@ class GFFirmafy extends GFFeedAddOn {
 	protected $_version                  = FIRMAFY_VERSION;
 	protected $_min_gravityforms_version = '1.9.0';
 	protected $_slug                     = 'firmafy';
-	protected $_path                     = 'firmafy/crm.php';
+	protected $_path                     = 'firmafy/firmafy.php';
 	protected $_full_path                = __FILE__;
 	protected $_url                      = 'https://www.firmafy.com';
 	protected $_title                    = 'Firmafy Add-On';
