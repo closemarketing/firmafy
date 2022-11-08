@@ -103,6 +103,43 @@ class Helpers_Firmafy {
 		return $templates;
 	}
 
+	/**
+	 * Get signers from Company.
+	 *
+	 * @return array
+	 */
+	public function get_signers() {
+		$settings       = get_option( 'firmafy_options' );
+		$signers_option = isset( $settings['signers'] ) ? $settings['signers'] : array();
+		$signers        = array();
+
+		foreach ( $signers_option as $signer ) {
+			if ( ! empty( $signer['nif'] ) && ! empty( $signer['nombre'] ) ) {
+				$signers[] = array(
+					'name'  => isset( $signer['nif'] ) ? 'firmafy_signer_' . $signer['nif'] : '',
+					'label' => isset( $signer['nombre'] ) ? $signer['nombre'] : '',
+				);
+			}
+		}
+		return $signers;
+	}
+
+	/**
+	 * Filter signers from feed meta
+	 *
+	 * @param array $meta
+	 * @return void
+	 */
+	public function filter_signers( $meta ) {
+		$signers = array();
+		foreach ( $meta as $key => $value ) {
+			if ( str_contains( $key, 'firmafy_signer_' ) && 1 === (int) $value ) {
+				$signers[] = str_replace( 'firmafy_signer_', '', $key );
+			}
+		}
+		return $signers;
+	}
+
 
 	/**
 	 * Get Firmafy Templates
@@ -184,7 +221,7 @@ class Helpers_Firmafy {
 	 * @param string $template
 	 * @return void
 	 */
-	public function create_entry( $template_id, $merge_vars, $add_header = false ) {
+	public function create_entry( $template_id, $merge_vars, $signers = array(), $add_header = false ) {
 		$settings         = get_option( 'firmafy_options' );
 		$username         = isset( $settings['username'] ) ? $settings['username'] : '';
 		$password         = isset( $settings['password'] ) ? $settings['password'] : '';
@@ -198,6 +235,28 @@ class Helpers_Firmafy {
 			<div class="wp-block-table"><table><tbody><tr><td><strong>NOMBRE Y APELLIDOS</strong></td><td>{nombre}</td></tr><tr><td><strong>D.N.I.</strong></td><td><strong>{nif}</strong></td></tr><tr><td><strong>DIRECCION EMAIL ASIGNADA</strong></td><td><strong>{email}</strong></td></tr><tr><td><strong>TELÉFONO</strong></td><td><strong>{telefono}</strong></td></tr><tr><td><strong>FECHA</strong></td><td>{fecha}</td></tr></tbody></table></div>
 			<!-- /wp:table -->';
 		}
+
+		if ( ! empty( $signers ) && isset( $settings['signers'] ) ) {
+			$company_signers = $settings['signers'];
+			$delete = array_diff( array_column( $company_signers, 'nif' ), $signers );
+			
+			foreach ( $delete as $key => $value ) {
+				if ( isset( $company_signers[ $key ] ) ) {
+					unset( $company_signers[ $key ] );
+				}
+			}
+			// Remove company field empty.
+			$index = 0;
+			foreach ( $company_signers as $signer_item ) {
+				foreach ( $signer_item as $key => $value ) {
+					if ( empty( $value ) ) {
+						unset( $company_signers[ $index ][ $key ] );
+					}
+				}
+				$index++;
+			}
+		}
+
 		$temp_content_pre .= get_the_content( '', false, $template_id );
 
 		// Replace merge vars for values
@@ -260,13 +319,13 @@ class Helpers_Firmafy {
 			error_log( 'Unexpected Error!<br>Can not load PDF this time! ' . $formatter->getHtmlMessage() );
 		}
 
-		$token = $this->login();
+		$token         = $this->login();
+		$final_signers = ! empty( $company_signers ) ? array_merge( $company_signers, array( $signer ) ) : array( $signer );
 		// Sends to Firmafy
 		$query = array(
 			'id_show' => $id_show,
 			'token'   => isset( $token['data'] ) ? $token['data'] : '',
-			'signer'  => wp_json_encode( array( $signer ) ),
-			//'pdf'     => new CURLFile( file_get_contents( $filename_path ), 'application/pdf' ),
+			'signer'  => wp_json_encode( $final_signers ),
 			'pdf_name' => $filename,
 			'pdf_base64' => chunk_split( base64_encode( $pdf_content ) ),
 

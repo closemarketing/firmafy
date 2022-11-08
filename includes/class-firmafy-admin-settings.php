@@ -366,7 +366,7 @@ class FIRMAFY_ADMIN_SETTINGS {
 	 */
 	public function signers_callback() {
 		$signers = isset( $this->firmafy_settings['signers'] ) ? $this->firmafy_settings['signers'] : array();
-		$size    = ! empty( $signers ) ? count( $signers ) : 0;
+		$size    = ! empty( $signers ) ? count( $signers ) - 1  : 0;
 
 		for ( $idx = 0, $size; $idx <= $size; ++$idx ) {
 			?>
@@ -374,9 +374,9 @@ class FIRMAFY_ADMIN_SETTINGS {
 				<div class="save-item list">
 					<p><strong><?php esc_html_e( 'Full Name', 'firmafy' ); ?></strong></p>
 					<?php printf(
-						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][name]" value="%s">',
+						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][nombre]" value="%s">',
 						$idx,
-						isset( $signers[ $idx ]['name'] ) ? $signers[ $idx ]['name'] : ''
+						isset( $signers[ $idx ]['nombre'] ) ? $signers[ $idx ]['nombre'] : ''
 					);
 					?>
 				</div>
@@ -392,9 +392,9 @@ class FIRMAFY_ADMIN_SETTINGS {
 				<div class="save-item list">
 					<p><strong><?php esc_html_e( 'Position', 'firmafy' ); ?></strong></p>
 					<?php printf(
-						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][position]" value="%s">',
+						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][cargo]" value="%s">',
 						$idx,
-						isset( $signers[ $idx ]['position'] ) ? $signers[ $idx ]['position'] : ''
+						isset( $signers[ $idx ]['cargo'] ) ? $signers[ $idx ]['cargo'] : ''
 					);
 					?>
 				</div>
@@ -410,18 +410,18 @@ class FIRMAFY_ADMIN_SETTINGS {
 				<div class="save-item list">
 					<p><strong><?php esc_html_e( 'Phone', 'firmafy' ); ?></strong></p>
 					<?php printf(
-						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][phone]" value="%s">',
+						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][telefono]" value="%s">',
 						$idx,
-						isset( $signers[ $idx ]['phone'] ) ? $signers[ $idx ]['phone'] : ''
+						isset( $signers[ $idx ]['telefono'] ) ? $signers[ $idx ]['telefono'] : ''
 					);
 					?>
 				</div>
 				<div class="save-item list">
 					<p><strong><?php esc_html_e( 'Company', 'firmafy' ); ?></strong></p>
 					<?php printf(
-						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][company]" value="%s">',
+						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][empresa]" value="%s">',
 						$idx,
-						isset( $signers[ $idx ]['company'] ) ? $signers[ $idx ]['company'] : ''
+						isset( $signers[ $idx ]['empresa'] ) ? $signers[ $idx ]['empresa'] : ''
 					);
 					?>
 				</div>
@@ -436,7 +436,7 @@ class FIRMAFY_ADMIN_SETTINGS {
 				</div>
 				<div class="save-item">
 					<p><strong><?php esc_html_e( 'Type of notifications', 'firmafy' ); ?></strong></p>
-					<select name="firmafy_options[signers][<?php echo esc_html( $idx ); ?>][notification]" class="firmafy-signer-notification">
+					<select name="firmafy_options[signers][<?php echo esc_html( $idx ); ?>][type_notifications]" class="firmafy-signer-notification">
 						<?php
 						$type_notifications = array(
 							'email' => __( 'Email', 'firmafy' ),
@@ -445,7 +445,7 @@ class FIRMAFY_ADMIN_SETTINGS {
 						// Load Page Options.
 						foreach ( $type_notifications as $key => $value ) {
 							echo '<option value="' . esc_html( $key ) . '" ';
-							selected( $key, isset( $signers[ $idx ]['notification'] ) ? $signers[ $idx ]['notification'] : '' );
+							selected( $key, isset( $signers[ $idx ]['type_notifications'] ) ? $signers[ $idx ]['type_notifications'] : '' );
 							echo '>' . esc_html( $value ) . '</option>';
 						}
 						?>

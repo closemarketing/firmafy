@@ -66,7 +66,7 @@ class Firmafy_WooCommerce {
 		);
 
 		$template_id = wc_terms_and_conditions_page_id();
-		$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, true );
+		$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, array(), true );
 
 		if ( 'error' === $response_result['status'] ) {
 			$order_msg = __( 'Order sent correctly to Firmafy', 'firmafy' );

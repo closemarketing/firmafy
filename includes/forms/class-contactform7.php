@@ -80,6 +80,22 @@ class Firmafy_CF7_Settings {
 					</select>
 				</p>
 			</div>
+			<div class="cme-main-fields">
+				<p>
+					<label for="wpcf7-firmafy-firmafy_signers"><?php esc_html_e( 'Self signers:', 'firmafy' ); ?></label><br />
+					<?php
+					$signers = $helpers_firmafy->get_signers();
+					foreach ( $signers as $signer ) {
+						echo '<p><input type="checkbox"';
+						echo 'name="wpcf7-firmafy[' . esc_html( $signer['name'] ) . ']"';
+						echo ' value="1"';
+						if ( isset( $cf7_firmafy[ $signer['name'] ] ) && $cf7_firmafy[ $signer['name'] ] ) {
+							echo ' checked';
+						}
+						echo '/>' . esc_html( $signer['label'] ) . '</p>';
+					}?>
+				</p>
+			</div>
 
 		<?php
 		if ( isset( $cf7_firmafy['firmafy_template'] ) && $cf7_firmafy['firmafy_template'] ) {
@@ -99,7 +115,7 @@ class Firmafy_CF7_Settings {
 										<label for="wpcf7-firmafy-field-<?php echo esc_html( $firmafy_field['name'] ); ?>"><?php echo esc_html( $firmafy_field['label'] ); ?><?php if ( $firmafy_field['required'] ) { echo ' <span class="required">*</span>'; } ?></label>
 									</td>
 									<td class="cf7-map-column cf7-map-column-value">
-										<input type="text" id="wpcf7-firmafy-field-<?php echo esc_html( $firmafy_field['name'] ); ?>" name="wpcf7-firmafy[firmafy_field-<?php echo esc_html( $firmafy_field['name'] ); ?>]" class="wide" size="70" placeholder="[<?php esc_html_e( 'Name of your field', 'firmafy' ); ?>]" value="<?php echo ( isset( $cf7_firmafy[ 'firmafy_field-' . $firmafy_field['name'] ] ) ) ? esc_attr( $cf7_firmafy[ 'firmafy_field-' . $firmafy_field['name'] ] ) : ''; ?>" <?php if ( $firmafy_field['required'] ) { echo ' required'; } ?>/>
+										<input type="text" id="wpcf7-firmafy-field-<?php echo esc_html( $firmafy_field['name'] ); ?>" name="wpcf7-firmafy[firmafy_field-<?php echo esc_html( $firmafy_field['name'] ); ?>]" class="wide" size="70" placeholder="<?php esc_html_e( 'Name of your field', 'firmafy' ); ?>" value="<?php echo ( isset( $cf7_firmafy[ 'firmafy_field-' . $firmafy_field['name'] ] ) ) ? esc_attr( $cf7_firmafy[ 'firmafy_field-' . $firmafy_field['name'] ] ) : ''; ?>" <?php if ( $firmafy_field['required'] ) { echo ' required'; } ?>/>
 									</td>
 							</tr>
 						<?php } ?>
@@ -119,9 +135,8 @@ class Firmafy_CF7_Settings {
 	public function firmafy_save_options( $args ) {
 
 		if ( isset( $_POST['wpcf7-firmafy'] ) && is_array( $_POST['wpcf7-firmafy'] ) ) {
-			$settings_firmafy     = array_filter( $_POST['wpcf7-firmafy'] );
 			$settings_firmafy_san = array();
-			foreach ( $settings_firmafy as $key => $value ) {
+			foreach ( array_filter( $_POST['wpcf7-firmafy'] ) as $key => $value ) {
 				$settings_firmafy_san[ $key ] = sanitize_text_field( $value );
 			}
 			update_option( 'cf7_firmafy_' . $args->id, $settings_firmafy_san );
@@ -141,8 +156,8 @@ class Firmafy_CF7_Settings {
 
 		if ( $cf7_firmafy ) {
 			$merge_vars = $this->get_merge_vars( $cf7_firmafy, $submission->get_posted_data() );
-
-			$response_result = $helpers_firmafy->create_entry( $cf7_firmafy['firmafy_template'], $merge_vars );
+			$signers         = $helpers_firmafy->filter_signers( $cf7_firmafy );
+			$response_result = $helpers_firmafy->create_entry( $cf7_firmafy['firmafy_template'], $merge_vars, $signers );
 
 			if ( 'error' === $response_result['status'] ) {
 				firmafy_debug_email_lead( $cf7_firmafy['fc_firmafy_type'], 'Error ' . $response_result['message'], $merge_vars );

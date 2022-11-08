@@ -105,6 +105,13 @@ class GFFirmafy extends GFFeedAddOn {
 						'choices'  => $helpers_firmafy->get_templates(),
 					),
 					array(
+						'name'     => 'firmafy_signers',
+						'label'    => __( 'Signers from company', 'firmafy' ),
+						'type'     => 'checkbox',
+						'class'    => 'medium',
+						'choices'  => $helpers_firmafy->get_signers(),
+					),
+					array(
 						'name'       => 'listFields',
 						'label'      => __( 'Map Fields', 'firmafy' ),
 						'type'       => 'field_map',
@@ -227,7 +234,8 @@ class GFFirmafy extends GFFeedAddOn {
 		}
 
 		$template        = isset( $feed['meta']['firmafy_template'] ) ? $feed['meta']['firmafy_template'] : '';
-		$response_result = $helpers_firmafy->create_entry( $template, $merge_vars );
+		$signers         = $helpers_firmafy->filter_signers( $feed['meta'] );
+		$response_result = $helpers_firmafy->create_entry( $template, $merge_vars, $signers );
 		$api_status      = isset( $response_result['status'] ) ? $response_result['status'] : '';
 
 		if ( 'error' === $api_status ) {
