@@ -35,7 +35,11 @@ class Firmafy_WooCommerce {
 			add_filter( 'woocommerce_load_order_data', array( $this, 'add_var_load_order_data' ) );
 			add_action( 'woocommerce_email_after_order_table', array( $this, 'email_key_notification' ), 10, 1 );
 			add_filter( 'wpo_wcpdf_billing_address', array( $this, 'add_vat_invoices' ) );
+
 		}
+		// Register Meta box for post type product.
+		add_action( 'add_meta_boxes', array( $this, 'metabox_show_product' ) );
+		add_action( 'save_post', array( $this, 'save_metaboxes_product' ) );
 	}
 
 	/**
@@ -149,6 +153,62 @@ class Firmafy_WooCommerce {
 		echo $address . '<p>';
 		$wpo_wcpdf->custom_field( 'billing_vat', __( 'VAT info:', 'firmafy' ) );
 		echo '</p>';
+	}
+
+	/**
+	 * Adds metabox
+	 *
+	 * @return void
+	 */
+	function metabox_product () {
+		add_meta_box(
+			'product',
+			__( 'Template', 'firmafy' ),
+			'metabox_show_product',
+			'product',
+			'normal'
+		);
+	}
+	/**
+	 * Metabox inputs for post type.
+	 *
+	 * @param object $post Post object.
+	 * @return void
+	 */
+	function metabox_show_product( $post ) {
+		global $helpers_firmafy;
+		$firmafy_template = get_post_meta( $post->ID, 'firmafy_template', true );
+		?>
+		<table>
+			<tr><!-- SELECT template-->
+				<td>
+					<label for="firmafy_template"><?php echo esc_html( '', 'firmafy' ); ?></label>
+				</td>
+				<td>
+					<select name="firmafy_template">
+					<?php
+					$options = $helpers_firmafy->get_templates();
+					foreach ( $options as $option ) {
+						echo '<option value="' . $option['value'] . '" ' . ( $firmafy_template == $option['value'] ? 'selected="selected"' : null ) . '>' . $option['label'] . '</option>';
+					}
+					?>
+					</select>
+				</td>
+			</tr><!-- //SELECT template-->
+		</table>
+		<?php
+	}
+	
+	/**
+	 * Save metaboxes
+	 *
+	 * @param int $post_id Post id.
+	 * @return void
+	 */
+	function save_metaboxes_product( $post_id ) {
+		if ( isset( $_POST['firmafy_template'] ) ) {
+			update_post_meta( $post_id, 'firmafy_template', $_POST['firmafy_template'] );
+		}
 	}
 }
 

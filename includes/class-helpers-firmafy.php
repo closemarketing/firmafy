@@ -320,13 +320,13 @@ class Helpers_Firmafy {
 		}
 
 		$token         = $this->login();
-		$final_signers = ! empty( $company_signers ) ? array_merge( $company_signers, array( $signer ) ) : array( $signer );
+		$final_signers = ! empty( $company_signers ) ? array_merge( array( $signer ), $company_signers ) : array( $signer );
 		// Sends to Firmafy
 		$query = array(
-			'id_show' => $id_show,
-			'token'   => isset( $token['data'] ) ? $token['data'] : '',
-			'signer'  => wp_json_encode( $final_signers ),
-			'pdf_name' => $filename,
+			'id_show'    => $id_show,
+			'token'      => isset( $token['data'] ) ? $token['data'] : '',
+			'signer'     => wp_json_encode( $final_signers ),
+			'pdf_name'   => $filename,
 			'pdf_base64' => chunk_split( base64_encode( $pdf_content ) ),
 
 		);
