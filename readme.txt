@@ -4,8 +4,8 @@ Tags: forms, signature, gravityforms, contact form 7, woocommerce
 Requires at least: 4.0
 Requires PHP: 5.6
 Tested up to: 6.1
-Stable tag: 1.1.1
-Version: 1.1.1
+Stable tag: 1.1.2
+Version: 1.1.2
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -41,8 +41,11 @@ The signature process will start as soon as your client clics on the email link.
 
 Both of you will receive an email with the signed document copy. That signature will have a full legal validity.
 
-Please, watch this video with the step by step configuration:
+Please, watch this video with to know what's Firmafy:
 [youtube https://www.youtube.com/watch?v=PbC-KIEw-4M]
+
+And watch this video with the step by step to step for the setup:
+[youtube https://www.youtube.com/watch?v=ZJ2ljXgLW_s]
 
 **Firmafy use examples:**
 
@@ -65,6 +68,8 @@ WordPress installation and then activate the Plugin from Plugins page.
 [Official Repository GitHub](https://github.com/closemarketing/firmafy/)
 
 == Changelog ==
+= 1.1.2 =
+*	Fix: Conflict with FormsCRM settings.
 
 = 1.1.1 =
 *	Fix: Error in templates first time web.

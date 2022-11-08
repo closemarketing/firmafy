@@ -3,7 +3,7 @@
  * Plugin Name: Firmafy
  * Plugin URI:  https://firmafy.com
  * Description: Validate legally your forms in WordPress.
- * Version:     1.1.1
+ * Version:     1.1.2
  * Author:      Closetechnology
  * Author URI:  https://close.technology
  * Text Domain: firmafy
@@ -23,7 +23,7 @@
 
 defined( 'ABSPATH' ) || die( 'No script kiddies please!' );
 
-define( 'FIRMAFY_VERSION', '1.1.1' );
+define( 'FIRMAFY_VERSION', '1.1.2' );
 define( 'FIRMAFY_PLUGIN', __FILE__ );
 define( 'FIRMAFY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'FIRMAFY_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
@@ -50,9 +50,9 @@ if ( ! function_exists( 'is_plugin_active' ) ) {
 	include_once ABSPATH . 'wp-admin/includes/plugin.php';
 }
 
-if ( ( is_plugin_active( 'gravityforms/gravityforms.php' ) || is_plugin_active( 'gravity-forms/gravityforms.php' ) ) && ! class_exists( 'FC_CRM_Bootstrap' ) ) {
-	add_action( 'gform_loaded', array( 'FC_CRM_Bootstrap', 'load' ), 5 );
-	class FC_CRM_Bootstrap {
+if ( ( is_plugin_active( 'gravityforms/gravityforms.php' ) || is_plugin_active( 'gravity-forms/gravityforms.php' ) ) && ! class_exists( 'FIRMAFY_Bootstrap' ) ) {
+	add_action( 'gform_loaded', array( 'FIRMAFY_Bootstrap', 'load' ), 5 );
+	class FIRMAFY_Bootstrap {
 
 		public static function load() {
 
@@ -66,8 +66,8 @@ if ( ( is_plugin_active( 'gravityforms/gravityforms.php' ) || is_plugin_active( 
 		}
 	}
 
-	function gf_crm() {
-		return FCCRM::get_instance();
+	function gf_firmafy() {
+		return GFFirmafy::get_instance();
 	}
 }
 
