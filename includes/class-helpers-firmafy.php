@@ -112,6 +112,13 @@ class Helpers_Firmafy {
 	public function get_variables_template( $template_id ) {
 		$fields   = array();
 		$template = get_post( $template_id );
+		$required_api_fields = array(
+			'nombre',
+			'nif',
+			'email',
+			'telefono',
+		);
+
 		preg_match_all( '#\{(.*?)\}#', $template->post_content, $matches);
 		if ( ! empty( $matches[1] ) && is_array( $matches[1] ) ) {
 			foreach ( $matches[1] as $field ) {
@@ -119,7 +126,7 @@ class Helpers_Firmafy {
 					$fields[] = $field;
 				}
 			}
-			$fields_to_convert = array_unique( $fields );
+			$fields_to_convert = array_unique( array_merge( $fields, $required_api_fields ) );
 			$fields   = array();
 			foreach ( $fields_to_convert as $field ) {
 				$fields[] = array(
@@ -139,20 +146,7 @@ class Helpers_Firmafy {
 	 * @return boolean
 	 */
 	private function is_field_required( $field ) {
-		$firmafy_settings     = get_option('firmafy_options');
-		$firmafy_notification = ! empty( $firmafy_settings['notification'] ) ? $firmafy_settings['notification'] : array(); 
-
-		if ( 'nombre' === $field ||
-			'nif' === $field
-		) {
-			return true;
-		}
-
-		if ( 'telefono' === $field && false !== array_search( 'sms', $firmafy_notification ) ) {
-			return true;
-		}
-		
-		if ( 'email' === $field && false !== array_search( 'email', $firmafy_notification ) ) {
+		if ( 'nombre' === $field || 'nif' === $field || 'telefono' === $field || 'email' === $field ) {
 			return true;
 		}
 
