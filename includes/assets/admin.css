@@ -15,3 +15,57 @@
 	padding: 10px 0 0 30px;
 	margin: 0;
 }
+
+.firmafy-signers.repeating {
+	width: 21%;
+	float: left;
+	margin-right: 10px;
+	margin-bottom: 15px;
+	border: 1px solid;
+	padding: 15px;
+}
+.firmafy-signers.repeating .save-item {
+	margin-right: 15px;
+}
+.firmafy-signers.repeating select,
+.firmafy-signers.repeating input {
+	max-width: 100%;
+}
+.firmafy-signers.repeating .button {
+	margin: 10px 5px 5px;
+}
+.firmafy-signers.repeating .button {
+	margin-top: 10px;
+	margin-left: 0;
+}
+
+.firmafy-signers.repeating .button.sync-all-entries {
+	margin-top: 5px;
+}
+
+.firmafy-signers.repeating .button.sync-all-entries span {
+	padding-top: 4px;
+	padding-right: 5px;
+}
+
+.button.repeat .dashicons,
+.firmafy-signers.repeating .button.remove .dashicons {
+	margin-top: 3px;
+	margin-right: 9px;
+}
+
+.firmafy-signers .options-select .category-publish .options {
+	min-height: 150px;
+	max-height: 150px;
+	overflow: auto;
+	padding: 0 0.9em;
+	border: solid 1px #dcdcde;
+	background-color: #fff;
+}
+
+/* Tablet vertical */
+@media only screen and (max-width: 860px) {
+	.firmafy-signers.repeating {
+		width: 44%;
+	}
+}

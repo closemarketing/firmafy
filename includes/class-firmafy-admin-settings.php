@@ -217,6 +217,14 @@ class FIRMAFY_ADMIN_SETTINGS {
 			'admin_firmafy_settings'
 		);
 
+		add_settings_field(
+			'firmafy_signers',
+			__( 'Self signers', 'firmafy' ),
+			array( $this, 'signers_callback' ),
+			'firmafy_options',
+			'admin_firmafy_settings'
+		);
+
 		if ( class_exists( 'WooCommerce' ) ) {
 			add_settings_field(
 				'firmafy_woocommerce',
@@ -261,6 +269,17 @@ class FIRMAFY_ADMIN_SETTINGS {
 		if ( isset( $_POST['notification'] ) && is_array( $_POST['notification'] ) ) {
 			foreach ( $_POST['notification'] as $notification ) {
 				$sanitary_values['notification'][] = sanitize_text_field( $notification );
+			}
+		}
+
+		// Save Signers options.
+		if ( isset( $input['signers'] ) ) {
+			$index = 0;
+			foreach ( $input['signers'] as $signers ) {
+				foreach( $signers as $key => $value ) {
+					$sanitary_values['signers'][ $index ][ $key ] = sanitize_text_field( $value );
+				}
+				$index++;
 			}
 		}
 
@@ -336,6 +355,145 @@ class FIRMAFY_ADMIN_SETTINGS {
 			);
 			?>
 		</label>
+		<?php
+	}
+
+
+	/**
+	 * Signers Callback
+	 *
+	 * @return void
+	 */
+	public function signers_callback() {
+		$signers = isset( $this->firmafy_settings['signers'] ) ? $this->firmafy_settings['signers'] : array();
+		$size    = ! empty( $signers ) ? count( $signers ) : 0;
+
+		for ( $idx = 0, $size; $idx <= $size; ++$idx ) {
+			?>
+			<div class="firmafy-signers repeating">
+				<div class="save-item list">
+					<p><strong><?php esc_html_e( 'Full Name', 'firmafy' ); ?></strong></p>
+					<?php printf(
+						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][name]" value="%s">',
+						$idx,
+						isset( $signers[ $idx ]['name'] ) ? $signers[ $idx ]['name'] : ''
+					);
+					?>
+				</div>
+				<div class="save-item list">
+					<p><strong><?php esc_html_e( 'NIF', 'firmafy' ); ?></strong></p>
+					<?php printf(
+						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][nif]" value="%s">',
+						$idx,
+						isset( $signers[ $idx ]['nif'] ) ? $signers[ $idx ]['nif'] : ''
+					);
+					?>
+				</div>
+				<div class="save-item list">
+					<p><strong><?php esc_html_e( 'Position', 'firmafy' ); ?></strong></p>
+					<?php printf(
+						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][position]" value="%s">',
+						$idx,
+						isset( $signers[ $idx ]['position'] ) ? $signers[ $idx ]['position'] : ''
+					);
+					?>
+				</div>
+				<div class="save-item list">
+					<p><strong><?php esc_html_e( 'Email', 'firmafy' ); ?></strong></p>
+					<?php printf(
+						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][email]" value="%s">',
+						$idx,
+						isset( $signers[ $idx ]['email'] ) ? $signers[ $idx ]['email'] : ''
+					);
+					?>
+				</div>
+				<div class="save-item list">
+					<p><strong><?php esc_html_e( 'Phone', 'firmafy' ); ?></strong></p>
+					<?php printf(
+						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][phone]" value="%s">',
+						$idx,
+						isset( $signers[ $idx ]['phone'] ) ? $signers[ $idx ]['phone'] : ''
+					);
+					?>
+				</div>
+				<div class="save-item list">
+					<p><strong><?php esc_html_e( 'Company', 'firmafy' ); ?></strong></p>
+					<?php printf(
+						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][company]" value="%s">',
+						$idx,
+						isset( $signers[ $idx ]['company'] ) ? $signers[ $idx ]['company'] : ''
+					);
+					?>
+				</div>
+				<div class="save-item list">
+					<p><strong><?php esc_html_e( 'CIF', 'firmafy' ); ?></strong></p>
+					<?php printf(
+						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][cif]" value="%s">',
+						$idx,
+						isset( $signers[ $idx ]['cif'] ) ? $signers[ $idx ]['cif'] : ''
+					);
+					?>
+				</div>
+				<div class="save-item">
+					<p><strong><?php esc_html_e( 'Type of notifications', 'firmafy' ); ?></strong></p>
+					<select name="firmafy_options[signers][<?php echo esc_html( $idx ); ?>][notification]" class="firmafy-signer-notification">
+						<?php
+						$type_notifications = array(
+							'email' => __( 'Email', 'firmafy' ),
+							'sms'   => __( 'SMS', 'firmafy' ),
+						);
+						// Load Page Options.
+						foreach ( $type_notifications as $key => $value ) {
+							echo '<option value="' . esc_html( $key ) . '" ';
+							selected( $key, isset( $signers[ $idx ]['notification'] ) ? $signers[ $idx ]['notification'] : '' );
+							echo '>' . esc_html( $value ) . '</option>';
+						}
+						?>
+					</select>
+				</div>
+				<div class="save-item">
+					<a href="#" class="button alt remove"><span class="dashicons dashicons-remove"></span><?php esc_html_e( 'Remove', 'firmafy' ); ?></a>
+					<div class="sync-all-entries-result"></div>
+
+				</div>
+			</div>
+			<?php
+		}
+		?>
+		<a href="#" class="button repeat"><span class="dashicons dashicons-insert"></span><?php esc_html_e( 'Add Another', 'firmafy' ); ?></a>
+		<script type="text/javascript">
+		// Prepare new attributes for the repeating section
+		var attrs = ['for', 'id', 'name'];
+		function resetAttributeNames(section) { 
+		var tags = section.find('select, input, label'), idx = section.index();
+		tags.each(function() {
+			var $this = jQuery(this);
+			jQuery.each(attrs, function(i, attr) {
+				var attr_val = $this.attr(attr);
+				if (attr_val) {
+					$this.attr(attr, attr_val.replace(/\[signers\]\[\d+\]\[/, '\[signers\]\['+(idx + 1)+'\]\['))
+				}
+			})
+		})
+		}
+
+		// Clone the previous section, and remove all of the values                  
+		jQuery('.remove').click(function(e){
+			e.preventDefault();
+			jQuery(this).parent().parent().remove();
+		});
+
+		// Clone the previous section, and remove all of the values                  
+		jQuery('.repeat').click(function(e){
+			e.preventDefault();
+			var lastRepeatingGroup = jQuery('.repeating').last();
+			var cloned = lastRepeatingGroup.clone(true)  
+			cloned.insertAfter(lastRepeatingGroup);
+			cloned.find("input").val("");
+			cloned.find("select").val("");
+			resetAttributeNames(cloned)
+		});
+		</script>
 		<?php
 	}
 
