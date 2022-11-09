@@ -38,8 +38,13 @@ class Firmafy_WooCommerce {
 
 		}
 		// Register Meta box for post type product.
-		add_action( 'add_meta_boxes', array( $this, 'metabox_show_product' ) );
+		add_action( 'add_meta_boxes', array( $this, 'metabox_product' ) );
 		add_action( 'save_post', array( $this, 'save_metaboxes_product' ) );
+
+		// In construct Class
+		add_action( 'admin_enqueue_scripts', array( $this, 'scripts_firmafy_product_fields' ) );
+		add_action( 'wp_ajax_firmafy_product_fields', array( $this, 'firmafy_product_fields' ) );
+		add_action( 'wp_ajax_nopriv_firmafy_product_fields', array( $this, 'firmafy_product_fields' ) );
 	}
 
 	/**
@@ -156,6 +161,41 @@ class Firmafy_WooCommerce {
 	}
 
 	/**
+	 * Get WooCommerce fiedls
+	 *
+	 * @return array
+	 */
+	private function get_woocommerce_fields() {
+
+		return array(
+			'get_id'                  => __( 'Order ID', 'firmafy' ),
+			'get_user_id'             => __( 'User ID', 'firmafy' ),
+			'get_currency'            => __( 'Currency', 'firmafy' ),
+			'get_billing_first_name'  => __( 'Billing First name', 'firmafy' ),
+			'get_billing_last_name'   => __( 'Billing Last name', 'firmafy' ),
+			'billing_vat'             => __( 'Billing NIF', 'firmafy' ),
+			'get_billing_company'     => __( 'Billing Company', 'firmafy' ),
+			'get_billing_address_1'   => __( 'Billing Address 1', 'firmafy' ),
+			'get_billing_address_2'   => __( 'Billing Address 2', 'firmafy' ),
+			'get_billing_city'        => __( 'Billing Address City', 'firmafy' ),
+			'get_billing_state'       => __( 'Billing State', 'firmafy' ),
+			'get_billing_postcode'    => __( 'Billing Postcode', 'firmafy' ),
+			'get_billing_country'     => __( 'Billing Country', 'firmafy' ),
+			'get_billing_email'       => __( 'Billing Email', 'firmafy' ),
+			'get_billing_phone'       => __( 'Billing Phone', 'firmafy' ),
+			'get_shipping_first_name' => __( 'Shipping First name', 'firmafy' ),
+			'get_shipping_last_name'  => __( 'Shipping Last name', 'firmafy' ),
+			'get_shipping_company'    => __( 'Shipping Company', 'firmafy' ),
+			'get_shipping_address_1'  => __( 'Shipping Address 1', 'firmafy' ),
+			'get_shipping_address_2'  => __( 'Shipping Address 2', 'firmafy' ),
+			'get_shipping_city'       => __( 'Shipping Address City', 'firmafy' ),
+			'get_shipping_state'      => __( 'Shipping State', 'firmafy' ),
+			'get_shipping_postcode'   => __( 'Shipping Postcode', 'firmafy' ),
+			'get_shipping_country'    => __( 'Shipping Country', 'firmafy' ),
+		);
+	}
+
+	/**
 	 * Adds metabox
 	 *
 	 * @return void
@@ -163,8 +203,8 @@ class Firmafy_WooCommerce {
 	function metabox_product () {
 		add_meta_box(
 			'product',
-			__( 'Template', 'firmafy' ),
-			'metabox_show_product',
+			__( 'Firmafy signature', 'firmafy' ),
+			array( $this, 'metabox_show_product' ),
 			'product',
 			'normal'
 		);
@@ -177,17 +217,17 @@ class Firmafy_WooCommerce {
 	 */
 	function metabox_show_product( $post ) {
 		global $helpers_firmafy;
-		$firmafy_template = get_post_meta( $post->ID, 'firmafy_template', true );
+		$firmafy_options  = get_post_meta( $post->ID, 'firmafy', true );
+		$firmafy_template = isset( $firmafy_options['template'] ) ? $firmafy_options['template'] : '';
 		?>
 		<table>
 			<tr><!-- SELECT template-->
 				<td>
-					<label for="firmafy_template"><?php echo esc_html( '', 'firmafy' ); ?></label>
-				</td>
-				<td>
-					<select name="firmafy_template">
+					<label for="firmafy_template"><?php echo esc_html( 'Select the Firmafy template', 'firmafy' ); ?></label>
+					<select id="firmafy_template" name="firmafy_template" data-post-id="<?php echo $post->ID; ?>">
 					<?php
 					$options = $helpers_firmafy->get_templates();
+					echo '<option value="" ' . ( empty( $firmafy_template ) ? 'selected="selected"' : null ) . '>' . __( 'Not use Fimafy template', 'firmafy' ) . '</option>';
 					foreach ( $options as $option ) {
 						echo '<option value="' . $option['value'] . '" ' . ( $firmafy_template == $option['value'] ? 'selected="selected"' : null ) . '>' . $option['label'] . '</option>';
 					}
@@ -196,9 +236,97 @@ class Firmafy_WooCommerce {
 				</td>
 			</tr><!-- //SELECT template-->
 		</table>
+		<div id="firmafy-table-fields">
+			<?php echo $this->get_table_fields( $firmafy_template, $post->ID ); ?>
+		</div>
 		<?php
 	}
 	
+	/**
+	 * Admin Scripts AJAX
+	 *
+	 * @return void
+	 */
+	public function scripts_firmafy_product_fields() {
+		wp_enqueue_script( 
+			'firmafy-product',
+			FIRMAFY_PLUGIN_URL . 'includes/assets/firmafy-product.js',
+			array(),
+			FIRMAFY_VERSION,
+			true
+		);
+	
+		wp_localize_script(
+			'firmafy-product',
+			'ajaxAction',
+			array(
+				'url'   => admin_url( 'admin-ajax.php' ),
+				'nonce' => wp_create_nonce( 'firmafy_product_fields_nonce' ),
+			)
+		);
+	}
+	
+	/**
+	 * Ajax function to load info
+	 *
+	 * @return void
+	 */
+	public function firmafy_product_fields() {
+		$firmafy_template = isset( $_POST['firmafy_template'] ) ? (int) esc_attr( $_POST['firmafy_template'] ) : 0;
+		$post_id          = isset( $_POST['post_id'] ) ? (int) esc_attr( $_POST['post_id'] ) : 0;
+	
+		check_ajax_referer( 'firmafy_product_fields_nonce', 'nonce' );
+		if ( true ) {
+			$html = $this->get_table_fields( $firmafy_template, $post_id );
+			wp_send_json_success( $html );
+		} else {
+			wp_send_json_error( array( 'error' => 'Error' ) );
+		}
+	}
+
+	/**
+	 * Returns Table fields
+	 *
+	 * @param int $firmafy_template
+	 * @return html
+	 */
+	private function get_table_fields( $firmafy_template, $post_id ) {
+		global $helpers_firmafy;
+		$firmafy_options  = get_post_meta( $post_id, 'firmafy', true );
+
+		$html = '<table>';
+		$firmafy_fields = $helpers_firmafy->get_variables_template( $firmafy_template );
+		
+		$html .= '<tr>';
+		$html .= '<th>' . __( 'Template', 'firmafy' ) . '</th>';
+		$html .= '<th>' . __( 'Order Field', 'firmafy' ) . '</th>';
+		$html .= '</tr>';
+		foreach ( $firmafy_fields as $firmafy_field ) {
+			$html .= '<tr>';
+			$html .= '<td>';
+			$html .= '<label for="wpcf7-firmafy-field-' . esc_html__( $firmafy_field['name'] ). '">';
+			$html .= esc_html__( $firmafy_field['label'] );
+			if ( $firmafy_field['required'] ) {
+				$html .= ' <span class="required">*</span>';
+			}
+			$html .= '</label>';
+			$html .= '</td>';
+			$html .= '<td>';
+			$html .= '<select name="firmafy_field_' . esc_html__( $firmafy_field['name'] ) . '">';
+			$field_post_value = isset( $firmafy_options[ esc_html__( $firmafy_field['name'] ) ] ) ? $firmafy_options[ esc_html__( $firmafy_field['name'] ) ] : '';
+			$html .= '<option value="" ' . ( empty( $field_post_value ) ? 'selected="selected"' : null ) . '>' . __( 'Not use Fimafy template', 'firmafy' ) . '</option>';
+			foreach ( $this->get_woocommerce_fields() as $key => $label ) {
+				$html .= '<option value="' . $key . '" ' . ( $field_post_value == $key ? 'selected="selected"' : null ) . '>' . $label . '</option>';
+			}
+			$html .= '</select>';
+			$html .= '</td>';
+			$html .= '</tr>';
+		}
+		$html .= '</table>';
+
+		return $html;
+	}
+
 	/**
 	 * Save metaboxes
 	 *
@@ -206,8 +334,19 @@ class Firmafy_WooCommerce {
 	 * @return void
 	 */
 	function save_metaboxes_product( $post_id ) {
+		global $helpers_firmafy;
 		if ( isset( $_POST['firmafy_template'] ) ) {
-			update_post_meta( $post_id, 'firmafy_template', $_POST['firmafy_template'] );
+			$firmafy_options = array(
+				'template' => sanitize_text_field( $_POST['firmafy_template'] ),
+			);
+			$firmafy_fields = $helpers_firmafy->get_variables_template( $firmafy_options['template'] );
+			foreach ( $firmafy_fields as $field ) {
+				if ( ! empty( $_POST[ 'firmafy_field_' . $field['name'] ] ) ) {
+					$firmafy_options[ $field['name'] ] = sanitize_text_field( $_POST[ 'firmafy_field_' . $field['name'] ] );
+				}
+			}
+
+			update_post_meta( $post_id, 'firmafy', $firmafy_options );
 		}
 	}
 }
