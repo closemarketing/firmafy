@@ -218,7 +218,7 @@ class Firmafy_WooCommerce {
 	function metabox_show_product( $post ) {
 		global $helpers_firmafy;
 		$firmafy_options  = get_post_meta( $post->ID, 'firmafy', true );
-		$firmafy_template = isset( $firmafy_options['template'] ) ? $firmafy_options['template'] : '';
+		$firmafy_template = isset( $firmafy_options['template'] ) ? $firmafy_options['template'] : 0;
 		?>
 		<table>
 			<tr><!-- SELECT template-->
@@ -292,6 +292,9 @@ class Firmafy_WooCommerce {
 	 */
 	private function get_table_fields( $firmafy_template, $post_id ) {
 		global $helpers_firmafy;
+		if ( 0 === $firmafy_template || '' === $firmafy_template ) {
+			return '';
+		}
 		$firmafy_options  = get_post_meta( $post_id, 'firmafy', true );
 
 		$html = '<table>';
