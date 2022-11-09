@@ -233,6 +233,13 @@ class FIRMAFY_ADMIN_SETTINGS {
 				'firmafy_options',
 				'admin_firmafy_settings'
 			);
+			add_settings_field(
+				'firmafy_woocommerce_mode',
+				__( 'Mode for signing orders?', 'firmafy' ),
+				array( $this, 'woocommerce_mode_callback' ),
+				'firmafy_options',
+				'admin_firmafy_settings'
+			);
 		}
 	}
 
@@ -264,6 +271,10 @@ class FIRMAFY_ADMIN_SETTINGS {
 
 		if ( isset( $input['woocommerce'] ) ) {
 			$sanitary_values['woocommerce'] = sanitize_text_field( $input['woocommerce'] );
+		}
+
+		if ( isset( $input['woocommerce_mode'] ) ) {
+			$sanitary_values['woocommerce_mode'] = sanitize_text_field( $input['woocommerce_mode'] );
 		}
 
 		if ( isset( $_POST['notification'] ) && is_array( $_POST['notification'] ) ) {
@@ -355,6 +366,16 @@ class FIRMAFY_ADMIN_SETTINGS {
 			);
 			?>
 		</label>
+		<?php
+	}
+
+	public function woocommerce_mode_callback() {
+		?>
+		<select name="firmafy_options[woocommerce_mode]" id="woocommerce_mode">
+			<option value="orders" <?php selected( $this->firmafy_settings['woocommerce_mode'], 'orders' ); ?>><?php esc_html_e( 'Only Orders', 'firmafy' ); ?></option>
+			<option value="products" <?php selected( $this->firmafy_settings['woocommerce_mode'], 'products' ); ?>><?php esc_html_e( 'Only Products', 'firmafy' ); ?></option>
+			<option value="all" <?php selected( $this->firmafy_settings['woocommerce_mode'], 'all' ); ?>><?php esc_html_e( 'Orders and products', 'firmafy' ); ?></option>
+		</select>
 		<?php
 	}
 
