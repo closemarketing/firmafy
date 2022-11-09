@@ -19,12 +19,13 @@ defined( 'ABSPATH' ) || exit;
  * @version    1.0
  */
 class Firmafy_WooCommerce {
+	private $settings;
 	/**
 	 * Construct of class
 	 */
 	public function __construct() {
-		$settings = get_option( 'firmafy_options' );
-		$firmafy_woocommerce = isset( $settings['woocommerce'] ) ? $settings['woocommerce'] : 'no';
+		$this->settings = get_option( 'firmafy_options' );
+		$firmafy_woocommerce = isset( $this->settings['woocommerce'] ) ? $this->settings['woocommerce'] : 'no';
 		if ( 'yes' === $firmafy_woocommerce ) {
 			add_action( 'woocommerce_new_order', array( $this, 'crm_process_entry' ), 10, 2 );
 
@@ -55,34 +56,72 @@ class Firmafy_WooCommerce {
 	 */
 	public function crm_process_entry( $order_id, $order ){
 		global $helpers_firmafy;
-		$merge_vars = array(
-			array(
-				'name'  => 'nombre',
-				'value' => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
-			),
-			array(
-				'name'  => 'nif',
-				'value' => get_post_meta( $order_id, '_billing_vat', true ),
-			),
-			array(
-				'name'  => 'email',
-				'value' => $order->get_billing_email(),
-			),
-			array(
-				'name'  => 'telefono',
-				'value' => $order->get_billing_phone(),
-			),
-		);
+		$woocommerce_mode = isset( $this->settings['woocommerce_mode'] ) ? $this->settings['woocommerce_mode'] : 'orders';
 
-		$template_id = wc_terms_and_conditions_page_id();
-		$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, array(), true );
-
-		if ( 'error' === $response_result['status'] ) {
-			$order_msg = __( 'Order sent correctly to Firmafy', 'firmafy' );
-		} else {
-			$order_msg = __( 'There was an error sending the order to Firmafy', 'firmafy' );
+		// Orders.
+		if ( 'orders' === $woocommerce_mode || 'all' === $woocommerce_mode ) {
+			$merge_vars = array(
+				array(
+					'name'  => 'nombre',
+					'value' => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
+				),
+				array(
+					'name'  => 'nif',
+					'value' => get_post_meta( $order_id, '_billing_vat', true ),
+				),
+				array(
+					'name'  => 'email',
+					'value' => $order->get_billing_email(),
+				),
+				array(
+					'name'  => 'telefono',
+					'value' => $order->get_billing_phone(),
+				),
+			);
+	
+			$template_id = wc_terms_and_conditions_page_id();
+			$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, array(), true );
+	
+			if ( 'error' === $response_result['status'] ) {
+				$order_msg = __( 'Order sent correctly to Firmafy', 'firmafy' );
+			} else {
+				$order_msg = __( 'There was an error sending the order to Firmafy', 'firmafy' );
+			}
+			$order->add_order_note( $order_msg );
 		}
-		$order->add_order_note( $order_msg );
+		// Products.
+		if ( 'products' === $woocommerce_mode || 'all' === $woocommerce_mode ) {
+			$ordered_items  = $order->get_items();
+
+			foreach ( $ordered_items as $order_item ) {
+				$product_id = $order_item['product_id'];
+
+				$firmafy_options = get_post_meta( $product_id, 'firmafy', true );
+
+				if ( empty( $firmafy_options ) ) {
+					continue;
+				}
+				$template_id     = isset( $firmafy_options['template'] ) ? $firmafy_options['template'] : 0;
+				unset( $firmafy_options['template'] );
+
+				$merge_vars = array();
+				foreach ( $firmafy_options as $key => $value ) {
+					$merge_vars[] = array(
+						'name'  => $key,
+						'value' => $order->{$value}(),
+					);
+				}
+				$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, array(), true );
+		
+				if ( 'error' === $response_result['status'] ) {
+					$order_msg = __( 'Order sent correctly to Firmafy', 'firmafy' );
+				} else {
+					$order_msg = __( 'There was an error sending the order to Firmafy', 'firmafy' );
+				}
+				$order->add_order_note( $order_msg );
+			}
+		} 
+
 	}
 
 	/**
