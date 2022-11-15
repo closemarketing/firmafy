@@ -70,7 +70,7 @@ WordPress installation and then activate the Plugin from Plugins page.
 == Changelog ==
 = 1.2.0 =
 *	Added Self signers for company users.
-*  Added Sign contract by product.
+*  Added Sign WooCommerce contract by product and merge values.
 
 = 1.1.2 =
 *	Fix: Conflict with FormsCRM settings.
