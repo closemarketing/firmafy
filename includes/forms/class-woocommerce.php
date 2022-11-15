@@ -89,6 +89,7 @@ class Firmafy_WooCommerce {
 			}
 			$order->add_order_note( $order_msg );
 		}
+
 		// Products.
 		if ( 'products' === $woocommerce_mode || 'all' === $woocommerce_mode ) {
 			$ordered_items  = $order->get_items();
@@ -105,10 +106,17 @@ class Firmafy_WooCommerce {
 				unset( $firmafy_options['template'] );
 
 				$merge_vars = array();
-				foreach ( $firmafy_options as $key => $value ) {
+				foreach ( $firmafy_options as $key => $function ) {
+					if ( 'billing_vat' === $function ) {
+						$value = $order->get_meta( '_billing_vat' );
+					} elseif ( method_exists( $order, $function ) ) {
+						$value = $order->{$function}();
+					} else {
+						$value = '';
+					}
 					$merge_vars[] = array(
 						'name'  => $key,
-						'value' => $order->{$value}(),
+						'value' => $value,
 					);
 				}
 				$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, array(), true );
@@ -120,8 +128,7 @@ class Firmafy_WooCommerce {
 				}
 				$order->add_order_note( $order_msg );
 			}
-		} 
-
+		}
 	}
 
 	/**
