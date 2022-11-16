@@ -241,6 +241,14 @@ class FIRMAFY_ADMIN_SETTINGS {
 				'admin_firmafy_settings'
 			);
 		}
+
+		add_settings_field(
+			'firmafy_secure_mode',
+			__( 'Secure mode', 'firmafy' ),
+			array( $this, 'secure_mode_callback' ),
+			'firmafy_options',
+			'admin_firmafy_settings'
+		);
 	}
 
 	/**
@@ -275,6 +283,10 @@ class FIRMAFY_ADMIN_SETTINGS {
 
 		if ( isset( $input['woocommerce_mode'] ) ) {
 			$sanitary_values['woocommerce_mode'] = sanitize_text_field( $input['woocommerce_mode'] );
+		}
+
+		if ( isset( $input['secure_mode'] ) ) {
+			$sanitary_values['secure_mode'] = sanitize_text_field( $input['secure_mode'] );
 		}
 
 		if ( isset( $_POST['notification'] ) && is_array( $_POST['notification'] ) ) {
@@ -376,6 +388,18 @@ class FIRMAFY_ADMIN_SETTINGS {
 			<option value="products" <?php selected( $this->firmafy_settings['woocommerce_mode'], 'products' ); ?>><?php esc_html_e( 'Only Products', 'firmafy' ); ?></option>
 			<option value="all" <?php selected( $this->firmafy_settings['woocommerce_mode'], 'all' ); ?>><?php esc_html_e( 'Orders and products', 'firmafy' ); ?></option>
 		</select>
+		<?php
+	}
+
+	public function secure_mode_callback() {
+		?>
+		<select name="firmafy_options[secure_mode]" id="secure_mode">
+			<?php $selected = ( isset( $this->firmafy_settings['secure_mode'] ) && $this->firmafy_settings['secure_mode'] === 'yes' ) ? 'selected' : ''; ?>
+			<option value="no" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'No', 'firmafy' ); ?></option>
+			<option value="yes" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'Yes', 'firmafy' ); ?></option>
+			<?php $selected = ( isset( $this->firmafy_settings['secure_mode'] ) && $this->firmafy_settings['secure_mode'] === 'no' ) ? 'selected' : ''; ?>
+		</select><br/>
+		<label for="secure_mode"><?php esc_html_e( 'Sometimes there is a problem generating the PDF from web style. You can force to create the PDF without styles.', 'firmafy' ); ?></label>
 		<?php
 	}
 

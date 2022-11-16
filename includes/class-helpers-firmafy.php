@@ -260,7 +260,13 @@ class Helpers_Firmafy {
 		$temp_content_pre .= get_the_content( '', false, $template_id );
 
 		// Replace merge vars for values
-		$template_content = apply_filters( 'the_content', $temp_content_pre );
+		$secure_mode = isset( $settings['secure_mode'] ) && 'yes' === $settings['secure_mode'] ? true : false;
+		// Prevents conflict with web sytles.
+		if ( $secure_mode ) {
+			$template_content = $temp_content_pre;
+		} else {
+			$template_content = apply_filters( 'the_content', $temp_content_pre );
+		}
 
 		foreach ( $merge_vars as $variable ) {
 			if ( ! empty( $variable['name'] ) ) {
