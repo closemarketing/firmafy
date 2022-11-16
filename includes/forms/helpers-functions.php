@@ -22,7 +22,7 @@ if ( ! function_exists( 'firmafy_debug_message' ) ) {
 			if ( is_array( $message ) ) {
 				$message = print_r( $message, true ); //phpcs:ignore
 			}
-			error_log( 'FORMSCRM: ' . esc_html__( 'Message Debug Mode', 'firmafy' ) . ' ' . esc_html( $message ) );
+			error_log( 'Firmafy: ' . esc_html__( 'Message Debug Mode', 'firmafy' ) . ' ' . esc_html( $message ) );
 		}
 	}
 }
@@ -37,7 +37,7 @@ if ( ! function_exists( 'firmafy_error_admin_message' ) ) {
 	 */
 	function firmafy_error_admin_message( $code, $message ) {
 		if ( true === WP_DEBUG ) {
-			error_log( 'FORMSCRM: API ERROR ' . esc_html( $code ) . ': ' . esc_html( $message ) );
+			error_log( 'Firmafy: API ERROR ' . esc_html( $code ) . ': ' . esc_html( $message ) );
 		}
 	}
 }
@@ -54,12 +54,12 @@ if ( ! function_exists( 'firmafy_debug_email_lead' ) ) {
 	 */
 	function firmafy_debug_email_lead( $crm, $error, $data ) {
 		$to      = get_option( 'admin_email' );
-		$subject = 'FormsCRM - ' . __( 'Error creating the Lead', 'firmafy' );
-		$body    = '<p>' . __( 'There was an error creating the Lead in the CRM', 'firmafy' ) . ' ' . $crm . ':</p><p><strong>' . $error . '</strong></p><p>' . __( 'Lead Data', 'firmafy' ) . ':</p>';
+		$subject = 'Firmafy - ' . __( 'Error creating the Signature', 'firmafy' );
+		$body    = '<p>' . __( 'There was an error creating the Signature', 'firmafy' ) . ' ' . $crm . ':</p><p><strong>' . $error . '</strong></p><p>' . __( 'Signature Data', 'firmafy' ) . ':</p>';
 		foreach ( $data as $dataitem ) {
 			$body .= '<p><strong>' . $dataitem['name'] . ': </strong>' . $dataitem['value'] . '</p>';
 		}
-		$body   .= '</br/><br/>FormsCRM';
+		$body   .= '</br/><br/>Firmafy';
 		$headers = array( 'Content-Type: text/html; charset=UTF-8' );
 
 		wp_mail( $to, $subject, $body, $headers );
@@ -75,7 +75,7 @@ if ( ! function_exists( 'firmafy_testserver' ) ) {
 	function firmafy_testserver() {
 		// test curl.
 		if ( ! function_exists( 'curl_version' ) && true === WP_DEBUG ) {
-			error_log( 'FORMSCRM: ' . __( 'curl is not Installed in your server. It is needed to work with CRM Libraries.', 'firmafy' ) );
+			error_log( 'Firmafy: ' . __( 'curl is not Installed in your server. It is needed to work with CRM Libraries.', 'firmafy' ) );
 		}
 	}
 }
