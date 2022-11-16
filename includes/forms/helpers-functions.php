@@ -43,7 +43,7 @@ if ( ! function_exists( 'firmafy_error_admin_message' ) ) {
 }
 
 // * Sends an email to administrator when it not creates the lead
-if ( ! function_exists( 'firmafy_debug_email_lead' ) ) {
+if ( ! function_exists( 'firmafy_debug_email' ) ) {
 	/**
 	 * Sends error to admin
 	 *
@@ -52,7 +52,7 @@ if ( ! function_exists( 'firmafy_debug_email_lead' ) ) {
 	 * @param array  $data  Data of error.
 	 * @return void
 	 */
-	function firmafy_debug_email_lead( $crm, $error, $data ) {
+	function firmafy_debug_email( $crm, $error, $data ) {
 		$to      = get_option( 'admin_email' );
 		$subject = 'Firmafy - ' . __( 'Error creating the Signature', 'firmafy' );
 		$body    = '<p>' . __( 'There was an error creating the Signature', 'firmafy' ) . ' ' . $crm . ':</p><p><strong>' . $error . '</strong></p><p>' . __( 'Signature Data', 'firmafy' ) . ':</p>';

@@ -160,7 +160,7 @@ class Firmafy_CF7_Settings {
 			$response_result = $helpers_firmafy->create_entry( $cf7_firmafy['firmafy_template'], $merge_vars, $signers );
 
 			if ( 'error' === $response_result['status'] ) {
-				firmafy_debug_email_lead( $cf7_firmafy['fc_firmafy_type'], 'Error ' . $response_result['message'], $merge_vars );
+				firmafy_debug_email( $cf7_firmafy['fc_firmafy_type'], 'Error ' . $response_result['message'], $merge_vars );
 			} else {
 				error_log( $response_result['id'] );
 			}
