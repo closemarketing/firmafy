@@ -42,7 +42,7 @@ class Firmafy_WooCommerce {
 		add_action( 'add_meta_boxes', array( $this, 'metabox_product' ) );
 		add_action( 'save_post', array( $this, 'save_metaboxes_product' ) );
 
-		// In construct Class
+		// In construct Class.
 		add_action( 'admin_enqueue_scripts', array( $this, 'scripts_firmafy_product_fields' ) );
 		add_action( 'wp_ajax_firmafy_product_fields', array( $this, 'firmafy_product_fields' ) );
 		add_action( 'wp_ajax_nopriv_firmafy_product_fields', array( $this, 'firmafy_product_fields' ) );
@@ -51,10 +51,11 @@ class Firmafy_WooCommerce {
 	/**
 	 * Process the entry.
 	 *
-	 * @param int $order_id Order ID.
+	 * @param int    $order_id Order ID.
+	 * @param object $order    Order.
 	 * @return void
 	 */
-	public function crm_process_entry( $order_id, $order ){
+	public function crm_process_entry( $order_id, $order ) {
 		global $helpers_firmafy;
 		$woocommerce_mode = isset( $this->settings['woocommerce_mode'] ) ? $this->settings['woocommerce_mode'] : 'orders';
 
@@ -78,10 +79,10 @@ class Firmafy_WooCommerce {
 					'value' => $order->get_billing_phone(),
 				),
 			);
-	
+
 			$template_id = wc_terms_and_conditions_page_id();
 			$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, array(), true );
-	
+
 			if ( 'error' === $response_result['status'] ) {
 				$order_msg = __( 'Order sent correctly to Firmafy', 'firmafy' );
 			} else {
@@ -109,6 +110,8 @@ class Firmafy_WooCommerce {
 				foreach ( $firmafy_options as $key => $function ) {
 					if ( 'billing_vat' === $function ) {
 						$value = $order->get_meta( '_billing_vat' );
+					} elseif ( 'get_billing_full_name' === $function ) {
+						$value = $order->get_billing_first_name() . ' ' . $order->get_billing_last_name();
 					} elseif ( method_exists( $order, $function ) ) {
 						$value = $order->{$function}();
 					} else {
@@ -120,7 +123,7 @@ class Firmafy_WooCommerce {
 					);
 				}
 				$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, array(), true );
-		
+
 				if ( 'error' === $response_result['status'] ) {
 					$order_msg = __( 'Order sent correctly to Firmafy', 'firmafy' );
 				} else {
@@ -134,6 +137,10 @@ class Firmafy_WooCommerce {
 	/**
 	 * Insert element before of a specific array position
 	 *
+	 * @param array $source Source.
+	 * @param array $need    Order.
+	 * @param array $need    Order.
+	 * 
 	 * @return array
 	 * @since 1.0.0
 	 */
@@ -191,7 +198,7 @@ class Firmafy_WooCommerce {
 	 * @return void
 	 */
 	public function email_key_notification( $order ) {
-		echo '<p><strong>' . __( 'VAT No', 'firmafy' ) .':</strong> ';
+		echo '<p><strong>' . esc_html__( 'VAT No', 'firmafy' ) . ':</strong> ';
 		echo esc_html( get_post_meta( $order->get_id(), '_billing_vat', true ) ) . '</p>';
 	}
 
@@ -217,8 +224,7 @@ class Firmafy_WooCommerce {
 			'get_id'                  => __( 'Order ID', 'firmafy' ),
 			'get_user_id'             => __( 'User ID', 'firmafy' ),
 			'get_currency'            => __( 'Currency', 'firmafy' ),
-			'get_billing_first_name'  => __( 'Billing First name', 'firmafy' ),
-			'get_billing_last_name'   => __( 'Billing Last name', 'firmafy' ),
+			'get_billing_full_name'   => __( 'Billing Full name', 'firmafy' ),
 			'billing_vat'             => __( 'Billing NIF', 'firmafy' ),
 			'get_billing_company'     => __( 'Billing Company', 'firmafy' ),
 			'get_billing_address_1'   => __( 'Billing Address 1', 'firmafy' ),
@@ -246,7 +252,7 @@ class Firmafy_WooCommerce {
 	 *
 	 * @return void
 	 */
-	function metabox_product () {
+	public function metabox_product () {
 		add_meta_box(
 			'product',
 			__( 'Firmafy signature', 'firmafy' ),
@@ -261,7 +267,7 @@ class Firmafy_WooCommerce {
 	 * @param object $post Post object.
 	 * @return void
 	 */
-	function metabox_show_product( $post ) {
+	public function metabox_show_product( $post ) {
 		global $helpers_firmafy;
 		$firmafy_options  = get_post_meta( $post->ID, 'firmafy', true );
 		$firmafy_template = isset( $firmafy_options['template'] ) ? $firmafy_options['template'] : 0;
@@ -270,12 +276,12 @@ class Firmafy_WooCommerce {
 			<tr><!-- SELECT template-->
 				<td>
 					<label for="firmafy_template"><?php echo esc_html( 'Select the Firmafy template', 'firmafy' ); ?></label>
-					<select id="firmafy_template" name="firmafy_template" data-post-id="<?php echo $post->ID; ?>">
+					<select id="firmafy_template" name="firmafy_template" data-post-id="<?php echo esc_html( $post->ID ); ?>">
 					<?php
 					$options = $helpers_firmafy->get_templates();
-					echo '<option value="" ' . ( empty( $firmafy_template ) ? 'selected="selected"' : null ) . '>' . __( 'Not use Fimafy template', 'firmafy' ) . '</option>';
+					echo '<option value="" ' . ( empty( $firmafy_template ) ? 'selected="selected"' : null ) . '>' . esc_html__( 'Not use Fimafy template', 'firmafy' ) . '</option>';
 					foreach ( $options as $option ) {
-						echo '<option value="' . $option['value'] . '" ' . ( $firmafy_template == $option['value'] ? 'selected="selected"' : null ) . '>' . $option['label'] . '</option>';
+						echo '<option value="' . esc_html( $option['value'] ) . '" ' . ( $firmafy_template == $option['value'] ? 'selected="selected"' : null ) . '>' . esc_html( $option['label'] ) . '</option>';
 					}
 					?>
 					</select>
@@ -287,14 +293,14 @@ class Firmafy_WooCommerce {
 		</div>
 		<?php
 	}
-	
+
 	/**
 	 * Admin Scripts AJAX
 	 *
 	 * @return void
 	 */
 	public function scripts_firmafy_product_fields() {
-		wp_enqueue_script( 
+		wp_enqueue_script(
 			'firmafy-product',
 			FIRMAFY_PLUGIN_URL . 'includes/assets/firmafy-product.js',
 			array(),

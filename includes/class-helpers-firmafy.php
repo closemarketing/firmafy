@@ -330,6 +330,7 @@ class Helpers_Firmafy {
 		// Sends to Firmafy
 		$query = array(
 			'id_show'    => $id_show,
+			'subject'    => get_the_title( $template_id ),
 			'token'      => isset( $token['data'] ) ? $token['data'] : '',
 			'signer'     => wp_json_encode( $final_signers ),
 			'pdf_name'   => $filename,

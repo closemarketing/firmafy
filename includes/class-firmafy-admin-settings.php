@@ -47,11 +47,11 @@ class FIRMAFY_ADMIN_SETTINGS {
 	}
 
 	/**
-	* function_description
-	*
-	* @return void
-	*/
-	function firmafy_scripts() {
+	 * Load Admin scripts
+	 *
+	 * @return void
+	 */
+	public function firmafy_scripts() {
 		wp_enqueue_style(
 			'firmafy-admin',
 			FIRMAFY_PLUGIN_URL . '/includes/assets/admin.css',
@@ -106,7 +106,13 @@ class FIRMAFY_ADMIN_SETTINGS {
 			);
 		}
 	}
-	function admin_notices_action() {
+
+	/**
+	 * Admin setting notices
+	 *
+	 * @return void
+	 */
+	public function admin_notices_action() {
 		settings_errors( 'firmafy_notification_error' );
 	}
 
@@ -117,7 +123,7 @@ class FIRMAFY_ADMIN_SETTINGS {
 	 */
 	public function create_admin_page() {
 		global $helpers_firmafy;
-		$this->firmafy_settings = get_option('firmafy_options');
+		$this->firmafy_settings = get_option( 'firmafy_options' );
 		?>
 		<div class="header-wrap">
 			<div class="wrapper">
@@ -125,7 +131,7 @@ class FIRMAFY_ADMIN_SETTINGS {
 				<div id="nag-container"></div>
 				<div class="header firmafy-header">
 					<div class="logo">
-						<img src="<?php echo FIRMAFY_PLUGIN_URL . 'includes/assets/logo.svg'; ?>" height="35" width="154"/>
+						<img src="<?php echo esc_url( FIRMAFY_PLUGIN_URL ) . 'includes/assets/logo.svg'; ?>" height="35" width="154"/>
 						<h2><?php esc_html_e( 'Firmafy Settings', 'firmafy' ); ?></h2>
 					</div>
 					<div class="connection">
@@ -299,7 +305,7 @@ class FIRMAFY_ADMIN_SETTINGS {
 		if ( isset( $input['signers'] ) ) {
 			$index = 0;
 			foreach ( $input['signers'] as $signers ) {
-				foreach( $signers as $key => $value ) {
+				foreach ( $signers as $key => $value ) {
 					$sanitary_values['signers'][ $index ][ $key ] = sanitize_text_field( $value );
 				}
 				$index++;
@@ -329,6 +335,11 @@ class FIRMAFY_ADMIN_SETTINGS {
 		esc_html_e( 'Put the connection API key settings in order to connect external data.', 'firmafy' );
 	}
 
+	/**
+	 * Username input callback
+	 *
+	 * @return void
+	 */
 	public function username_callback() {
 		printf(
 			'<input class="regular-text" type="text" name="firmafy_options[username]" id="firmafy_username" value="%s">',
@@ -336,6 +347,11 @@ class FIRMAFY_ADMIN_SETTINGS {
 		);
 	}
 
+	/**
+	 * Password input callback
+	 *
+	 * @return void
+	 */
 	public function password_callback() {
 		printf(
 			'<input class="regular-text" type="password" name="firmafy_options[password]" id="password" value="%s">',
@@ -343,6 +359,11 @@ class FIRMAFY_ADMIN_SETTINGS {
 		);
 	}
 
+	/**
+	 * ID Show callback
+	 *
+	 * @return void
+	 */
 	public function id_show_callback() {
 		printf(
 			'<input class="regular-text" type="password" name="firmafy_options[id_show]" id="id_show" value="%s">',
@@ -350,8 +371,13 @@ class FIRMAFY_ADMIN_SETTINGS {
 		);
 	}
 
+	/**
+	 * Notification callback
+	 *
+	 * @return void
+	 */
 	public function notification_callback() {
-		$notification = isset( $this->firmafy_settings['notification'] ) ? (array) $this->firmafy_settings['notification'] : [];
+		$notification = isset( $this->firmafy_settings['notification'] ) ? (array) $this->firmafy_settings['notification'] : array();
 		echo '<input type="checkbox" name="notification[]" value="sms" ';
 		echo checked( in_array( 'sms', $notification ), 1 ) . ' />';
 		echo '<label for="notification">SMS</label>';
@@ -360,27 +386,36 @@ class FIRMAFY_ADMIN_SETTINGS {
 		echo '<label for="notification">Email</label>';
 	}
 
+	/**
+	 * WooCommerce callback
+	 *
+	 * @return void
+	 */
 	public function woocommerce_callback() {
 		?>
 		<select name="firmafy_options[woocommerce]" id="woocommerce">
-			<?php $selected = ( isset( $this->firmafy_settings['woocommerce'] ) && $this->firmafy_settings['woocommerce'] === 'yes' ) ? 'selected' : ''; ?>
-			<option value="no" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'No', 'firmafy' ); ?></option>
-			<option value="yes" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'Yes', 'firmafy' ); ?></option>
-			<?php $selected = ( isset( $this->firmafy_settings['woocommerce'] ) && $this->firmafy_settings['woocommerce'] === 'no' ) ? 'selected' : ''; ?>
+			<option value="no" <?php selected( $this->firmafy_settings['woocommerce'], 'no' ); ?>><?php esc_html_e( 'No', 'firmafy' ); ?></option>
+			<option value="yes" <?php selected( $this->firmafy_settings['woocommerce'], 'yes' ); ?>><?php esc_html_e( 'Yes', 'firmafy' ); ?></option>
 		</select><br/>
 		<label for="woocommerce"><?php esc_html_e( 'This adds a NIF field required for Firmafy and signs the order when the order is placed.', 'firmafy' ); ?></label>
 		<br/>
 		<label for="woocommerce">
 			<?php
 			echo sprintf(
-				__( 'You will need to setup the <a href="%s">Terms and conditions page</a>', 'firmafy' ),
-				admin_url('admin.php?page=wc-settings&tab=advanced')
+				// translators: %s edit woocommerce settings.
+				esc_html__( 'You will need to setup the <a href="%s">Terms and conditions page</a>', 'firmafy' ),
+				esc_url( admin_url( 'admin.php?page=wc-settings&tab=advanced' ) )
 			);
 			?>
 		</label>
 		<?php
 	}
 
+	/**
+	 * Woocommerce mode callback
+	 *
+	 * @return void
+	 */
 	public function woocommerce_mode_callback() {
 		?>
 		<select name="firmafy_options[woocommerce_mode]" id="woocommerce_mode">
@@ -391,13 +426,16 @@ class FIRMAFY_ADMIN_SETTINGS {
 		<?php
 	}
 
+	/**
+	 * Secure mode input callback
+	 *
+	 * @return void
+	 */
 	public function secure_mode_callback() {
 		?>
 		<select name="firmafy_options[secure_mode]" id="secure_mode">
-			<?php $selected = ( isset( $this->firmafy_settings['secure_mode'] ) && $this->firmafy_settings['secure_mode'] === 'yes' ) ? 'selected' : ''; ?>
-			<option value="no" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'No', 'firmafy' ); ?></option>
-			<option value="yes" <?php echo esc_html( $selected ); ?>><?php esc_html_e( 'Yes', 'firmafy' ); ?></option>
-			<?php $selected = ( isset( $this->firmafy_settings['secure_mode'] ) && $this->firmafy_settings['secure_mode'] === 'no' ) ? 'selected' : ''; ?>
+			<option value="no" <?php selected( $this->firmafy_settings['secure_mode'], 'no' ); ?>><?php esc_html_e( 'No', 'firmafy' ); ?></option>
+			<option value="yes" <?php selected( $this->firmafy_settings['secure_mode'], 'yes' ); ?>><?php esc_html_e( 'Yes', 'firmafy' ); ?></option>
 		</select><br/>
 		<label for="secure_mode"><?php esc_html_e( 'Sometimes there is a problem generating the PDF from web style. You can force to create the PDF without styles.', 'firmafy' ); ?></label>
 		<?php
@@ -411,71 +449,78 @@ class FIRMAFY_ADMIN_SETTINGS {
 	 */
 	public function signers_callback() {
 		$signers = isset( $this->firmafy_settings['signers'] ) ? $this->firmafy_settings['signers'] : array();
-		$size    = ! empty( $signers ) ? count( $signers ) - 1  : 0;
+		$size    = ! empty( $signers ) ? count( $signers ) - 1 : 0;
 
 		for ( $idx = 0, $size; $idx <= $size; ++$idx ) {
 			?>
 			<div class="firmafy-signers repeating">
 				<div class="save-item list">
 					<p><strong><?php esc_html_e( 'Full Name', 'firmafy' ); ?></strong></p>
-					<?php printf(
+					<?php
+					printf(
 						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][nombre]" value="%s">',
 						$idx,
-						isset( $signers[ $idx ]['nombre'] ) ? $signers[ $idx ]['nombre'] : ''
+						isset( $signers[ $idx ]['nombre'] ) ? esc_html( $signers[ $idx ]['nombre'] ) : ''
 					);
 					?>
 				</div>
 				<div class="save-item list">
 					<p><strong><?php esc_html_e( 'NIF', 'firmafy' ); ?></strong></p>
-					<?php printf(
+					<?php
+					printf(
 						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][nif]" value="%s">',
 						$idx,
-						isset( $signers[ $idx ]['nif'] ) ? $signers[ $idx ]['nif'] : ''
+						isset( $signers[ $idx ]['nif'] ) ? esc_html( $signers[ $idx ]['nif'] ) : ''
 					);
 					?>
 				</div>
 				<div class="save-item list">
 					<p><strong><?php esc_html_e( 'Position', 'firmafy' ); ?></strong></p>
-					<?php printf(
+					<?php
+					printf(
 						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][cargo]" value="%s">',
 						$idx,
-						isset( $signers[ $idx ]['cargo'] ) ? $signers[ $idx ]['cargo'] : ''
+						isset( $signers[ $idx ]['cargo'] ) ? esc_html( $signers[ $idx ]['cargo'] ) : ''
 					);
 					?>
 				</div>
 				<div class="save-item list">
 					<p><strong><?php esc_html_e( 'Email', 'firmafy' ); ?></strong></p>
-					<?php printf(
+					<?php
+					printf(
 						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][email]" value="%s">',
 						$idx,
-						isset( $signers[ $idx ]['email'] ) ? $signers[ $idx ]['email'] : ''
+						isset( $signers[ $idx ]['email'] ) ? esc_html( $signers[ $idx ]['email'] ) : ''
 					);
 					?>
 				</div>
 				<div class="save-item list">
 					<p><strong><?php esc_html_e( 'Phone', 'firmafy' ); ?></strong></p>
-					<?php printf(
+					<?php
+					printf(
 						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][telefono]" value="%s">',
 						$idx,
-						isset( $signers[ $idx ]['telefono'] ) ? $signers[ $idx ]['telefono'] : ''
+						isset( $signers[ $idx ]['telefono'] ) ? esc_html( $signers[ $idx ]['telefono'] ) : ''
 					);
 					?>
 				</div>
 				<div class="save-item list">
 					<p><strong><?php esc_html_e( 'Company', 'firmafy' ); ?></strong></p>
-					<?php printf(
+					<?php
+					printf(
 						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][empresa]" value="%s">',
 						$idx,
-						isset( $signers[ $idx ]['empresa'] ) ? $signers[ $idx ]['empresa'] : ''
+						isset( $signers[ $idx ]['empresa'] ) ? esc_html( $signers[ $idx ]['empresa'] ) : ''
 					);
 					?>
 				</div>
 				<div class="save-item list">
 					<p><strong><?php esc_html_e( 'CIF', 'firmafy' ); ?></strong></p>
-					<?php printf(
+					<?php
+					printf(
 						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][cif]" value="%s">',
 						$idx,
-						isset( $signers[ $idx ]['cif'] ) ? $signers[ $idx ]['cif'] : ''
+						isset( $signers[ $idx ]['cif'] ) ? esc_html( $signers[ $idx ]['cif'] ) : ''
 					);
 					?>
 				</div>
@@ -583,11 +628,11 @@ class FIRMAFY_ADMIN_SETTINGS {
 	 * @param array $firmafy_template_columns  Header of admin post type list.
 	 * @return array $firmafy_template_columns New elements for header.
 	 */
-	function add_new_firmafy_template_columns( $firmafy_template_columns ) {
-		$new_columns['cb']    = '<input type="checkbox" />';
-		$new_columns['title'] = __( 'Title', 'firmafy' );
+	public function add_new_firmafy_template_columns( $firmafy_template_columns ) {
+		$new_columns['cb']        = '<input type="checkbox" />';
+		$new_columns['title']     = __( 'Title', 'firmafy' );
 		$new_columns['variables'] = __( 'Variables', 'firmafy' );
-	
+
 		return $new_columns;
 	}
 
@@ -598,18 +643,17 @@ class FIRMAFY_ADMIN_SETTINGS {
 	 * @param array $id Post ID.
 	 * @return void
 	 */
-	function manage_firmafy_template_columns( $column_name, $id ) {
+	public function manage_firmafy_template_columns( $column_name, $id ) {
 		global $helpers_firmafy;
-	
+
 		switch ( $column_name ) {
 			case 'variables':
 				$variables = $helpers_firmafy->get_variables_template( $id );
 				if ( is_array( $variables ) ) {
-					echo implode( ', ', array_column( $variables, 'label' ) );
+					echo esc_html( implode( ', ', array_column( $variables, 'label' ) ) );
 				}
-				
 				break;
-	
+
 			default:
 				break;
 		} // end switch
@@ -638,14 +682,13 @@ class FIRMAFY_ADMIN_SETTINGS {
 
 			if ( file_exists( $file_template ) && ! $post_exists ) {
 				$template_post = array(
-					'post_title'    => wp_strip_all_tags( $template['title'] ),
-					'post_name'     => $template['slug'],
-					'post_content'  => file_get_contents( $file_template ),
-					'post_status'   => 'publish',
-					'post_type'     => 'firmafy_template',
+					'post_title'   => wp_strip_all_tags( $template['title'] ),
+					'post_name'    => $template['slug'],
+					'post_content' => file_get_contents( $file_template ),
+					'post_status'  => 'publish',
+					'post_type'    => 'firmafy_template',
 				);
-				  
-				// Insert the post into the database
+				// Insert the post into the database.
 				wp_insert_post( $template_post );
 			}
 		}
