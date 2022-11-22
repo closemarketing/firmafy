@@ -72,6 +72,7 @@ WordPress installation and then activate the Plugin from Plugins page.
 *	Added Self signers for company users.
 *  Added Sign WooCommerce contract by product and merge values.
 *  Added Secure mode creating the PDF with conflicts in the Theme.
+*  Added Subject Firmafy from Title template.
 
 = 1.1.2 =
 *	Fix: Conflict with FormsCRM settings.
