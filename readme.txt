@@ -1,4 +1,4 @@
-=== Firmafy ===
+=== Firmafy eSignature ===
 Contributors: closetechnology, davidperez, sacrajaimez, firmafy
 Tags: forms, signature, gravityforms, contact form 7, woocommerce
 Requires at least: 4.0
