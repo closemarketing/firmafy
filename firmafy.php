@@ -1,11 +1,11 @@
 <?php
 /**
- * Plugin Name: Firmafy
+ * Plugin Name: Firmafy eSignature
  * Plugin URI:  https://firmafy.com
  * Description: Validate legally your forms in WordPress.
  * Version:     1.2.0-beta.2
- * Author:      Closetechnology
- * Author URI:  https://close.technology
+ * Author:      Firmafy
+ * Author URI:  https://firmafy.com
  * Text Domain: firmafy
  * Domain Path: /languages
  * License:     GPL-2.0+
