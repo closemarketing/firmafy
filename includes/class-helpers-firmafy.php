@@ -324,6 +324,9 @@ class Helpers_Firmafy {
 		$content = str_replace( '<figure', '<div', $content );
 		$content = str_replace( '</figure', '</div', $content );
 
+		$content = str_replace( '<section', '<div', $content );
+		$content = str_replace( '</section', '</div', $content );
+
 		// Replace date.
 		$content = str_replace( '{fecha}', date( 'd-m-Y' ), $content );
 

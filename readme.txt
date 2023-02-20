@@ -70,6 +70,7 @@ WordPress installation and then activate the Plugin from Plugins page.
 == Changelog ==
 = 1.1.3 =
 *	Fix: Array of values in the form.
+*  Fix: Section not recognized by Html2Pdf.
 
 = 1.1.2 =
 *	Fix: Conflict with FormsCRM settings.
