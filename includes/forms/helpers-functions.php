@@ -54,10 +54,11 @@ if ( ! function_exists( 'firmafy_debug_email_lead' ) ) {
 	 */
 	function firmafy_debug_email_lead( $crm, $error, $data ) {
 		$to      = get_option( 'admin_email' );
-		$subject = 'FormsCRM - ' . __( 'Error creating the Lead', 'firmafy' );
-		$body    = '<p>' . __( 'There was an error creating the Lead in the CRM', 'firmafy' ) . ' ' . $crm . ':</p><p><strong>' . $error . '</strong></p><p>' . __( 'Lead Data', 'firmafy' ) . ':</p>';
+		$subject = 'FormsCRM - ' . __( 'Error creating the Signature', 'firmafy' );
+		$body    = '<p>' . __( 'There was an error creating the signature in Firmafy', 'firmafy' ) . ' ' . $crm . ':</p><p><strong>' . $error . '</strong></p><p>' . __( 'Lead Data', 'firmafy' ) . ':</p>';
 		foreach ( $data as $dataitem ) {
-			$body .= '<p><strong>' . $dataitem['name'] . ': </strong>' . $dataitem['value'] . '</p>';
+			$value = is_array( $dataitem['value'] ) ? implode( ', ', $dataitem['value'] ) : $dataitem['value'];
+			$body .= '<p><strong>' . $dataitem['name'] . ': </strong>' . $value . '</p>';
 		}
 		$body   .= '</br/><br/>FormsCRM';
 		$headers = array( 'Content-Type: text/html; charset=UTF-8' );

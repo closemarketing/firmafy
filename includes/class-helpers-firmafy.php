@@ -211,7 +211,8 @@ class Helpers_Firmafy {
 
 		foreach ( $merge_vars as $variable ) {
 			if ( ! empty( $variable['name'] ) ) {
-				$template_content = str_replace( '{' . $variable['name'] . '}', $variable['value'], $template_content );
+				$value            = is_array( $variable['value'] ) ? implode( ', ', $variable['value'] ) : $variable['value'];
+				$template_content = str_replace( '{' . $variable['name'] . '}', $value, $template_content );
 				if ( $this->signer_tags( $variable['name'] ) && 'nif' === $variable['name'] ) {
 					$signer[ $variable['name'] ] = str_replace( '.', '', $variable['value'] );
 				} elseif ( $this->signer_tags( $variable['name'] ) ) {

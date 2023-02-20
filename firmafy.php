@@ -3,7 +3,7 @@
  * Plugin Name: Firmafy
  * Plugin URI:  https://firmafy.com
  * Description: Validate legally your forms in WordPress.
- * Version:     1.1.2
+ * Version:     1.1.3-rc.1
  * Author:      Closetechnology
  * Author URI:  https://close.technology
  * Text Domain: firmafy
@@ -23,7 +23,7 @@
 
 defined( 'ABSPATH' ) || die( 'No script kiddies please!' );
 
-define( 'FIRMAFY_VERSION', '1.1.2' );
+define( 'FIRMAFY_VERSION', '1.1.3-rc.1' );
 define( 'FIRMAFY_PLUGIN', __FILE__ );
 define( 'FIRMAFY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'FIRMAFY_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );
@@ -41,6 +41,8 @@ function firmafy_plugin_init() {
 /**
  * # Includes
  * ---------------------------------------------------------------------------------------------------- */
+
+require_once FIRMAFY_PLUGIN_PATH . 'includes/forms/helpers-functions.php';
 require_once FIRMAFY_PLUGIN_PATH . 'includes/class-helpers-firmafy.php';
 require_once FIRMAFY_PLUGIN_PATH . 'includes/class-firmafy-admin-settings.php';
 
