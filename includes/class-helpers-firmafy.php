@@ -68,8 +68,9 @@ class Helpers_Firmafy {
 	/**
 	 * Login settings
 	 *
-	 * @param array $settings
-	 * @return void
+	 * @param string $username Username.
+	 * @param string $password Password.
+	 * @return array
 	 */
 	public function login( $username = '', $password = '' ) {
 		if ( empty( $username ) || empty( $password ) ) {
@@ -87,13 +88,13 @@ class Helpers_Firmafy {
 	 * @return array
 	 */
 	public function get_templates() {
-		$templates  = array();
-		$args_query = array(
+		$templates   = array();
+		$args_query  = array(
 			'post_type'      => 'firmafy_template',
 			'posts_per_page' => -1,
 			'fields'         => 'ids',
 		);
-		$posts_array   = get_posts( $args_query );
+		$posts_array = get_posts( $args_query );
 		foreach ( $posts_array as $post_id ) {
 			$templates[] = array(
 				'value' => $post_id,
