@@ -57,7 +57,8 @@ if ( ! function_exists( 'firmafy_debug_email' ) ) {
 		$subject = 'Firmafy - ' . __( 'Error creating the Signature', 'firmafy' );
 		$body    = '<p>' . __( 'There was an error creating the Signature', 'firmafy' ) . ' ' . $crm . ':</p><p><strong>' . $error . '</strong></p><p>' . __( 'Signature Data', 'firmafy' ) . ':</p>';
 		foreach ( $data as $dataitem ) {
-			$body .= '<p><strong>' . $dataitem['name'] . ': </strong>' . $dataitem['value'] . '</p>';
+			$value = is_array( $dataitem['value'] ) ? implode( ', ', $dataitem['value'] ) : $dataitem['value'];
+			$body .= '<p><strong>' . $dataitem['name'] . ': </strong>' . $value . '</p>';
 		}
 		$body   .= '</br/><br/>Firmafy';
 		$headers = array( 'Content-Type: text/html; charset=UTF-8' );

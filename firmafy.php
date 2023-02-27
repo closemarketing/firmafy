@@ -41,6 +41,7 @@ function firmafy_plugin_init() {
 /**
  * # Includes
  * ---------------------------------------------------------------------------------------------------- */
+
 require_once FIRMAFY_PLUGIN_PATH . 'includes/forms/helpers-functions.php';
 require_once FIRMAFY_PLUGIN_PATH . 'includes/class-helpers-firmafy.php';
 require_once FIRMAFY_PLUGIN_PATH . 'includes/class-firmafy-admin-settings.php';
