@@ -63,12 +63,36 @@ class Firmafy_WooCommerce {
 		if ( 'orders' === $woocommerce_mode || 'all' === $woocommerce_mode ) {
 			$merge_vars = array(
 				array(
+					'name'  => 'pedido_num',
+					'value' => $order->get_id(),
+				),
+				array(
+					'name'  => 'pedido_fecha',
+					'value' => $order->get_date_created()->date( 'd/m/Y' ),
+				),
+				array(
+					'name'  => 'pedido_total',
+					'value' => $order->get_total(),
+				),
+				array(
+					'name'  => 'pedido_nota',
+					'value' => $order->get_customer_note(),
+				),
+				array(
+					'name'  => 'metodo_pago',
+					'value' => $order->get_payment_method_title(),
+				),
+				array(
 					'name'  => 'nombre',
 					'value' => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
 				),
 				array(
 					'name'  => 'nif',
-					'value' => get_post_meta( $order_id, '_billing_vat', true ),
+					'value' => $order->get_meta( '_billing_vat', true ),
+				),
+				array(
+					'name'  => 'empresa',
+					'value' => $order->get_company(),
 				),
 				array(
 					'name'  => 'email',
@@ -78,9 +102,33 @@ class Firmafy_WooCommerce {
 					'name'  => 'telefono',
 					'value' => $order->get_billing_phone(),
 				),
+				array(
+					'name'  => 'direccion_1',
+					'value' => $order->get_billing_address_1(),
+				),
+				array(
+					'name'  => 'direccion_2',
+					'value' => $order->get_billing_address_2(),
+				),
+				array(
+					'name'  => 'ciudad',
+					'value' => $order->get_billing_city(),
+				),
+				array(
+					'name'  => 'provincia',
+					'value' => $order->get_billing_state(),
+				),
+				array(
+					'name'  => 'codigo_postal',
+					'value' => $order->get_billing_postcode(),
+				),
+				array(
+					'name'  => 'pais',
+					'value' => $order->get_billing_country(),
+				),
 			);
 
-			$template_id = wc_terms_and_conditions_page_id();
+			$template_id     = wc_terms_and_conditions_page_id();
 			$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, array(), true );
 
 			if ( 'error' === $response_result['status'] ) {

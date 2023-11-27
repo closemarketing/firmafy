@@ -47,6 +47,28 @@ Please, watch this video with to know what's Firmafy:
 And watch this video with the step by step to step for the setup:
 [youtube https://www.youtube.com/watch?v=ZJ2ljXgLW_s]
 
+**Use with WooCommerce**
+
+You can also use Firmafy with WooCommerce. You can create a template with Firmafy and connect it with a order in your WooCommerce.
+
+When your client buys that product, the document will be generated with the data of the purchase and it will be sent to your client to be signed.
+
+Fields that you can use in your template:
+- Order number: {pedido_num}
+- Order date: {pedido_fecha}
+- Order total: {pedido_total}
+- Order note: {pedido_nota}
+- Full name: {nombre}
+- NIF: {nif}
+- Email: {email}
+- Phone: {telefono}
+- Address 1 and 2: {direccion_1} and {direccion_2}
+- City: {ciudad}
+- State: {provincia}
+- Zip code: {codigo_postal}
+- Country: {pais}
+- Payment method: {metodo_pago}
+
 **Firmafy use examples:**
 
 Does you client need to sign a direct debit document? You can create a direct debit template with Firmafy and getting it signed automatically in your WordPress, without doing anything.
@@ -69,11 +91,11 @@ WordPress installation and then activate the Plugin from Plugins page.
 
 == Changelog ==
 = 1.2.0 =
-*	Added Self signers for company users.
+*	 Added Self signers for company users.
 *  Added Sign WooCommerce contract by product and merge values.
 *  Added Secure mode creating the PDF with conflicts in the Theme.
 *  Added Subject Firmafy from Title template.
-*	Fix: Array of values in the form.
+*	 Fix: Array of values in the form.
 *  Fix: Section not recognized by Html2Pdf.
 
 = 1.1.2 =
