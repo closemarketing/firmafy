@@ -272,12 +272,12 @@ class Helpers_Firmafy {
 			'id_show' => $id_show,
 			'token'   => isset( $token['data'] ) ? $token['data'] : '',
 			'signer'  => wp_json_encode( array( $signer ) ),
-			//'pdf'     => new CURLFile( file_get_contents( $filename_path ), 'application/pdf' ),
 			'pdf_name' => $filename,
 			'pdf_base64' => chunk_split( base64_encode( $pdf_content ) ),
-
 		);
-		return $this->api_post( $username, $password, 'request', $query );
+		$result_api = $this->api_post( $username, $password, 'request', $query );
+
+		return $result_api;
 	}
 
 	private function signer_tags( $check ) {
