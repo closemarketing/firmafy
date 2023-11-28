@@ -4,8 +4,8 @@ Tags: forms, signature, gravityforms, contact form 7, woocommerce
 Requires at least: 4.0
 Requires PHP: 5.6
 Tested up to: 6.1
-Stable tag: 1.1.2
-Version: 1.1.2
+Stable tag: 1.1.3
+Version: 1.1.3
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -47,6 +47,28 @@ Please, watch this video with to know what's Firmafy:
 And watch this video with the step by step to step for the setup:
 [youtube https://www.youtube.com/watch?v=ZJ2ljXgLW_s]
 
+**Use with WooCommerce**
+
+You can also use Firmafy with WooCommerce. You can create a template with Firmafy and connect it with a order in your WooCommerce.
+
+When your client buys that product, the document will be generated with the data of the purchase and it will be sent to your client to be signed.
+
+Fields that you can use in your template:
+- Order number: {pedido_num}
+- Order date: {pedido_fecha}
+- Order total: {pedido_total}
+- Order note: {pedido_nota}
+- Full name: {nombre}
+- NIF: {nif}
+- Email: {email}
+- Phone: {telefono}
+- Address 1 and 2: {direccion_1} and {direccion_2}
+- City: {ciudad}
+- State: {provincia}
+- Zip code: {codigo_postal}
+- Country: {pais}
+- Payment method: {metodo_pago}
+
 **Firmafy use examples:**
 
 Does you client need to sign a direct debit document? You can create a direct debit template with Firmafy and getting it signed automatically in your WordPress, without doing anything.
@@ -68,6 +90,9 @@ WordPress installation and then activate the Plugin from Plugins page.
 [Official Repository GitHub](https://github.com/closemarketing/firmafy/)
 
 == Changelog ==
+= 1.1.3 =
+*	Added: Added new fields in WooCommerce template.
+
 = 1.1.2 =
 *	Fix: Conflict with FormsCRM settings.
 
