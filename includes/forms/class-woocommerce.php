@@ -27,7 +27,7 @@ class Firmafy_WooCommerce {
 		$this->settings = get_option( 'firmafy_options' );
 		$firmafy_woocommerce = isset( $this->settings['woocommerce'] ) ? $this->settings['woocommerce'] : 'no';
 		if ( 'yes' === $firmafy_woocommerce ) {
-			add_action( 'woocommerce_new_order', array( $this, 'crm_process_entry' ), 10, 2 );
+			add_action( 'woocommerce_new_order', array( $this, 'process_entry' ), 10, 2 );
 
 			// EU VAT.
 			add_filter( 'woocommerce_billing_fields', array( $this, 'add_billing_fields' ) );
@@ -52,81 +52,80 @@ class Firmafy_WooCommerce {
 	 * Process the entry.
 	 *
 	 * @param int    $order_id Order ID.
-	 * @param object $order    Order.
+	 * @param object $order Order object.
 	 * @return void
 	 */
-	public function crm_process_entry( $order_id, $order ) {
+	public function process_entry( $order_id, $order ) {
 		global $helpers_firmafy;
-		$woocommerce_mode = isset( $this->settings['woocommerce_mode'] ) ? $this->settings['woocommerce_mode'] : 'orders';
+		$merge_vars = array(
+			array(
+				'name'  => 'pedido_numero',
+				'value' => $order->get_id(),
+			),
+			array(
+				'name'  => 'pedido_fecha',
+				'value' => $order->get_date_created()->date( 'd/m/Y' ),
+			),
+			array(
+				'name'  => 'pedido_total',
+				'value' => $order->get_total(),
+			),
+			array(
+				'name'  => 'pedido_nota',
+				'value' => $order->get_customer_note(),
+			),
+			array(
+				'name'  => 'metodo_pago',
+				'value' => $order->get_payment_method_title(),
+			),
+			array(
+				'name'  => 'nombre',
+				'value' => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
+			),
+			array(
+				'name'  => 'nif',
+				'value' => $order->get_meta( '_billing_vat', true ),
+			),
+			array(
+				'name'  => 'empresa',
+				'value' => $order->get_billing_company(),
+			),
+			array(
+				'name'  => 'email',
+				'value' => $order->get_billing_email(),
+			),
+			array(
+				'name'  => 'telefono',
+				'value' => $order->get_billing_phone(),
+			),
+			array(
+				'name'  => 'direccion_1',
+				'value' => $order->get_billing_address_1(),
+			),
+			array(
+				'name'  => 'direccion_2',
+				'value' => $order->get_billing_address_2(),
+			),
+			array(
+				'name'  => 'ciudad',
+				'value' => $order->get_billing_city(),
+			),
+			array(
+				'name'  => 'provincia',
+				'value' => $order->get_billing_state(),
+			),
+			array(
+				'name'  => 'codigo_postal',
+				'value' => $order->get_billing_postcode(),
+			),
+			array(
+				'name'  => 'pais',
+				'value' => $order->get_billing_country(),
+			),
+		);
 
-		// Orders.
-		if ( 'orders' === $woocommerce_mode || 'all' === $woocommerce_mode ) {
-			$merge_vars = array(
-				array(
-					'name'  => 'pedido_num',
-					'value' => $order->get_id(),
-				),
-				array(
-					'name'  => 'pedido_fecha',
-					'value' => $order->get_date_created()->date( 'd/m/Y' ),
-				),
-				array(
-					'name'  => 'pedido_total',
-					'value' => $order->get_total(),
-				),
-				array(
-					'name'  => 'pedido_nota',
-					'value' => $order->get_customer_note(),
-				),
-				array(
-					'name'  => 'metodo_pago',
-					'value' => $order->get_payment_method_title(),
-				),
-				array(
-					'name'  => 'nombre',
-					'value' => $order->get_billing_first_name() . ' ' . $order->get_billing_last_name(),
-				),
-				array(
-					'name'  => 'nif',
-					'value' => $order->get_meta( '_billing_vat', true ),
-				),
-				array(
-					'name'  => 'empresa',
-					'value' => $order->get_company(),
-				),
-				array(
-					'name'  => 'email',
-					'value' => $order->get_billing_email(),
-				),
-				array(
-					'name'  => 'telefono',
-					'value' => $order->get_billing_phone(),
-				),
-				array(
-					'name'  => 'direccion_1',
-					'value' => $order->get_billing_address_1(),
-				),
-				array(
-					'name'  => 'direccion_2',
-					'value' => $order->get_billing_address_2(),
-				),
-				array(
-					'name'  => 'ciudad',
-					'value' => $order->get_billing_city(),
-				),
-				array(
-					'name'  => 'provincia',
-					'value' => $order->get_billing_state(),
-				),
-				array(
-					'name'  => 'codigo_postal',
-					'value' => $order->get_billing_postcode(),
-				),
-				array(
-					'name'  => 'pais',
-					'value' => $order->get_billing_country(),
-				),
-			);
+		$template_id     = wc_terms_and_conditions_page_id();
+		$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, true );
 
 			$template_id     = wc_terms_and_conditions_page_id();
 			$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, array(), true );
