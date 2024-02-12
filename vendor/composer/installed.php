@@ -1,42 +1,41 @@
-<?php return array (
-  'root' => 
-  array (
-    'pretty_version' => 'dev-develop',
-    'version' => 'dev-develop',
-    'aliases' => 
-    array (
+<?php return array(
+    'root' => array(
+        'name' => '__root__',
+        'pretty_version' => 'dev-develop',
+        'version' => 'dev-develop',
+        'reference' => 'e2793614c9f9e652064a45c89d55c60497cd114d',
+        'type' => 'library',
+        'install_path' => __DIR__ . '/../../',
+        'aliases' => array(),
+        'dev' => true,
     ),
-    'reference' => '3077825927a5a9693be6cb81ac943588ce543521',
-    'name' => '__root__',
-  ),
-  'versions' => 
-  array (
-    '__root__' => 
-    array (
-      'pretty_version' => 'dev-develop',
-      'version' => 'dev-develop',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '3077825927a5a9693be6cb81ac943588ce543521',
+    'versions' => array(
+        '__root__' => array(
+            'pretty_version' => 'dev-develop',
+            'version' => 'dev-develop',
+            'reference' => 'e2793614c9f9e652064a45c89d55c60497cd114d',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../../',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'spipu/html2pdf' => array(
+            'pretty_version' => 'v5.2.8',
+            'version' => '5.2.8.0',
+            'reference' => '6c94dcd48c94c6c73f206629839c1ebd81e8c726',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../spipu/html2pdf',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
+        'tecnickcom/tcpdf' => array(
+            'pretty_version' => '6.6.5',
+            'version' => '6.6.5.0',
+            'reference' => '5fce932fcee4371865314ab7f6c0d85423c5c7ce',
+            'type' => 'library',
+            'install_path' => __DIR__ . '/../tecnickcom/tcpdf',
+            'aliases' => array(),
+            'dev_requirement' => false,
+        ),
     ),
-    'spipu/html2pdf' => 
-    array (
-      'pretty_version' => 'v5.2.5',
-      'version' => '5.2.5.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => 'c002749cf21733d53fb9e50d082ca3d1bde06c85',
-    ),
-    'tecnickcom/tcpdf' => 
-    array (
-      'pretty_version' => '6.4.4',
-      'version' => '6.4.4.0',
-      'aliases' => 
-      array (
-      ),
-      'reference' => '42cd0f9786af7e5db4fcedaa66f717b0d0032320',
-    ),
-  ),
 );
