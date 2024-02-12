@@ -379,10 +379,10 @@ class FIRMAFY_ADMIN_SETTINGS {
 	public function notification_callback() {
 		$notification = isset( $this->firmafy_settings['notification'] ) ? (array) $this->firmafy_settings['notification'] : array();
 		echo '<input type="checkbox" name="notification[]" value="sms" ';
-		echo checked( in_array( 'sms', $notification ), 1 ) . ' />';
+		echo checked( in_array( 'sms', $notification, true ), 1 ) . ' />';
 		echo '<label for="notification">SMS</label>';
 		echo '<br/><input type="checkbox" name="notification[]" value="email" ';
-		echo checked( in_array( 'email', $notification ), 1 ) . ' />';
+		echo checked( in_array( 'email', $notification, true ), 1 ) . ' />';
 		echo '<label for="notification">Email</label>';
 	}
 
@@ -401,10 +401,17 @@ class FIRMAFY_ADMIN_SETTINGS {
 		<br/>
 		<label for="woocommerce">
 			<?php
-			echo sprintf(
-				// translators: %s edit woocommerce settings.
-				esc_html__( 'You will need to setup the <a href="%s">Terms and conditions page</a>', 'firmafy' ),
-				esc_url( admin_url( 'admin.php?page=wc-settings&tab=advanced' ) )
+			echo wp_kses( // phpcs:ignore
+				sprintf(
+					// translators: %s edit woocommerce settings.
+					__( 'You will need to setup the <a href="%s">Terms and conditions page</a>', 'firmafy' ),
+					admin_url( 'admin.php?page=wc-settings&tab=advanced' )
+				),
+				array(
+					'a' => array(
+						'href' => array(),
+					),
+				)
 			);
 			?>
 		</label>
