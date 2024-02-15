@@ -219,7 +219,7 @@ class Helpers_Firmafy {
 	/**
 	 * Creates and generates PDF for signature
 	 *
-	 * @param string $template
+	 * @param string $template_id
 	 * @return void
 	 */
 	public function create_entry( $template_id, $merge_vars, $signers = array(), $add_header = false ) {
@@ -239,8 +239,8 @@ class Helpers_Firmafy {
 
 		if ( ! empty( $signers ) && isset( $settings['signers'] ) ) {
 			$company_signers = $settings['signers'];
-			$delete = array_diff( array_column( $company_signers, 'nif' ), $signers );
-			
+			$delete          = array_diff( array_column( $company_signers, 'nif' ), $signers );
+
 			foreach ( $delete as $key => $value ) {
 				if ( isset( $company_signers[ $key ] ) ) {
 					unset( $company_signers[ $key ] );
@@ -285,7 +285,7 @@ class Helpers_Firmafy {
 
 		$template_content = $this->replace_tags( $template_content, $template_id );
 
-		// Generates PDF
+		// Generates PDF.
 		$filename   = 'firmafy-' . sanitize_title( get_bloginfo( 'name' ) ) . '-' . date( 'Y-m-d-H-i' ) . '.pdf';
 
 		$content = '<page style="margin-top:10mm;" backcolor="#fff">';
@@ -305,7 +305,7 @@ class Helpers_Firmafy {
 		$content .= $template_content;
 		$content .= '</page>';
 
-		// Creates PDF;
+		// Creates PDF.
 		$lang = isset( explode( '_', get_locale() )[0] ) ? explode( '_', get_locale() )[0] : 'en';
 		try {
 			$html2pdf  = new Html2Pdf(
@@ -329,7 +329,7 @@ class Helpers_Firmafy {
 
 		$token         = $this->login();
 		$final_signers = ! empty( $company_signers ) ? array_merge( array( $signer ), $company_signers ) : array( $signer );
-		// Sends to Firmafy
+		// Sends to Firmafy.
 		$query = array(
 			'id_show'    => $id_show,
 			'subject'    => get_the_title( $template_id ),

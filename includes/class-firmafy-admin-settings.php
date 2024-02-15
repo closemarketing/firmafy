@@ -258,8 +258,8 @@ class FIRMAFY_ADMIN_SETTINGS {
 	}
 
 	/**
-	 * # API Settings
-	 * ---------------------------------------------------------------------------------------------------- */
+	 * ## API Settings
+	 * --------------------------- */
 
 	/**
 	 * Sanitize fiels before saves in DB
@@ -466,7 +466,7 @@ class FIRMAFY_ADMIN_SETTINGS {
 					<?php
 					printf(
 						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][nombre]" value="%s">',
-						$idx,
+						(int) $idx,
 						isset( $signers[ $idx ]['nombre'] ) ? esc_html( $signers[ $idx ]['nombre'] ) : ''
 					);
 					?>
@@ -476,7 +476,7 @@ class FIRMAFY_ADMIN_SETTINGS {
 					<?php
 					printf(
 						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][nif]" value="%s">',
-						$idx,
+						(int) $idx,
 						isset( $signers[ $idx ]['nif'] ) ? esc_html( $signers[ $idx ]['nif'] ) : ''
 					);
 					?>
@@ -486,7 +486,7 @@ class FIRMAFY_ADMIN_SETTINGS {
 					<?php
 					printf(
 						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][cargo]" value="%s">',
-						$idx,
+						(int) $idx,
 						isset( $signers[ $idx ]['cargo'] ) ? esc_html( $signers[ $idx ]['cargo'] ) : ''
 					);
 					?>
@@ -496,7 +496,7 @@ class FIRMAFY_ADMIN_SETTINGS {
 					<?php
 					printf(
 						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][email]" value="%s">',
-						$idx,
+						(int) $idx,
 						isset( $signers[ $idx ]['email'] ) ? esc_html( $signers[ $idx ]['email'] ) : ''
 					);
 					?>
@@ -506,7 +506,7 @@ class FIRMAFY_ADMIN_SETTINGS {
 					<?php
 					printf(
 						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][telefono]" value="%s">',
-						$idx,
+						(int) $idx,
 						isset( $signers[ $idx ]['telefono'] ) ? esc_html( $signers[ $idx ]['telefono'] ) : ''
 					);
 					?>
@@ -516,7 +516,7 @@ class FIRMAFY_ADMIN_SETTINGS {
 					<?php
 					printf(
 						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][empresa]" value="%s">',
-						$idx,
+						(int) $idx,
 						isset( $signers[ $idx ]['empresa'] ) ? esc_html( $signers[ $idx ]['empresa'] ) : ''
 					);
 					?>
@@ -526,7 +526,7 @@ class FIRMAFY_ADMIN_SETTINGS {
 					<?php
 					printf(
 						'<input class="regular-text" type="text" name="firmafy_options[signers][%s][cif]" value="%s">',
-						$idx,
+						(int) $idx,
 						isset( $signers[ $idx ]['cif'] ) ? esc_html( $signers[ $idx ]['cif'] ) : ''
 					);
 					?>
