@@ -25,26 +25,36 @@ class Helpers_Firmafy {
 	/**
 	 * POSTS API from Firmafy
 	 *
-	 * @param string $apikey API Key.
-	 * @param string $module Module.
+	 * @param array  $credentials Credentials.
+	 * @param string $action Action.
 	 * @param string $query Query.
 	 * @return array
 	 */
-	public function api_post( $username, $password, $action, $query = array() ) {
-		if ( ! $username && ! $password ) {
-			return array(
-				'status' => 'error',
-				'data'   => 'No credentials',
+	public function api_post( $credentials, $action, $query = array() ) {
+		$args['timeout'] = 120;
+		if ( 'webhook' === $action ) {
+			$args['body'] = array(
+				'action'  => $action,
+				'id_show' => isset( $credentials['id_show'] ) ? $credentials['id_show'] : '',
+				'token'   => isset( $credentials['token'] ) ? $credentials['token'] : '',
+				'type'    => 1,
+				'method'  => 1,
 			);
-		}
-		$args     = array(
-			'timeout' => 120,
-			'body'    => array(
+		} else {
+			$username = isset( $credentials['username'] ) ? $credentials['username'] : '';
+			$password = isset( $credentials['password'] ) ? $credentials['password'] : '';
+			if ( ! $username && ! $password ) {
+				return array(
+					'status' => 'error',
+					'data'   => 'No credentials',
+				);
+			}
+			$args['body'] = array(
 				'action'   => $action,
 				'usuario'  => $username,
 				'password' => $password,
-			)
-		);
+			);
+		}
 		if ( ! empty( $query ) ) {
 			$args['body'] = array_merge( $args['body'], $query );
 		}
@@ -74,12 +84,38 @@ class Helpers_Firmafy {
 	 */
 	public function login( $username = '', $password = '' ) {
 		if ( empty( $username ) || empty( $password ) ) {
-			$settings = get_option( 'firmafy_options' );
-			$username = isset( $settings['username'] ) ? $settings['username'] : '';
-			$password = isset( $settings['password'] ) ? $settings['password'] : '';
+			$credentials = get_option( 'firmafy_options' );
+		} else {
+			$credentials = array(
+				'username' => $username,
+				'password' => $password,
+			);
 		}
 
-		return $this->api_post( $username, $password, 'login' );
+		return $this->api_post( $credentials, 'login' );
+	}
+
+	/**
+	 * Send Webhook options
+	 *
+	 * @param array $credentials Credentials.
+	 *
+	 * @return boolean
+	 */
+	public function webhook( $credentials ) {
+		if ( empty( $token ) ) {
+			$result = $this->login();
+			$token  = ! empty( $result['data'] ) ? $result['data'] : '';
+		}
+
+		$result = $this->api_post(
+			$credentials,
+			'webhook',
+			array(
+				'url_webhook' => get_rest_url( null, 'firmafy/v1/webhook' ),
+			)
+		);
+		return 'ok' === $result['status'] ? true : false;
 	}
 
 	/**
@@ -224,8 +260,6 @@ class Helpers_Firmafy {
 	 */
 	public function create_entry( $template_id, $merge_vars, $signers = array(), $add_header = false ) {
 		$settings         = get_option( 'firmafy_options' );
-		$username         = isset( $settings['username'] ) ? $settings['username'] : '';
-		$password         = isset( $settings['password'] ) ? $settings['password'] : '';
 		$id_show          = isset( $settings['id_show'] ) ? $settings['id_show'] : '';
 		$font             = isset( $settings['font'] ) ? $settings['font'] : 'helvetica';
 		$signer           = array();
@@ -260,7 +294,7 @@ class Helpers_Firmafy {
 
 		$temp_content_pre .= get_the_content( '', false, $template_id );
 
-		// Replace merge vars for values
+		// Replace merge vars for values.
 		$secure_mode = isset( $settings['secure_mode'] ) && 'yes' === $settings['secure_mode'] ? true : false;
 		// Prevents conflict with web sytles.
 		if ( $secure_mode ) {
@@ -338,7 +372,7 @@ class Helpers_Firmafy {
 			'pdf_name'   => $filename,
 			'pdf_base64' => chunk_split( base64_encode( $pdf_content ) ),
 		);
-		$result_api = $this->api_post( $username, $password, 'request', $query );
+		$result_api = $this->api_post( $settings, 'request', $query );
 
 		return $result_api;
 	}
