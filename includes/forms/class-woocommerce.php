@@ -19,12 +19,18 @@ defined( 'ABSPATH' ) || exit;
  * @version    1.0
  */
 class Firmafy_WooCommerce {
+	/**
+	 * Settings
+	 *
+	 * @var array
+	 */
 	private $settings;
+
 	/**
 	 * Construct of class
 	 */
 	public function __construct() {
-		$this->settings = get_option( 'firmafy_options' );
+		$this->settings      = get_option( 'firmafy_options' );
 		$firmafy_woocommerce = isset( $this->settings['woocommerce'] ) ? $this->settings['woocommerce'] : 'no';
 		if ( 'yes' === $firmafy_woocommerce ) {
 			add_action( 'woocommerce_new_order', array( $this, 'process_entry' ), 10, 2 );
@@ -124,23 +130,26 @@ class Firmafy_WooCommerce {
 			),
 		);
 
-		$template_id     = wc_terms_and_conditions_page_id();
-		$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, true );
+		$woocommerce_mode = isset( $this->settings['woocommerce_mode'] ) ? $this->settings['woocommerce_mode'] : 'all';
+		// Terms and conditions Sign.
+		if ( 'orders' === $woocommerce_mode || 'all' === $woocommerce_mode ) {
+			$template_id     = wc_terms_and_conditions_page_id();
+			$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, true );
 
-		$template_id     = wc_terms_and_conditions_page_id();
-		$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, array(), true );
+			$template_id     = wc_terms_and_conditions_page_id();
+			$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, array(), true );
 
-		if ( 'error' === $response_result['status'] ) {
-			$order_msg = __( 'Order sent correctly to Firmafy', 'firmafy' );
-		} else {
-			$order_msg = __( 'There was an error sending the order to Firmafy', 'firmafy' );
+			if ( 'error' === $response_result['status'] ) {
+				$order_msg = __( 'Order sent correctly to Firmafy', 'firmafy' );
+			} else {
+				$order_msg = __( 'There was an error sending the order to Firmafy', 'firmafy' );
+			}
+			$order->add_order_note( $order_msg );
 		}
-		$order->add_order_note( $order_msg );
 
 		// Products.
 		if ( 'products' === $woocommerce_mode || 'all' === $woocommerce_mode ) {
-			$ordered_items  = $order->get_items();
-
+			$ordered_items = $order->get_items();
 			foreach ( $ordered_items as $order_item ) {
 				$product_id = $order_item['product_id'];
 
@@ -149,7 +158,7 @@ class Firmafy_WooCommerce {
 				if ( empty( $firmafy_options ) ) {
 					continue;
 				}
-				$template_id     = isset( $firmafy_options['template'] ) ? $firmafy_options['template'] : 0;
+				$template_id = isset( $firmafy_options['template'] ) ? $firmafy_options['template'] : 0;
 				unset( $firmafy_options['template'] );
 
 				$merge_vars = array();
@@ -171,9 +180,10 @@ class Firmafy_WooCommerce {
 				$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, array(), true );
 
 				if ( 'error' === $response_result['status'] ) {
-					$order_msg = __( 'Order sent correctly to Firmafy', 'firmafy' );
+					$order_msg  = __( 'There was an error sending the order to Firmafy', 'firmafy' );
+					$order_msg .= ' ' . $response_result['data'];
 				} else {
-					$order_msg = __( 'There was an error sending the order to Firmafy', 'firmafy' );
+					$order_msg = __( 'Order sent correctly to Firmafy', 'firmafy' );
 				}
 				$order->add_order_note( $order_msg );
 			}
@@ -209,7 +219,6 @@ class Firmafy_WooCommerce {
 	}
 
 	public function add_billing_fields( $fields ) {
-
 		$field = array(
 			'billing_vat' => array(
 				'label'       => apply_filters( 'vatssn_label', __( 'VAT No', 'firmafy' ) ),
@@ -353,7 +362,7 @@ class Firmafy_WooCommerce {
 			FIRMAFY_VERSION,
 			true
 		);
-	
+
 		wp_localize_script(
 			'firmafy-product',
 			'ajaxAction',
@@ -363,16 +372,16 @@ class Firmafy_WooCommerce {
 			)
 		);
 	}
-	
+
 	/**
 	 * Ajax function to load info
 	 *
 	 * @return void
 	 */
 	public function firmafy_product_fields() {
-		$firmafy_template = isset( $_POST['firmafy_template'] ) ? (int) esc_attr( $_POST['firmafy_template'] ) : 0;
-		$post_id          = isset( $_POST['post_id'] ) ? (int) esc_attr( $_POST['post_id'] ) : 0;
-	
+		$firmafy_template = isset( $_POST['firmafy_template'] ) ? (int) $_POST['firmafy_template'] : 0;
+		$post_id          = isset( $_POST['post_id'] ) ? (int) $_POST['post_id'] : 0;
+
 		check_ajax_referer( 'firmafy_product_fields_nonce', 'nonce' );
 		if ( true ) {
 			$html = $this->get_table_fields( $firmafy_template, $post_id );
@@ -385,19 +394,21 @@ class Firmafy_WooCommerce {
 	/**
 	 * Returns Table fields
 	 *
-	 * @param int $firmafy_template
+	 * @param int $firmafy_template Firmafy template.
+	 * @param int $post_id Post id.
+	 *
 	 * @return html
 	 */
 	private function get_table_fields( $firmafy_template, $post_id ) {
 		global $helpers_firmafy;
-		if ( 0 === $firmafy_template || '' === $firmafy_template ) {
+		if ( empty( $firmafy_template ) ) {
 			return '';
 		}
 		$firmafy_options  = get_post_meta( $post_id, 'firmafy', true );
 
 		$html = '<table>';
 		$firmafy_fields = $helpers_firmafy->get_variables_template( $firmafy_template );
-		
+
 		$html .= '<tr>';
 		$html .= '<th>' . __( 'Template', 'firmafy' ) . '</th>';
 		$html .= '<th>' . __( 'Order Field', 'firmafy' ) . '</th>';
@@ -434,7 +445,7 @@ class Firmafy_WooCommerce {
 	 * @param int $post_id Post id.
 	 * @return void
 	 */
-	function save_metaboxes_product( $post_id ) {
+	public function save_metaboxes_product( $post_id ) {
 		global $helpers_firmafy;
 		if ( isset( $_POST['firmafy_template'] ) ) {
 			$firmafy_options = array(

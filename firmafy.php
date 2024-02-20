@@ -42,6 +42,7 @@ function firmafy_plugin_init() {
 require_once FIRMAFY_PLUGIN_PATH . 'includes/forms/helpers-functions.php';
 require_once FIRMAFY_PLUGIN_PATH . 'includes/class-helpers-firmafy.php';
 require_once FIRMAFY_PLUGIN_PATH . 'includes/class-firmafy-admin-settings.php';
+require_once FIRMAFY_PLUGIN_PATH . 'includes/class-firmafy-api-webhook.php';
 
 
 // Prevents fatal error is_plugin_active.

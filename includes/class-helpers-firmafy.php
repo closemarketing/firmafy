@@ -65,7 +65,7 @@ class Helpers_Firmafy {
 		if ( isset( $body['error'] ) && $body['error'] ) {
 			return array(
 				'status' => 'error',
-				'data'   => isset( $body['error_message'] ) ? $body['error_message'] : '',
+				'data'   => isset( $body['message'] ) ? $body['message'] : '',
 			);
 		} else {
 			return array(
@@ -255,8 +255,12 @@ class Helpers_Firmafy {
 	/**
 	 * Creates and generates PDF for signature
 	 *
-	 * @param string $template_id
-	 * @return void
+	 * @param string  $template_id Template ID.
+	 * @param array   $merge_vars Merge Vars.
+	 * @param array   $signers Signers.
+	 * @param boolean $add_header Add Header.
+	 *
+	 * @return array
 	 */
 	public function create_entry( $template_id, $merge_vars, $signers = array(), $add_header = false ) {
 		$settings         = get_option( 'firmafy_options' );
@@ -314,15 +318,15 @@ class Helpers_Firmafy {
 				}
 			}
 		}
-		$notification = isset( $settings['notification'] ) ? (array) $settings['notification'] : ['email'];
+		$notification                 = isset( $settings['notification'] ) ? (array) $settings['notification'] : $settings['email'];
 		$signer['type_notifications'] = implode( ',', $notification );
 
 		$template_content = $this->replace_tags( $template_content, $template_id );
 
 		// Generates PDF.
-		$filename   = 'firmafy-' . sanitize_title( get_bloginfo( 'name' ) ) . '-' . date( 'Y-m-d-H-i' ) . '.pdf';
+		$filename = 'firmafy-' . sanitize_title( get_bloginfo( 'name' ) ) . '-' . gmdate( 'Y-m-d-H-i' ) . '.pdf';
 
-		$content = '<page style="margin-top:10mm;" backcolor="#fff">';
+		$content  = '<page style="margin-top:10mm;" backcolor="#fff">';
 		$content .= '<style>';
 		// Gets Template Style.
 		$template_css_file = get_template_directory() . '/style.css';
