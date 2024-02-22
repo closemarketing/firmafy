@@ -49,6 +49,36 @@ class Firmafy_API_Webhook {
 		$body = $request->get_body();
 		$body = json_decode( $body, true );
 
+		if ( ! isset( $body['csv'] ) ) {
+			return new WP_REST_Response( 'Invalid request', 400 );
+		}
+
+		$sign_csv    = sanitize_text_field( $body['csv'] );
+		$sign_status = sanitize_text_field( $body['status'] );
+
+		// Search order by meta.
+		$args = array(
+			'meta_key'     => '_firmafy_csv',
+			'meta_value'   => $sign_csv,
+			'meta_compare' => '=',
+			'return'       => 'ids',
+		);
+		$orders = wc_get_orders( $args );
+
+		if ( empty( $orders ) ) {
+			$log        = new WC_Logger();
+			$log_entry  = __( 'Order not found asked from Firmafy', 'firmafy' );
+			$log_entry .= ' CSV: ' . $sign_csv . ' Status: ' . $sign_status;
+			$log->log( 'firmafy', $log_entry );
+			return new WP_REST_Response( 'Order not found', 404 );
+		}
+		foreach ( $orders as $order ) {
+			$order = wc_get_order( $order );
+			$order->update_meta_data( '_firmafy_status', $sign_status );
+			$order->update_meta_data( '_firmafy_data', $body );
+			$order->save();
+		}
+
 		return new WP_REST_Response( 'OK', 200 );
 	}
 }
