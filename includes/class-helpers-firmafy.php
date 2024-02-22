@@ -63,16 +63,17 @@ class Helpers_Firmafy {
 		$body        = json_decode( $result_body, true );
 
 		if ( isset( $body['error'] ) && $body['error'] ) {
-			return array(
+			$result = array(
 				'status' => 'error',
 				'data'   => isset( $body['message'] ) ? $body['message'] : '',
 			);
 		} else {
-			return array(
+			$result = array(
 				'status' => 'ok',
 				'data'   => isset( $body['data'] ) ? $body['data'] : '',
 			);
 		}
+		return $result;
 	}
 
 	/**

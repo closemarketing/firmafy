@@ -184,6 +184,7 @@ class Firmafy_WooCommerce {
 					$order_msg .= ' ' . $response_result['data'];
 				} else {
 					$order_msg = __( 'Order sent correctly to Firmafy', 'firmafy' );
+					$order->add_meta_data( '_firmafy_csv', $response_result['data'], true );
 				}
 				$order->add_order_note( $order_msg );
 			}
@@ -196,7 +197,7 @@ class Firmafy_WooCommerce {
 	 * @param array $source   Source.
 	 * @param array $need     Order.
 	 * @param array $previous Order.
-	 * 
+	 *
 	 * @return array
 	 * @since 1.0.0
 	 */
