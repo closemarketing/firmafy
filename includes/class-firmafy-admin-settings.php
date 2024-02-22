@@ -403,10 +403,11 @@ class FIRMAFY_ADMIN_SETTINGS {
 	 * @return void
 	 */
 	public function woocommerce_callback() {
+		$woocommerce = isset( $this->firmafy_settings['woocommerce'] ) ? $this->firmafy_settings['woocommerce'] : 'no';
 		?>
 		<select name="firmafy_options[woocommerce]" id="woocommerce">
-			<option value="no" <?php selected( $this->firmafy_settings['woocommerce'], 'no' ); ?>><?php esc_html_e( 'No', 'firmafy' ); ?></option>
-			<option value="yes" <?php selected( $this->firmafy_settings['woocommerce'], 'yes' ); ?>><?php esc_html_e( 'Yes', 'firmafy' ); ?></option>
+			<option value="no" <?php selected( $woocommerce, 'no' ); ?>><?php esc_html_e( 'No', 'firmafy' ); ?></option>
+			<option value="yes" <?php selected( $woocommerce, 'yes' ); ?>><?php esc_html_e( 'Yes', 'firmafy' ); ?></option>
 		</select><br/>
 		<label for="woocommerce"><?php esc_html_e( 'This adds a NIF field required for Firmafy and signs the order when the order is placed.', 'firmafy' ); ?></label>
 		<br/>
@@ -435,11 +436,12 @@ class FIRMAFY_ADMIN_SETTINGS {
 	 * @return void
 	 */
 	public function woocommerce_mode_callback() {
+		$woocommerce_mode = isset( $this->firmafy_settings['woocommerce_mode'] ) ? $this->firmafy_settings['woocommerce_mode'] : 'products';
 		?>
 		<select name="firmafy_options[woocommerce_mode]" id="woocommerce_mode">
-			<option value="orders" <?php selected( $this->firmafy_settings['woocommerce_mode'], 'orders' ); ?>><?php esc_html_e( 'Only Orders', 'firmafy' ); ?></option>
-			<option value="products" <?php selected( $this->firmafy_settings['woocommerce_mode'], 'products' ); ?>><?php esc_html_e( 'Only Products', 'firmafy' ); ?></option>
-			<option value="all" <?php selected( $this->firmafy_settings['woocommerce_mode'], 'all' ); ?>><?php esc_html_e( 'Orders and products', 'firmafy' ); ?></option>
+			<option value="orders" <?php selected( $woocommerce_mode, 'orders' ); ?>><?php esc_html_e( 'Only Orders', 'firmafy' ); ?></option>
+			<option value="products" <?php selected( $woocommerce_mode, 'products' ); ?>><?php esc_html_e( 'Only Products', 'firmafy' ); ?></option>
+			<option value="all" <?php selected( $woocommerce_mode, 'all' ); ?>><?php esc_html_e( 'Orders and products', 'firmafy' ); ?></option>
 		</select>
 		<?php
 	}
@@ -450,10 +452,11 @@ class FIRMAFY_ADMIN_SETTINGS {
 	 * @return void
 	 */
 	public function secure_mode_callback() {
+		$secure_mode = isset( $this->firmafy_settings['secure_mode'] ) ? $this->firmafy_settings['secure_mode'] : 'no';
 		?>
 		<select name="firmafy_options[secure_mode]" id="secure_mode">
-			<option value="no" <?php selected( $this->firmafy_settings['secure_mode'], 'no' ); ?>><?php esc_html_e( 'No', 'firmafy' ); ?></option>
-			<option value="yes" <?php selected( $this->firmafy_settings['secure_mode'], 'yes' ); ?>><?php esc_html_e( 'Yes', 'firmafy' ); ?></option>
+			<option value="no" <?php selected( $secure_mode, 'no' ); ?>><?php esc_html_e( 'No', 'firmafy' ); ?></option>
+			<option value="yes" <?php selected( $secure_mode, 'yes' ); ?>><?php esc_html_e( 'Yes', 'firmafy' ); ?></option>
 		</select><br/>
 		<label for="secure_mode"><?php esc_html_e( 'Sometimes there is a problem generating the PDF from web style. You can force to create the PDF without styles.', 'firmafy' ); ?></label>
 		<?php
