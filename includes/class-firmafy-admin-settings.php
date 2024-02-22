@@ -703,17 +703,16 @@ class FIRMAFY_ADMIN_SETTINGS {
 
 			if ( file_exists( $file_template ) && ! $post_exists ) {
 				$template_post = array(
-					'post_title'    => isset( $template['title'] ) ? wp_strip_all_tags( $template['title'] ) : '',
-					'post_name'     => isset( $template['slug'] ) ? wp_strip_all_tags( $template['slug'] ) : '',
-					'post_content'  => file_get_contents( $file_template ),
-					'post_status'   => 'publish',
-					'post_type'     => 'firmafy_template',
+					'post_title'   => isset( $template['title'] ) ? wp_strip_all_tags( $template['title'] ) : '',
+					'post_name'    => isset( $template['slug'] ) ? wp_strip_all_tags( $template['slug'] ) : '',
+					'post_content' => file_get_contents( $file_template ),
+					'post_status'  => 'publish',
+					'post_type'    => 'firmafy_template',
 				);
 				// Insert the post into the database.
 				wp_insert_post( $template_post );
 			}
 		}
-
 	}
 }
 
