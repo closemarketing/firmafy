@@ -53,20 +53,37 @@ class Firmafy_Widgets_ECommerce {
 	 * @return void
 	 */
 	public function metabox_show_order( $post ) {
-		$order          = wc_get_order( $post->ID );
-		$firmafy_csv    = $order->get_meta( '_firmafy_csv' );
-		$firmafy_status = $order->get_meta( '_firmafy_status' );
+		$order       = wc_get_order( $post->ID );
+		$sign_csv    = $order->get_meta( '_firmafy_csv' );
+		$sign_status = $order->get_meta( '_firmafy_status' );
 
 		echo '<table>';
 		echo '<tr><td colspan="2"><strong>' . esc_html__( 'Data:', 'firmafy' ) . '</strong></td></tr>';
 		echo '<tr><td>CSV:</td>';
-		echo '<td>' . esc_html( $firmafy_csv ) . '</td>';
+		echo '<td>' . esc_html( $sign_csv ) . '</td>';
 		echo '</tr>';
 
 		// Status.
 		echo '<tr><td>' . esc_html__( 'Status', 'firmafy' ) . ' :</td>';
-		echo '<td>' . esc_html( $firmafy_status ) . '</td>';
+		echo '<td>' . esc_html( $sign_status ) . '</td>';
 		echo '</tr>';
+
+		// Signers.
+		$sign_data = $order->get_meta( '_firmafy_data' );
+		if ( ! empty( $sign_data['signer'] ) ) {
+			echo '<tr><td colspan="2"><strong>' . esc_html__( 'Signers:', 'firmafy' ) . '</strong></td></tr>';
+			foreach ( $sign_data['signer'] as $signer ) {
+				echo '<tr>';
+				echo '<td><strong>' . esc_html__( 'Name', 'firmafy' ) . ':</strong></td>';
+				echo '<td>' . esc_html( $signer['name'] ) . '</td>';
+				echo '</tr>';
+
+				echo '<tr>';
+				$label_status = ! empty( $signer['status'] ) ? __( 'Signed', 'firmafy' ) : __( 'Not signed', 'firmafy' );
+				echo '<td colspan="2">' . esc_html( $label_status ) . '</td>';
+				echo '</tr>';
+			}
+		}
 
 		echo '</table>';
 	}
