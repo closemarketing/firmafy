@@ -26,10 +26,13 @@ class Firmafy_Widgets_ECommerce {
 		// Register Meta box for post type product.
 		add_action( 'add_meta_boxes', array( $this, 'metabox_firmafy' ) );
 
-		// Pedidos.
-		add_filter( 'manage_edit-shop_order_columns', array( $this, 'new_order_column' ) );
-		add_filter( 'manage_edit-shop_order_columns', array( $this, 'add_firmafy_status_column_header' ) );
-		add_action( 'manage_shop_order_posts_custom_column', array( $this, 'add_firmafy_status_column_content' ) );
+		// Order Columns HPOS.
+		add_filter( 'manage_woocommerce_page_wc-orders_columns', array( $this, 'add_firmafy_status_column_header' ), 20 );
+		add_action( 'manage_woocommerce_page_wc-orders_custom_column', array( $this, 'add_firmafy_status_column_content' ), 20, 2 );
+
+		// Order Columns CPT.
+		add_filter( 'manage_edit-shop_order_columns', array( $this, 'add_firmafy_status_column_header' ), 20 );
+		add_action( 'manage_shop_order_posts_custom_column', array( $this, 'add_firmafy_status_column_content' ), 20, 2 );
 	}
 	/**
 	 * Adds metabox
@@ -37,11 +40,15 @@ class Firmafy_Widgets_ECommerce {
 	 * @return void
 	 */
 	public function metabox_firmafy() {
+		$screen = 'woocommerce_page_wc-orders' === get_current_screen()->id
+		? wc_get_page_screen_id( 'shop-order' )
+		: 'shop_order';
+
 		add_meta_box(
 			'firmafy-order-widget',
 			__( 'Firmafy', 'firmafy' ),
 			array( $this, 'metabox_show_order' ),
-			array( 'shop_order' ),
+			$screen,
 			'side'
 		);
 	}
@@ -126,7 +133,10 @@ class Firmafy_Widgets_ECommerce {
 	public function add_firmafy_status_column_content( $column ) {
 		global $post;
 		if ( 'firmafy_status' === $column ) {
-			$order          = wc_get_order( $post->ID );
+			$order = wc_get_order( $post->ID );
+			if ( ! $order ) {
+				return;
+			}
 			$firmafy_status = $order->get_meta( '_firmafy_status', true );
 
 			echo esc_html( $firmafy_status );

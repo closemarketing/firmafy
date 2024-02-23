@@ -10,6 +10,9 @@
 
 defined( 'ABSPATH' ) || exit;
 
+use Automattic\WooCommerce\Internal\DataStores\Orders\CustomOrdersTableController;
+
+
 /**
  * Webhook.
  *
@@ -33,8 +36,9 @@ class Firmafy_API_Webhook {
 			'firmafy/v1',
 			'/webhook',
 			array(
-				'methods'  => 'POST',
-				'callback' => array( $this, 'process_webhook' ),
+				'methods'             => 'POST',
+				'callback'            => array( $this, 'process_webhook' ),
+				'permission_callback' => '__return_true',
 			)
 		);
 	}
@@ -75,11 +79,29 @@ class Firmafy_API_Webhook {
 		foreach ( $orders as $order ) {
 			$order = wc_get_order( $order );
 			$order->update_meta_data( '_firmafy_status', $sign_status );
-			$order->update_meta_data( '_firmafy_data', $body );
+			$order->update_meta_data( '_firmafy_data', $this->recursive_sanitize_array( $body ) );
 			$order->save();
 		}
 
 		return new WP_REST_Response( 'OK', 200 );
+	}
+
+	/**
+	 * Sanitizes Array
+	 *
+	 * @param array $array Array to sanitize.
+	 * @return array
+	 */
+	private function recursive_sanitize_array( $array ) {
+		foreach ( $array as $key => &$value ) {
+			if ( is_array( $value ) ) {
+				$value = $this->recursive_sanitize_array( $value );
+			} else {
+				$value = sanitize_text_field( $value );
+			}
+		}
+
+		return $array;
 	}
 }
 
