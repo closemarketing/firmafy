@@ -439,9 +439,8 @@ class FIRMAFY_ADMIN_SETTINGS {
 		$woocommerce_mode = isset( $this->firmafy_settings['woocommerce_mode'] ) ? $this->firmafy_settings['woocommerce_mode'] : 'products';
 		?>
 		<select name="firmafy_options[woocommerce_mode]" id="woocommerce_mode">
-			<option value="orders" <?php selected( $woocommerce_mode, 'orders' ); ?>><?php esc_html_e( 'Only Orders', 'firmafy' ); ?></option>
-			<option value="products" <?php selected( $woocommerce_mode, 'products' ); ?>><?php esc_html_e( 'Only Products', 'firmafy' ); ?></option>
-			<option value="all" <?php selected( $woocommerce_mode, 'all' ); ?>><?php esc_html_e( 'Orders and products', 'firmafy' ); ?></option>
+			<option value="orders" <?php selected( $woocommerce_mode, 'orders' ); ?>><?php esc_html_e( 'Terms and Conditions', 'firmafy' ); ?></option>
+			<option value="products" <?php selected( $woocommerce_mode, 'products' ); ?>><?php esc_html_e( 'Products', 'firmafy' ); ?></option>
 		</select>
 		<?php
 	}
