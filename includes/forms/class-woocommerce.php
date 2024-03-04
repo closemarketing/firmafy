@@ -33,7 +33,8 @@ class Firmafy_WooCommerce {
 		$this->settings      = get_option( 'firmafy_options' );
 		$firmafy_woocommerce = isset( $this->settings['woocommerce'] ) ? $this->settings['woocommerce'] : 'no';
 		if ( 'yes' === $firmafy_woocommerce ) {
-			add_action( 'woocommerce_new_order', array( $this, 'process_entry' ), 10, 2 );
+			$firmafy_woo_when = isset( $this->settings['woocommerce_when'] ) ? $this->settings['woocommerce_when'] : 'new_order';
+			add_action( 'woocommerce_' . $firmafy_woo_when, array( $this, 'process_entry' ), 10, 2 );
 
 			// EU VAT.
 			add_filter( 'woocommerce_billing_fields', array( $this, 'add_billing_fields' ) );

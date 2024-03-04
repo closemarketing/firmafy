@@ -251,6 +251,13 @@ class FIRMAFY_ADMIN_SETTINGS {
 				'admin_firmafy_settings'
 			);
 			add_settings_field(
+				'firmafy_woocommerce_when',
+				__( 'When do we generate the signature?', 'firmafy' ),
+				array( $this, 'woocommerce_when_callback' ),
+				'firmafy_options',
+				'admin_firmafy_settings'
+			);
+			add_settings_field(
 				'firmafy_woocommerce_mode',
 				__( 'Mode for signing orders?', 'firmafy' ),
 				array( $this, 'woocommerce_mode_callback' ),
@@ -300,6 +307,10 @@ class FIRMAFY_ADMIN_SETTINGS {
 
 		if ( isset( $input['woocommerce_mode'] ) ) {
 			$sanitary_values['woocommerce_mode'] = sanitize_text_field( $input['woocommerce_mode'] );
+		}
+
+		if ( isset( $input['woocommerce_when'] ) ) {
+			$sanitary_values['woocommerce_when'] = sanitize_text_field( $input['woocommerce_when'] );
 		}
 
 		if ( isset( $input['secure_mode'] ) ) {
@@ -427,6 +438,21 @@ class FIRMAFY_ADMIN_SETTINGS {
 			);
 			?>
 		</label>
+		<?php
+	}
+
+	/**
+	 * Woocommerce mode callback
+	 *
+	 * @return void
+	 */
+	public function woocommerce_when_callback() {
+		$woocommerce_when = isset( $this->firmafy_settings['woocommerce_when'] ) ? $this->firmafy_settings['woocommerce_when'] : 'new_order';
+		?>
+		<select name="firmafy_options[woocommerce_when]" id="woocommerce_when">
+			<option value="new_order" <?php selected( $woocommerce_when, 'new_order' ); ?>><?php esc_html_e( 'After a new order is created', 'firmafy' ); ?></option>
+			<option value="payment_complete" <?php selected( $woocommerce_when, 'payment_complete' ); ?>><?php esc_html_e( 'After the order is paid', 'firmafy' ); ?></option>
+		</select>
 		<?php
 	}
 
