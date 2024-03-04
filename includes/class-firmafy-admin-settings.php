@@ -236,7 +236,7 @@ class FIRMAFY_ADMIN_SETTINGS {
 
 		add_settings_field(
 			'firmafy_signers',
-			__( 'Self signers', 'firmafy' ),
+			__( 'Signers by default', 'firmafy' ),
 			array( $this, 'signers_callback' ),
 			'firmafy_options',
 			'admin_firmafy_settings'
