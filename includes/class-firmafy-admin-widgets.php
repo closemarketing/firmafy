@@ -81,18 +81,18 @@ class Firmafy_Widgets_ECommerce {
 			echo '<tr><td colspan="2"><strong>' . esc_html__( 'Signers:', 'firmafy' ) . '</strong></td></tr>';
 			foreach ( $sign_data['signer'] as $signer ) {
 				echo '<tr>';
-				echo '<td><strong>' . esc_html__( 'Name', 'firmafy' ) . ':</strong></td>';
 				echo '<td>' . esc_html( $signer['name'] ) . '</td>';
-				echo '</tr>';
 
-				echo '<tr>';
 				$label_status = ! empty( $signer['status'] ) ? __( 'Signed', 'firmafy' ) : __( 'Not signed', 'firmafy' );
-				echo '<td colspan="2">' . esc_html( $label_status ) . '</td>';
+				echo '<td>' . esc_html( $label_status ) . '</td>';
 				echo '</tr>';
 			}
 		}
 
 		echo '</table>';
+		if ( ! empty( $sign_data['docsigned'] ) ) {
+			echo '<a href="' . esc_url( $sign_data['docsigned'] ) . '" target="_blank">' . esc_html__( 'Download signed document', 'firmafy' ) . '</a>';
+		}
 	}
 
 	/**
@@ -130,16 +130,22 @@ class Firmafy_Widgets_ECommerce {
 	 *
 	 * @param string $column Columna.
 	 */
-	public function add_firmafy_status_column_content( $column ) {
-		global $post;
+	public function add_firmafy_status_column_content( $column, $post_id ) {
 		if ( 'firmafy_status' === $column ) {
-			$order = wc_get_order( $post->ID );
+			$order = wc_get_order( $post_id );
 			if ( ! $order ) {
 				return;
 			}
+			$firmafy_data   = $order->get_meta( '_firmafy_data', true );
 			$firmafy_status = $order->get_meta( '_firmafy_status', true );
 
+			if ( ! empty( $firmafy_data['docsigned'] ) ) {
+				echo '<a href="' . esc_url( $firmafy_data['docsigned'] ) . '" target="_blank">';
+			}
 			echo esc_html( $firmafy_status );
+			if ( ! empty( $firmafy_data['docsigned'] ) ) {
+				echo '</a>';
+			}
 		}
 	}
 
@@ -155,7 +161,7 @@ class Firmafy_Widgets_ECommerce {
 		foreach ( $columns as $column_name => $column_info ) {
 			$new_columns[ $column_name ] = $column_info;
 			if ( 'status' === $column_name ) {
-				$new_columns['firmafy_status'] = 'Graó';
+				$new_columns['firmafy_status'] = 'Firmafy';
 			}
 		}
 		return $new_columns;
