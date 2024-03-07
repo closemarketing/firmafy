@@ -60,7 +60,7 @@ class Firmafy_Widgets_ECommerce {
 	 * @return void
 	 */
 	public function metabox_show_order( $post ) {
-		$order       = wc_get_order( $post->ID );
+		$order       = wc_get_order( $post->get_id() );
 		$sign_csv    = $order->get_meta( '_firmafy_csv' );
 		$sign_status = $order->get_meta( '_firmafy_status' );
 

@@ -186,6 +186,7 @@ class Firmafy_WooCommerce {
 				} else {
 					$order_msg = __( 'Order sent correctly to Firmafy', 'firmafy' );
 					$order->add_meta_data( '_firmafy_csv', $response_result['data'], true );
+					$order->add_meta_data( '_firmafy_status', 'PENDIENTE', true );
 				}
 				$order->add_order_note( $order_msg );
 			}
