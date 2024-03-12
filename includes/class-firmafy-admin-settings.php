@@ -144,9 +144,10 @@ class FIRMAFY_ADMIN_SETTINGS {
 						} else {
 							echo '<p><span class="dashicons dashicons-saved"></span>';
 							esc_html_e( 'Connected to Firmafy', 'firmafy' ) . '</p>';
-							$token                = ! empty( $login_result['data'] ) ? $login_result['data'] : '';
-							$credentials['token'] = $token;
-							$result_weebhook      = $helpers_firmafy->webhook( $credentials );
+							$token                  = ! empty( $login_result['data'] ) ? $login_result['data'] : '';
+							$credentials['token']   = $token;
+							$credentials['id_show'] = isset( $this->firmafy_settings['id_show'] ) ? $this->firmafy_settings['id_show'] : '';
+							$result_weebhook        = $helpers_firmafy->webhook( $credentials );
 
 							if ( ! $result_weebhook ) {
 								echo '<p><span class="dashicons dashicons-no-alt"></span>';
