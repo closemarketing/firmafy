@@ -114,6 +114,8 @@ class Helpers_Firmafy {
 			'webhook',
 			array(
 				'url_webhook' => get_rest_url( null, 'firmafy/v1/webhook' ),
+				'type'        => 1,
+				'method'      => 2,
 			)
 		);
 		return 'ok' === $result['status'] ? true : false;
