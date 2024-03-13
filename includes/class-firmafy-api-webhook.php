@@ -52,13 +52,17 @@ class Firmafy_API_Webhook {
 	public function process_webhook( $request ) {
 		$body = $request->get_body();
 		$body = json_decode( $body, true );
+		$body = isset( $body['data'] ) ? $body['data'] : $body;
 
 		if ( ! isset( $body['csv'] ) ) {
-			return new WP_REST_Response( 'Invalid request', 400 );
+			return new WP_REST_Response( 'Invalid request. CSV not founded', 400 );
 		}
 
 		$sign_csv    = sanitize_text_field( $body['csv'] );
 		$sign_status = sanitize_text_field( $body['status'] );
+		if ( isset( $body['signer'] ) ) {
+			$body['signer'] = json_decode( $body['signer'], true );
+		}
 
 		// Search order by meta.
 		$args = array(
