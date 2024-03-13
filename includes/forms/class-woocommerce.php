@@ -132,11 +132,9 @@ class Firmafy_WooCommerce {
 		);
 
 		$woocommerce_mode = isset( $this->settings['woocommerce_mode'] ) ? $this->settings['woocommerce_mode'] : 'all';
+
 		// Terms and conditions Sign.
 		if ( 'orders' === $woocommerce_mode || 'all' === $woocommerce_mode ) {
-			$template_id     = wc_terms_and_conditions_page_id();
-			$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, true );
-
 			$template_id     = wc_terms_and_conditions_page_id();
 			$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, array(), true );
 

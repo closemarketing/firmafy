@@ -146,20 +146,25 @@ class Helpers_Firmafy {
 	/**
 	 * Get signers from Company.
 	 *
+	 * @param string $type Type of signers.
 	 * @return array
 	 */
-	public function get_signers() {
+	public function get_signers( $type = 'form' ) {
 		$settings       = get_option( 'firmafy_options' );
 		$signers_option = isset( $settings['signers'] ) ? $settings['signers'] : array();
 		$signers        = array();
 
-		foreach ( $signers_option as $signer ) {
-			if ( ! empty( $signer['nif'] ) && ! empty( $signer['nombre'] ) ) {
-				$signers[] = array(
-					'name'  => isset( $signer['nif'] ) ? 'firmafy_signer_' . $signer['nif'] : '',
-					'label' => isset( $signer['nombre'] ) ? $signer['nombre'] : '',
-				);
+		if ( 'form' === $type ) {
+			foreach ( $signers_option as $signer ) {
+				if ( ! empty( $signer['nif'] ) && ! empty( $signer['nombre'] ) ) {
+					$signers[] = array(
+						'name'  => isset( $signer['nif'] ) ? 'firmafy_signer_' . $signer['nif'] : '',
+						'label' => isset( $signer['nombre'] ) ? $signer['nombre'] : '',
+					);
+				}
 			}
+		} elseif ( 'full' === $type ) {
+			$signers = $signers_option;
 		}
 		return $signers;
 	}
@@ -260,12 +265,12 @@ class Helpers_Firmafy {
 	 *
 	 * @param string  $template_id Template ID.
 	 * @param array   $merge_vars Merge Vars.
-	 * @param array   $signers Signers.
+	 * @param array   $force_signers Second Signers.
 	 * @param boolean $add_header Add Header.
 	 *
 	 * @return array
 	 */
-	public function create_entry( $template_id, $merge_vars, $signers = array(), $add_header = false ) {
+	public function create_entry( $template_id, $merge_vars, $force_signers = array(), $add_header = false ) {
 		$settings         = get_option( 'firmafy_options' );
 		$id_show          = isset( $settings['id_show'] ) ? $settings['id_show'] : '';
 		$font             = isset( $settings['font'] ) ? $settings['font'] : 'helvetica';
@@ -278,15 +283,20 @@ class Helpers_Firmafy {
 			<!-- /wp:table -->';
 		}
 
-		if ( ! empty( $signers ) && isset( $settings['signers'] ) ) {
+		if ( isset( $settings['signers'] ) ) {
 			$company_signers = $settings['signers'];
-			$delete          = array_diff( array_column( $company_signers, 'nif' ), $signers );
 
-			foreach ( $delete as $key => $value ) {
-				if ( isset( $company_signers[ $key ] ) ) {
-					unset( $company_signers[ $key ] );
+			// Check duplicated signers.
+			if ( ! empty( $force_signers ) ) {
+				$delete = array_diff( array_column( $company_signers, 'nif' ), $force_signers );
+
+				foreach ( $delete as $key => $value ) {
+					if ( isset( $company_signers[ $key ] ) ) {
+						unset( $company_signers[ $key ] );
+					}
 				}
 			}
+
 			// Remove company field empty.
 			$index = 0;
 			foreach ( $company_signers as $signer_item ) {
@@ -370,8 +380,9 @@ class Helpers_Firmafy {
 
 		$token         = $this->login();
 		$final_signers = ! empty( $company_signers ) ? array_merge( array( $signer ), $company_signers ) : array( $signer );
+
 		// Sends to Firmafy.
-		$query = array(
+		$query      = array(
 			'id_show'    => $id_show,
 			'subject'    => get_the_title( $template_id ),
 			'token'      => isset( $token['data'] ) ? $token['data'] : '',
@@ -384,6 +395,12 @@ class Helpers_Firmafy {
 		return $result_api;
 	}
 
+	/**
+	 * Signer Tags
+	 *
+	 * @param string $check Tag to check.
+	 * @return boolean
+	 */
 	private function signer_tags( $check ) {
 		$signer_tags = array(
 			'nombre',
