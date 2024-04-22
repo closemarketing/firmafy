@@ -90,6 +90,9 @@ WordPress installation and then activate the Plugin from Plugins page.
 [Official Repository GitHub](https://github.com/closemarketing/firmafy/)
 
 == Changelog ==
+= 1.2.0.1 =
+*	 Fix: Prevents error in order widget for HPOS.
+
 = 1.2.0 =
 *	 Added Self signers for company users.
 *  Added Sign WooCommerce contract by product and merge values.
