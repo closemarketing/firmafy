@@ -373,7 +373,6 @@ class Helpers_Firmafy {
 			$html2pdf->writeHTML( $content );
 			$pdf_content = $html2pdf->Output( $filename, 'S' );
 		} catch ( Html2PdfException $e ) { //phpcs:ignore
-			//error
 			$formatter = new ExceptionFormatter( $e ); //phpcs:ignore
 			error_log( 'Unexpected Error!<br>Can not load PDF this time! ' . $formatter->getHtmlMessage() );
 		}
@@ -392,6 +391,9 @@ class Helpers_Firmafy {
 		);
 		$result_api = $this->api_post( $settings, 'request', $query );
 
+		if ( 'error' === $result_api['status'] ) {
+			$result_api['message'] = isset( $result_api['data'] ) ? $result_api['data'] : '';
+		}
 		return $result_api;
 	}
 
@@ -462,6 +464,9 @@ class Helpers_Firmafy {
 
 		// Replace reference.
 		$content = str_replace( '{referencia}', $post_id, $content );
+
+		// Page Break.
+		//$content = str_replace( '<!--nextpage-->', '<pagebreak>', $content );
 
 		return $content;
 	}
