@@ -90,7 +90,9 @@ WordPress installation and then activate the Plugin from Plugins page.
 [Official Repository GitHub](https://github.com/closemarketing/firmafy/)
 
 == Changelog ==
-= 1.2.0.1 =
+= 1.2.1 =
+*  Added: Support Gravity Forms Field name.
+*  Added: Page break block now creates a break in the PDF.
 *	 Fix: Prevents error in order widget for HPOS.
 
 = 1.2.0 =

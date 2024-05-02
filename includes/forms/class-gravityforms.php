@@ -180,16 +180,17 @@ class GFFirmafy extends GFFeedAddOn {
 		if ( ! empty( $field_maps ) ) {
 			// Normal WAY.
 			foreach ( $field_maps as $var_key => $field_id ) {
-				$field = RGFormsModel::get_field( $form, $field_id );
-	
+				$field      = RGFormsModel::get_field( $form, $field_id );
+				$field_type = RGFormsModel::get_input_type( $field );
+
 				if ( isset( $field['type'] ) && GFCommon::is_product_field( $field['type'] ) && rgar( $field, 'enablePrice' ) ) {
-					$ary          = explode('|', $entry[ $field_id ] );
-					$product_name = count($ary) > 0 ? $ary[0] : '';
+					$ary          = explode( '|', $entry[ $field_id ] );
+					$product_name = count( $ary ) > 0 ? $ary[0] : '';
 					$merge_vars[] = array(
-						'name' => $var_key,
+						'name'  => $var_key,
 						'value' => $product_name,
 					);
-				} elseif ( $field && RGFormsModel::get_input_type( $field ) == 'checkbox' ) {
+				} elseif ( $field && 'checkbox' === $field_type ) {
 					$value = '';
 					foreach ( $field['inputs'] as $input ) {
 						$index   = (string) $input['id'];
@@ -204,7 +205,7 @@ class GFFirmafy extends GFFeedAddOn {
 						'name'  => $var_key,
 						'value' => $value,
 					);
-				} elseif ( $field && RGFormsModel::get_input_type( $field ) == 'multiselect' ) {
+				} elseif ( $field && 'multiselect' === $field_type ) {
 					$value = apply_filters( 'firmafy_field_value', rgar( $entry, $field_id ), $form['id'], $field_id, $entry );
 					$value = str_replace( ',', '|', $value );
 
@@ -212,9 +213,16 @@ class GFFirmafy extends GFFeedAddOn {
 						'name'  => $var_key,
 						'value' => $value,
 					);
-				} elseif ( $field && RGFormsModel::get_input_type( $field ) == 'textarea' ) {
+				} elseif ( $field && 'textarea' === $field_type ) {
 					$value        = apply_filters( 'firmafy_field_value', rgar( $entry, $field_id ), $form['id'], $field_id, $entry );
 					$value        = str_replace( array( "\r", "\n" ), ' ', $value );
+					$merge_vars[] = array(
+						'name'  => $var_key,
+						'value' => $value,
+					);
+				} elseif ( $field && 'name' === $field_type ) {
+					$value        = rgar( $entry, $field_id . '.3' );
+					$value       .= ' ' . rgar( $entry, $field_id . '.6' );
 					$merge_vars[] = array(
 						'name'  => $var_key,
 						'value' => $value,
