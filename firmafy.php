@@ -3,7 +3,7 @@
  * Plugin Name: Firmafy eSignature
  * Plugin URI:  https://firmafy.com
  * Description: Validate legally your forms in WordPress.
- * Version:     1.2.0.1
+ * Version:     1.2.1
  * Author:      Firmafy
  * Author URI:  https://firmafy.com
  * Text Domain: firmafy
@@ -23,7 +23,7 @@
 
 defined( 'ABSPATH' ) || die( 'No script kiddies please!' );
 
-define( 'FIRMAFY_VERSION', '1.2.0.1' );
+define( 'FIRMAFY_VERSION', '1.2.1' );
 define( 'FIRMAFY_PLUGIN', __FILE__ );
 define( 'FIRMAFY_PLUGIN_URL', plugin_dir_url( __FILE__ ) );
 define( 'FIRMAFY_PLUGIN_PATH', plugin_dir_path( __FILE__ ) );

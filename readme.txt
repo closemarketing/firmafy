@@ -4,8 +4,8 @@ Tags: forms, signature, gravityforms, contact form 7, woocommerce
 Requires at least: 4.0
 Requires PHP: 5.6
 Tested up to: 6.5
-Stable tag: 1.2.0
-Version: 1.2.0
+Stable tag: 1.2.1
+Version: 1.2.1
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
