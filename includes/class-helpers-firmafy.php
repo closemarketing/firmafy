@@ -172,8 +172,8 @@ class Helpers_Firmafy {
 	/**
 	 * Filter signers from feed meta
 	 *
-	 * @param array $meta
-	 * @return void
+	 * @param array $meta Meta to filter.
+	 * @return array
 	 */
 	public function filter_signers( $meta ) {
 		$signers = array();
@@ -189,6 +189,7 @@ class Helpers_Firmafy {
 	/**
 	 * Get Firmafy Templates
 	 *
+	 * @param integer $template_id Template ID.
 	 * @return array
 	 */
 	public function get_variables_template( $template_id ) {
@@ -224,7 +225,7 @@ class Helpers_Firmafy {
 	/**
 	 * Shows is field is required
 	 *
-	 * @param array $field
+	 * @param array $field Field to check.
 	 * @return boolean
 	 */
 	private function is_field_required( $field ) {
@@ -236,9 +237,9 @@ class Helpers_Firmafy {
 	}
 
 	/**
-	 * detects strange string
+	 * Detects strange string
 	 *
-	 * @param [type] $string
+	 * @param string $string String to check.
 	 * @return boolean
 	 */
 	private function not_strange_string( $string ) {
@@ -321,7 +322,7 @@ class Helpers_Firmafy {
 		}
 
 		foreach ( $merge_vars as $variable ) {
-			if ( ! empty( $variable['name'] ) ) {
+			if ( isset( $variable['name'] ) ) {
 				$value            = is_array( $variable['value'] ) ? implode( ', ', $variable['value'] ) : $variable['value'];
 				$template_content = str_replace( '{' . $variable['name'] . '}', $value, $template_content );
 				if ( $this->signer_tags( $variable['name'] ) && 'nif' === $variable['name'] ) {
@@ -422,8 +423,8 @@ class Helpers_Firmafy {
 	/**
 	 * Replaces variables in document with allowed tags and core variables
 	 *
-	 * @param string $content  Content to replace
-	 * @param integer $post_id Reference post
+	 * @param string  $content Content to replace.
+	 * @param integer $post_id Reference post.
 	 * @return string
 	 */
 	private function replace_tags( $content, $post_id ) {
