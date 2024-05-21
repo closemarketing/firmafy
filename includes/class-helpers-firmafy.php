@@ -193,8 +193,8 @@ class Helpers_Firmafy {
 	 * @return array
 	 */
 	public function get_variables_template( $template_id ) {
-		$fields   = array();
-		$template = get_post( $template_id );
+		$fields              = array();
+		$template            = get_post( $template_id );
 		$required_api_fields = array(
 			'nombre',
 			'nif',
@@ -202,7 +202,7 @@ class Helpers_Firmafy {
 			'telefono',
 		);
 
-		preg_match_all( '#\{(.*?)\}#', $template->post_content, $matches);
+		preg_match_all( '#\{(.*?)\}#', $template->post_content, $matches );
 		if ( ! empty( $matches[1] ) && is_array( $matches[1] ) ) {
 			foreach ( $matches[1] as $field ) {
 				if ( $this->not_strange_string( $field ) ) {
@@ -451,15 +451,15 @@ class Helpers_Firmafy {
 		$content = str_replace( '</section', '</div', $content );
 
 		// Replace date.
-		$content = str_replace( '{fecha}', date( 'd-m-Y' ), $content );
+		$content = str_replace( '{fecha}', gmdate( 'd-m-Y' ), $content );
 
 		// Replace date text.
 		$date_text = sprintf(
-			/* translators: 1: day 2: month 3: year */
+			/* translators: %1s: day %2s: month %3s: year */
 			esc_html__( '%1s of %2s of %3s', 'textdomain' ),
-			date( 'd' ),
-			$months[ (int) date('m') ],
-			date( 'Y' )
+			gmdate( 'd' ),
+			$months[ (int) gmdate( 'm' ) ],
+			gmdate( 'Y' )
 		);
 		$content = str_replace( '{fecha_texto}', $date_text, $content );
 
