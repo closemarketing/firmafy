@@ -53,8 +53,15 @@ if ( ! function_exists( 'is_plugin_active' ) ) {
 
 if ( ( is_plugin_active( 'gravityforms/gravityforms.php' ) || is_plugin_active( 'gravity-forms/gravityforms.php' ) ) && ! class_exists( 'FIRMAFY_Bootstrap' ) ) {
 	add_action( 'gform_loaded', array( 'FIRMAFY_Bootstrap', 'load' ), 5 );
+	/**
+	 * Firmafy Bootstrap
+	 */
 	class FIRMAFY_Bootstrap {
-
+		/**
+		 * Load the plugin after Gravity Forms
+		 *
+		 * @return void
+		 */
 		public static function load() {
 
 			if ( ! method_exists( 'GFForms', 'include_feed_addon_framework' ) ) {
@@ -67,6 +74,11 @@ if ( ( is_plugin_active( 'gravityforms/gravityforms.php' ) || is_plugin_active( 
 		}
 	}
 
+	/**
+	 * Get an instance of the Firmafy class
+	 *
+	 * @return GFFirmafy
+	 */
 	function gf_firmafy() {
 		return GFFirmafy::get_instance();
 	}
