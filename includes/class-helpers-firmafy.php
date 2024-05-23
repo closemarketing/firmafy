@@ -338,7 +338,9 @@ class Helpers_Firmafy {
 		$template_content = $this->replace_tags( $template_content, $template_id, $entry_id );
 
 		// Generates PDF.
-		$filename = 'firmafy-' . sanitize_title( get_bloginfo( 'name' ) ) . '-' . gmdate( 'Y-m-d-H-i' ) . '.pdf';
+		$filename  = 'firmafy-' . sanitize_title( get_bloginfo( 'name' ) );
+		$filename .= '-' . sanitize_title( get_the_title( $template_id ) );
+		$filename .= '-' . gmdate( 'Y-m-d-H-i' ) . '.pdf';
 
 		$content  = '<page style="margin-top:10mm;" backcolor="#fff">';
 		$content .= '<style>';
