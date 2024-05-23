@@ -136,7 +136,7 @@ class Firmafy_WooCommerce {
 		// Terms and conditions Sign.
 		if ( 'orders' === $woocommerce_mode || 'all' === $woocommerce_mode ) {
 			$template_id     = wc_terms_and_conditions_page_id();
-			$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, array(), true );
+			$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, array(), $order_id, true );
 
 			if ( 'error' === $response_result['status'] ) {
 				$order_msg = __( 'Order sent correctly to Firmafy', 'firmafy' );
@@ -176,7 +176,7 @@ class Firmafy_WooCommerce {
 						'value' => $value,
 					);
 				}
-				$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, array(), true );
+				$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, array(), $order_id, true );
 
 				if ( 'error' === $response_result['status'] ) {
 					$order_msg  = __( 'There was an error sending the order to Firmafy', 'firmafy' );

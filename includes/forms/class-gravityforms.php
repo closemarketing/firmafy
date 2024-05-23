@@ -243,7 +243,7 @@ class GFFirmafy extends GFFeedAddOn {
 
 		$template        = isset( $feed['meta']['firmafy_template'] ) ? $feed['meta']['firmafy_template'] : '';
 		$signers         = $helpers_firmafy->filter_signers( $feed['meta'] );
-		$response_result = $helpers_firmafy->create_entry( $template, $merge_vars, $signers );
+		$response_result = $helpers_firmafy->create_entry( $template, $merge_vars, $signers, $entry['id'] );
 		$api_status      = isset( $response_result['status'] ) ? $response_result['status'] : '';
 
 		if ( 'error' === $api_status ) {
