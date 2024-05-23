@@ -210,7 +210,7 @@ class Helpers_Firmafy {
 				}
 			}
 			$fields_to_convert = array_unique( array_merge( $fields, $required_api_fields ) );
-			$fields   = array();
+			$fields           = array();
 			foreach ( $fields_to_convert as $field ) {
 				$fields[] = array(
 					'name'     => $field,
@@ -253,6 +253,9 @@ class Helpers_Firmafy {
 			return false;
 		}
 		if ( false !== strpos( $string, 'referencia' ) ) {
+			return false;
+		}
+		if ( false !== strpos( $string, 'salto_pagina' ) ) {
 			return false;
 		}
 		if ( false !== strpos( $string, ':' ) ) {
