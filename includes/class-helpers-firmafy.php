@@ -396,6 +396,8 @@ class Helpers_Firmafy {
 
 		if ( 'error' === $result_api['status'] ) {
 			$result_api['message'] = isset( $result_api['data'] ) ? $result_api['data'] : '';
+		} else {
+			$result_api['id'] = isset( $result_api['data'] ) ? $result_api['data'] : '';
 		}
 		return $result_api;
 	}
@@ -447,9 +449,6 @@ class Helpers_Firmafy {
 			12 => __( 'December', 'firmafy' ),
 		);
 
-		error_log( '$content: ' . print_r( $content, true ) );
-		die();
-
 		// Replace for known tags.
 		$content = str_replace( '<figure', '<div', $content );
 		$content = str_replace( '</figure', '</div', $content );
@@ -478,7 +477,7 @@ class Helpers_Firmafy {
 		$content = str_replace( '{referencia}', $post_id, $content );
 
 		// Page Break.
-		//$content = str_replace( '<!--nextpage-->', '<pagebreak>', $content );
+		$content = str_replace( '{salto_pagina}', '</page><page style="margin-top:10mm;" backcolor="#fff">', $content );
 
 		return $content;
 	}

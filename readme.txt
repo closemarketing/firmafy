@@ -94,6 +94,7 @@ WordPress installation and then activate the Plugin from Plugins page.
 *  Added field {referencia} and get the ID of the form entry or order id. Useful to use in templates.
 *  Added: Name of template in the PDF file.
 *  Fix: Empty variable didn't show in the template.
+*  Fix: Gets the id of sign to the form entry.
 
 = 1.2.1 =
 *  Added: Support Gravity Forms Field name.
