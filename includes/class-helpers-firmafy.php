@@ -447,6 +447,9 @@ class Helpers_Firmafy {
 			12 => __( 'December', 'firmafy' ),
 		);
 
+		error_log( '$content: ' . print_r( $content, true ) );
+		die();
+
 		// Replace for known tags.
 		$content = str_replace( '<figure', '<div', $content );
 		$content = str_replace( '</figure', '</div', $content );
