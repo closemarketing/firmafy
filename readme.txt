@@ -90,11 +90,9 @@ WordPress installation and then activate the Plugin from Plugins page.
 [Official Repository GitHub](https://github.com/closemarketing/firmafy/)
 
 == Changelog ==
-= 1.2.3 =
+= 1.2.2 =
 *  Added field {referencia} and get the ID of the form entry or order id. Useful to use in templates.
 *  Added: Name of template in the PDF file.
-
-= 1.2.2 =
 *  Fix: Empty variable didn't show in the template.
 
 = 1.2.1 =
