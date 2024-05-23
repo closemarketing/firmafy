@@ -271,7 +271,7 @@ class Helpers_Firmafy {
 	 *
 	 * @return array
 	 */
-	public function create_entry( $template_id, $merge_vars, $force_signers = array(), $add_header = false ) {
+	public function create_entry( $template_id, $merge_vars, $force_signers = array(), $entry_id = null, $add_header = false ) {
 		$settings         = get_option( 'firmafy_options' );
 		$id_show          = isset( $settings['id_show'] ) ? $settings['id_show'] : '';
 		$font             = isset( $settings['font'] ) ? $settings['font'] : 'helvetica';
@@ -335,7 +335,7 @@ class Helpers_Firmafy {
 		$notification                 = isset( $settings['notification'] ) ? (array) $settings['notification'] : $settings['email'];
 		$signer['type_notifications'] = implode( ',', $notification );
 
-		$template_content = $this->replace_tags( $template_content, $template_id );
+		$template_content = $this->replace_tags( $template_content, $template_id, $entry_id );
 
 		// Generates PDF.
 		$filename = 'firmafy-' . sanitize_title( get_bloginfo( 'name' ) ) . '-' . gmdate( 'Y-m-d-H-i' ) . '.pdf';
@@ -425,9 +425,11 @@ class Helpers_Firmafy {
 	 *
 	 * @param string  $content Content to replace.
 	 * @param integer $post_id Reference post.
+	 * @param integer $entry_id Entry ID.
+	 *
 	 * @return string
 	 */
-	private function replace_tags( $content, $post_id ) {
+	private function replace_tags( $content, $post_id, $entry_id = null ) {
 		$months = array(
 			1  => __( 'January', 'firmafy' ),
 			2  => __( 'February', 'firmafy' ),
@@ -452,6 +454,10 @@ class Helpers_Firmafy {
 
 		// Replace date.
 		$content = str_replace( '{fecha}', gmdate( 'd-m-Y' ), $content );
+
+		if ( ! empty( $entry_id ) ) {
+			$content = str_replace( '{referencia}', $entry_id, $content );
+		}
 
 		// Replace date text.
 		$date_text = sprintf(
