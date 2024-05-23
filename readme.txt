@@ -92,6 +92,7 @@ WordPress installation and then activate the Plugin from Plugins page.
 == Changelog ==
 = 1.2.3 =
 *  Added field {referencia} and get the ID of the form entry or order id. Useful to use in templates.
+*  Added: Name of template in the PDF file.
 
 = 1.2.2 =
 *  Fix: Empty variable didn't show in the template.
