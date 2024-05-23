@@ -362,7 +362,7 @@ class Helpers_Firmafy {
 		// Creates PDF.
 		$lang = isset( explode( '_', get_locale() )[0] ) ? explode( '_', get_locale() )[0] : 'en';
 		try {
-			$html2pdf  = new Html2Pdf(
+			$html2pdf = new Html2Pdf(
 				'P',
 				'A4',
 				$lang,
@@ -477,7 +477,7 @@ class Helpers_Firmafy {
 		$content = str_replace( '{referencia}', $post_id, $content );
 
 		// Page Break.
-		$content = str_replace( '{salto_pagina}', '</page><page style="margin-top:10mm;" backcolor="#fff">', $content );
+		$content = str_replace( '{salto_pagina}', ' <div style="page-break-after:always; clear:both"></div>', $content );
 
 		return $content;
 	}

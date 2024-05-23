@@ -68,6 +68,8 @@ Fields that you can use in your template:
 - Zip code: {codigo_postal}
 - Country: {pais}
 - Payment method: {metodo_pago}
+- Reference: {referencia}
+- Page break: {salto_pagina}
 
 **Firmafy use examples:**
 
@@ -92,6 +94,7 @@ WordPress installation and then activate the Plugin from Plugins page.
 == Changelog ==
 = 1.2.2 =
 *  Added field {referencia} and get the ID of the form entry or order id. Useful to use in templates.
+*  Added: Page break in PDF. Use {salto_pagina} for that.
 *  Added: Name of template in the PDF file.
 *  Fix: Empty variable didn't show in the template.
 *  Fix: Gets the id of sign to the form entry.
