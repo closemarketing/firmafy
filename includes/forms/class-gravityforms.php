@@ -246,11 +246,22 @@ class GFFirmafy extends GFFeedAddOn {
 		$response_result = $helpers_firmafy->create_entry( $template, $merge_vars, $signers, $entry['id'] );
 		$api_status      = isset( $response_result['status'] ) ? $response_result['status'] : '';
 
+		$status = 'success';
 		if ( 'error' === $api_status ) {
-			$this->add_note( $entry['id'], 'Error ' . $response_result['message'], 'error' );
+			$message = sprintf(
+				/* translators: %s: Sign error */
+				__( 'Error creating Firmafy Sign: %s', 'firmafy' ),
+				sanitize_text_field( $response_result['message'] )
+			);
+			$status = 'error';
 		} else {
-			$this->add_note( $entry['id'], 'Success creating ' . esc_html( 'Firmafy' ) . ' Entry ID:' . $response_result['id'], 'success' );
+			$message = sprintf(
+				/* translators: %s: Sign entry ID */
+				__( 'Success creating Firmafy Sign ID: %s', 'firmafy' ),
+				sanitize_text_field( $response_result['id'] )
+			);
 		}
+		$this->add_note( $entry['id'], $message, $status );
 	}
 
 	/**
