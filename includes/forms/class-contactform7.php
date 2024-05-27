@@ -151,11 +151,11 @@ class Firmafy_CF7_Settings {
 	 */
 	public function firmafy_process_entry( $obj ) {
 		global $helpers_firmafy;
-		$cf7_firmafy    = get_option( 'cf7_firmafy_' . $obj->id() );
-		$submission = WPCF7_Submission::get_instance();
+		$cf7_firmafy = get_option( 'cf7_firmafy_' . $obj->id() );
+		$submission  = WPCF7_Submission::get_instance();
 
 		if ( $cf7_firmafy ) {
-			$merge_vars = $this->get_merge_vars( $cf7_firmafy, $submission->get_posted_data() );
+			$merge_vars      = $this->get_merge_vars( $cf7_firmafy, $submission->get_posted_data() );
 			$signers         = $helpers_firmafy->filter_signers( $cf7_firmafy );
 			$response_result = $helpers_firmafy->create_entry( $cf7_firmafy['firmafy_template'], $merge_vars, $signers );
 

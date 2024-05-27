@@ -270,6 +270,7 @@ class Helpers_Firmafy {
 	 * @param string  $template_id Template ID.
 	 * @param array   $merge_vars Merge Vars.
 	 * @param array   $force_signers Second Signers.
+	 * @param integer $entry_id Entry ID.
 	 * @param boolean $add_header Add Header.
 	 *
 	 * @return array
