@@ -170,10 +170,6 @@ class GFFirmafy extends GFFeedAddOn {
 	public function process_feed( $feed, $entry, $form ) {
 		global $helpers_firmafy;
 
-		if ( ! empty( $feed['meta']['listFields_first_name'] ) ) {
-			$name = $this->get_name( $entry, $feed['meta']['listFields_first_name'] );
-		}
-
 		$merge_vars = array();
 		$field_maps = $this->get_field_map_fields( $feed, 'listFields' );
 
@@ -236,11 +232,6 @@ class GFFirmafy extends GFFeedAddOn {
 			}
 		}
 
-		$override_custom_fields = apply_filters( 'firmafy_override_blank_custom_fields', false, $entry, $form, $feed );
-		if ( ! $override_custom_fields ) {
-			$merge_vars = $this->remove_blank_custom_fields( $merge_vars );
-		}
-
 		$template        = isset( $feed['meta']['firmafy_template'] ) ? $feed['meta']['firmafy_template'] : '';
 		$signers         = $helpers_firmafy->filter_signers( $feed['meta'] );
 		$response_result = $helpers_firmafy->create_entry( $template, $merge_vars, $signers, $entry['id'] );
@@ -263,49 +254,4 @@ class GFFirmafy extends GFFeedAddOn {
 		}
 		$this->add_note( $entry['id'], $message, $status );
 	}
-
-	/**
-	 * Remove blank custom fields
-	 *
-	 * @param  array $merge_vars Vars to send to API.
-	 * @return array
-	 */
-	private static function remove_blank_custom_fields( $merge_vars ) {
-		$i = 0;
-
-		$count = count( $merge_vars );
-
-		for ( $i = 0; $i < $count; $i++ ) {
-			if ( rgblank( $merge_vars[ $i ]['value'] ) ) {
-				unset( $merge_vars[ $i ] );
-			}
-		}
-		// resort the array because items could have been removed, this will give an error from CRM if the keys are not in numeric sequence.
-		sort( $merge_vars );
-		return $merge_vars;
-	}
-
-	private function get_name( $entry, $field_id ) {
-
-		// If field is simple (one input), simply return full content.
-		$name = rgar( $entry, $field_id );
-		if ( ! empty( $name ) ) {
-			return $name;
-		}
-
-		// Complex field (multiple inputs). Join all pieces and create name.
-		$prefix = trim( rgar( $entry, $field_id . '.2' ) );
-		$first  = trim( rgar( $entry, $field_id . '.3' ) );
-		$last   = trim( rgar( $entry, $field_id . '.6' ) );
-		$suffix = trim( rgar( $entry, $field_id . '.8' ) );
-
-		$name = $prefix;
-		$name .= ! empty( $name ) && ! empty( $first ) ? " $first" : $first;
-		$name .= ! empty( $name ) && ! empty( $last ) ? " $last" : $last;
-		$name .= ! empty( $name ) && ! empty( $suffix ) ? " $suffix" : $suffix;
-
-		return $name;
-	}
-
-} //from main class
-
+}
