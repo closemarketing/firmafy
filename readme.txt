@@ -96,6 +96,7 @@ WordPress installation and then activate the Plugin from Plugins page.
 *  Added field {referencia} and get the ID of the form entry or order id. Useful to use in templates.
 *  Added: Page break in PDF. Use {salto_pagina} for that.
 *  Added: Name of template in the PDF file.
+*  Fix: Process conflicts with images and styles size.
 *  Fix: Empty variable didn't show in the template.
 *  Fix: Gets the id of sign to the form entry.
 *  Fix: Empty value of form, wasn't gives empty value in the template.

@@ -339,7 +339,11 @@ class Helpers_Firmafy {
 		$notification                 = isset( $settings['notification'] ) ? (array) $settings['notification'] : $settings['email'];
 		$signer['type_notifications'] = implode( ',', $notification );
 
+		// Replace tags.
 		$template_content = $this->replace_tags( $template_content, $template_id, $entry_id );
+
+		// Process images.
+		$template_content = $this->process_images( $template_content );
 
 		// Generates PDF.
 		$filename  = 'firmafy-' . sanitize_title( get_bloginfo( 'name' ) );
@@ -484,6 +488,60 @@ class Helpers_Firmafy {
 		$content = str_replace( '{salto_pagina}', ' <div style="page-break-after:always; clear:both"></div>', $content );
 
 		return $content;
+	}
+
+	/**
+	 * Process images
+	 *
+	 * @param string $content Content to process.
+	 * @return string
+	 */
+	public function process_images( $content ) {
+		// Utilizar DOMDocument para analizar y modificar el HTML.
+		$doc = new DOMDocument();
+		@$doc->loadHTML( mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
+		$images = $doc->getElementsByTagName( 'img' );
+
+		foreach ( $images as $img ) {
+			$src    = $img->getAttribute( 'src' );
+			$style  = $img->getAttribute( 'style' );
+			$width  = $img->getAttribute( 'width' );
+			$height = $img->getAttribute( 'height' );
+
+			if ( ! empty( $style ) ) {
+				// Extraer width y height del estilo.
+				preg_match( '/width:\s*(\d+px)/', $style, $width_match );
+				preg_match( '/height:\s*(\d+px|auto)/', $style, $height_match );
+
+				$width  = $width_match[1] ?? null;
+				$height = $height_match[1] ?? null;
+
+				if ( ! empty( $width ) && ! empty( $height ) && $height !== 'auto') {
+					$img->setAttribute( 'width', intval( $width ) );
+					$img->setAttribute( 'height', intval( $height ) );
+				} else {
+					list( $real_width, $real_height ) = getimagesize( $src );
+
+					if ( ! empty( $width ) && $height === 'auto' ) {
+						$real_height = intval( $real_height * $width / $real_width );
+						$real_width  = intval( $width );
+					} elseif ( $width === 'auto' && ! empty( $height ) ) {
+						$real_width  = intval( $real_width * $height / $real_height );
+						$real_height = intval( $height );
+					}
+					$img->setAttribute( 'width', $real_width );
+					$img->setAttribute( 'height', $real_height );
+				}
+			} else {
+				// No hay información de estilo, obtener el tamaño real
+				list( $real_width, $real_height ) = getimagesize( $src );
+				$img->setAttribute( 'width', $real_width );
+				$img->setAttribute( 'height', $real_height );
+			}
+
+		}
+
+		return $doc->saveHTML();
 	}
 }
 

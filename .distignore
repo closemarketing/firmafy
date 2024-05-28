@@ -15,3 +15,4 @@ vendor/spipu/html2pdf/.travis.yml
 vendor/spipu/html2pdf/doc/
 vendor/spipu/html2pdf/examples/
 vendor/tecnickcom/tcpdf/examples/
+test/
