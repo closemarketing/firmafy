@@ -363,6 +363,10 @@ class Helpers_Firmafy {
 			$content .= file_get_contents( $template_css_file );
 		}
 
+		// Append the line height to the style (only for p tags).
+		$line_height = ! empty( $settings['line_height'] ) ? $settings['line_height'] : '16';
+
+		$content .= 'p { line-height: ' . $line_height . 'px; }';
 		$content .= '</style>';
 		$content .= $template_content;
 		$content .= '</page>';
