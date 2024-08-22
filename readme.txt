@@ -100,6 +100,7 @@ WordPress installation and then activate the Plugin from Plugins page.
 *  Fix: Empty variable didn't show in the template.
 *  Fix: Gets the id of sign to the form entry.
 *  Fix: Empty value of form, wasn't gives empty value in the template.
+*  Added: Option to define the line height on p tags.
 
 = 1.2.1 =
 *  Added: Support Gravity Forms Field name.

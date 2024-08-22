@@ -236,6 +236,14 @@ class FIRMAFY_ADMIN_SETTINGS {
 		);
 
 		add_settings_field(
+			'firmafy_line_height',
+			__( 'Line heigth', 'firmafy' ),
+			array( $this, 'firmafy_line_height_callback' ),
+			'firmafy_options',
+			'admin_firmafy_settings'
+		);
+
+		add_settings_field(
 			'firmafy_signers',
 			__( 'Signers by default', 'firmafy' ),
 			array( $this, 'signers_callback' ),
@@ -324,6 +332,10 @@ class FIRMAFY_ADMIN_SETTINGS {
 			}
 		}
 
+		if ( isset( $input['line_height'] ) ) {
+			$sanitary_values['line_height'] = sanitize_text_field( $input['line_height'] );
+		}
+
 		// Save Signers options.
 		if ( isset( $input['signers'] ) ) {
 			$index = 0;
@@ -407,6 +419,19 @@ class FIRMAFY_ADMIN_SETTINGS {
 		echo '<br/><input type="checkbox" name="notification[]" value="email" ';
 		echo checked( in_array( 'email', $notification, true ), 1 ) . ' />';
 		echo '<label for="notification">Email</label>';
+	}
+
+	/**
+	 * Line height callback.
+	 *
+	 * @return void
+	 */
+	public function firmafy_line_height_callback() {
+		printf(
+			'<input placeholder="%s" class="regular-text" type="text" name="firmafy_options[line_height]" id="line_height" value="%s"> (in pixels)',
+			__( 'Default: 16px', 'firmafy' ),
+			isset( $this->firmafy_settings['line_height'] ) ? esc_attr( $this->firmafy_settings['line_height'] ) : ''
+		);
 	}
 
 	/**
