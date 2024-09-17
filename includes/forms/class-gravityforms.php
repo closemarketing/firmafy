@@ -177,6 +177,11 @@ class GFFirmafy extends GFFeedAddOn {
 			// Normal WAY.
 			foreach ( $field_maps as $var_key => $field_id ) {
 				$field      = RGFormsModel::get_field( $form, $field_id );
+
+				if ( ! $field ) {
+					continue;
+				}
+
 				$field_type = RGFormsModel::get_input_type( $field );
 
 				if ( isset( $field['type'] ) && GFCommon::is_product_field( $field['type'] ) && rgar( $field, 'enablePrice' ) ) {
