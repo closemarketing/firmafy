@@ -244,6 +244,14 @@ class FIRMAFY_ADMIN_SETTINGS {
 		);
 
 		add_settings_field(
+			'firmafy_pdf_font',
+			__( 'PDF Font', 'firmafy' ),
+			array( $this, 'firmafy_pdf_font_callback' ),
+			'firmafy_options',
+			'admin_firmafy_settings'
+		);
+
+		add_settings_field(
 			'firmafy_signers',
 			__( 'Signers by default', 'firmafy' ),
 			array( $this, 'signers_callback' ),
@@ -334,6 +342,10 @@ class FIRMAFY_ADMIN_SETTINGS {
 
 		if ( isset( $input['line_height'] ) ) {
 			$sanitary_values['line_height'] = sanitize_text_field( $input['line_height'] );
+		}
+
+		if ( isset( $input['pdf_font'] ) ) {
+			$sanitary_values['pdf_font'] = sanitize_text_field( $input['pdf_font'] );
 		}
 
 		// Save Signers options.
@@ -432,6 +444,26 @@ class FIRMAFY_ADMIN_SETTINGS {
 			__( 'Default: 16px', 'firmafy' ),
 			isset( $this->firmafy_settings['line_height'] ) ? esc_attr( $this->firmafy_settings['line_height'] ) : ''
 		);
+	}
+
+	/**
+	 * PDF Font callback.
+	 *
+	 * @return void
+	 */
+	public function firmafy_pdf_font_callback() {
+		global $helpers_firmafy;
+
+		// Get all fonts.
+		$fonts = $helpers_firmafy->get_available_pdf_fonts();
+
+		echo '<select name="firmafy_options[pdf_font]" id="pdf_font">';
+		foreach ( $fonts as $font ) {
+			echo '<option value="' . esc_html( $font ) . '" ';
+			selected( $font, isset( $this->firmafy_settings['pdf_font'] ) ? $this->firmafy_settings['pdf_font'] : '' );
+			echo '>' . esc_html( $font ) . '</option>';
+		}
+		echo '</select>';
 	}
 
 	/**
