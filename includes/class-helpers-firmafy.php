@@ -41,7 +41,6 @@ class Helpers_Firmafy {
 			'helvetica'    => 'Helvetica',
 			'times'        => 'Times',
 			'zapfdingbats' => 'ZapfDingbats',
-			'symbol'       => 'Symbol'
 		);
 	}
 
@@ -314,7 +313,7 @@ class Helpers_Firmafy {
 		if ( isset( $settings['signers'] ) ) {
 			$company_signers = $settings['signers'];
 
-			// Check duplicated signers.
+			// Check duplicated signers.ƒ
 			if ( ! empty( $force_signers ) ) {
 				$delete = array_diff( array_column( $company_signers, 'nif' ), $force_signers );
 
@@ -396,6 +395,7 @@ class Helpers_Firmafy {
 
 		// Creates PDF.
 		$lang = isset( explode( '_', get_locale() )[0] ) ? explode( '_', get_locale() )[0] : 'en';
+
 		try {
 			$html2pdf = new Html2Pdf(
 				'P',
@@ -405,12 +405,20 @@ class Helpers_Firmafy {
 				'UTF-8',
 				array( 10, 10, 10, 10 ) // in mm.
 			);
+
+
+			// Check if selected font is custom or not. If is custom, we must add the full path.
+			if ( $this::font_is_custom( $font ) ) {
+				$font_path = self::get_custom_pdf_fonts();
+				$font_path = $font_path . $font . '.ttf';
+				$font      = TCPDF_FONTS::addTTFfont( $font_path, 'TrueTypeUnicode', '', 96 );
+			}
+
 			$html2pdf->addFont( $font );
 			$html2pdf->setDefaultFont( $font );
 			$html2pdf->setTestTdInOnePage( false );
 			$html2pdf->writeHTML( $content );
 			$pdf_content = $html2pdf->Output( $filename, 'S' );
-
 		} catch ( Html2PdfException $e ) { //phpcs:ignore
 			$formatter = new ExceptionFormatter( $e ); //phpcs:ignore
 			error_log( 'Unexpected Error!<br>Can not load PDF this time! ' . $formatter->getHtmlMessage() );
@@ -612,7 +620,6 @@ class Helpers_Firmafy {
 			'helvetica',
 			'times',
 			'zapfdingbats',
-			'symbol',
 		);
 
 		return in_array( $font, $base_fonts, true ) ? false : true;
