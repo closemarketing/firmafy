@@ -22,6 +22,29 @@ use Spipu\Html2Pdf\Html2Pdf;
  * @since 1.0
  */
 class Helpers_Firmafy {
+
+	/**
+	 * Available PDF Fonts
+	 *
+	 * @var array
+	 */
+	public $available_pdf_fonts;
+
+	/**
+	 * Constructor
+	 */
+	public function __construct() {
+		// Add the available_pdf_fonts.
+		$this->available_pdf_fonts = array(
+			'roboto'       => 'Roboto',
+			'courier'      => 'Courier',
+			'helvetica'    => 'Helvetica',
+			'times'        => 'Times',
+			'zapfdingbats' => 'ZapfDingbats',
+			'symbol'       => 'Symbol'
+		);
+	}
+
 	/**
 	 * POSTS API from Firmafy
 	 *
@@ -278,7 +301,7 @@ class Helpers_Firmafy {
 	public function create_entry( $template_id, $merge_vars, $force_signers = array(), $entry_id = null, $add_header = false ) {
 		$settings         = get_option( 'firmafy_options' );
 		$id_show          = isset( $settings['id_show'] ) ? $settings['id_show'] : '';
-		$font             = isset( $settings['font'] ) ? $settings['font'] : 'helvetica';
+		$font             = isset( $settings['pdf_font'] ) ? strtolower( $settings['pdf_font'] ) : 'helvetica';
 		$signer           = array();
 		$temp_content_pre = '';
 
@@ -387,6 +410,7 @@ class Helpers_Firmafy {
 			$html2pdf->setTestTdInOnePage( false );
 			$html2pdf->writeHTML( $content );
 			$pdf_content = $html2pdf->Output( $filename, 'S' );
+
 		} catch ( Html2PdfException $e ) { //phpcs:ignore
 			$formatter = new ExceptionFormatter( $e ); //phpcs:ignore
 			error_log( 'Unexpected Error!<br>Can not load PDF this time! ' . $formatter->getHtmlMessage() );
@@ -546,6 +570,52 @@ class Helpers_Firmafy {
 		}
 
 		return $doc->saveHTML();
+	}
+
+	/**
+	 * Get available PDF fonts
+	 *
+	 * @return array
+	 */
+	public function get_available_pdf_fonts() {
+		return $this->available_pdf_fonts;
+	}
+
+	/**
+	 * Add available PDF fonts
+	 *
+	 * @param string $font Font to add.
+	 */
+	public function add_available_pdf_fonts( $font ) {
+		$this->available_pdf_fonts[] = $font;
+	}
+
+	/**
+	 * Get custom PDF fonts
+	 *
+	 * @return string
+	 */
+	public static function get_custom_pdf_fonts() {
+		$path = FIRMAFY_PLUGIN_PATH . 'includes/fonts/';
+		return apply_filters( 'firmafy_custom_font_path', $path );
+	}
+
+	/**
+	 * Check if font is custom
+	 *
+	 * @param string $font Font to check.
+	 * @return boolean
+	 */
+	public static function font_is_custom( $font ) {
+		$base_fonts = array(
+			'courier',
+			'helvetica',
+			'times',
+			'zapfdingbats',
+			'symbol',
+		);
+
+		return in_array( $font, $base_fonts, true ) ? false : true;
 	}
 }
 
