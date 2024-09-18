@@ -372,26 +372,46 @@ class Helpers_Firmafy {
 		$filename .= '-' . sanitize_title( get_the_title( $template_id ) );
 		$filename .= '-' . gmdate( 'Y-m-d-H-i' ) . '.pdf';
 
-		$content  = '<page style="margin-top:10mm;" backcolor="#fff">';
+		$content  = '<html>';
+		$content .= '<head>';
 		$content .= '<style>';
+
 		// Gets Template Style.
 		$template_css_file = get_template_directory() . '/style.css';
 		if ( file_exists( $template_css_file ) ) {
 			$content .= file_get_contents( $template_css_file );
 		}
+		
 		// Gets Template Child Style.
 		$template_css_file = get_stylesheet_directory() . '/style.css';
 		if ( file_exists( $template_css_file ) ) {
 			$content .= file_get_contents( $template_css_file );
 		}
 
-		// Append the line height to the style (only for p tags).
-		$line_height = ! empty( $settings['line_height'] ) ? $settings['line_height'] : '16';
+		// Gets the custom PDF styles.
+		$template_pdf_css_file = FIRMAFY_PLUGIN_PATH . 'assets/pdf.css';
+		if ( file_exists( $template_pdf_css_file ) ) {
+			$content .= file_get_contents( $template_css_file );
+		}
 
-		$content .= 'p { line-height: ' . $line_height . 'px; }';
+		// Get the Gutenberg styles.
+		$content .= $this::get_gutenberg_css();
+
+		// Get block generated css.
+		$content .= $this::get_block_dynamic_css();
+
+		// Append the line height to the style (only for p tags).
+		//$line_height = ! empty( $settings['line_height'] ) ? $settings['line_height'] : '16';
+
+		//$content .= 'p { line-height: ' . $line_height . 'px; }';
 		$content .= '</style>';
+		$content .= '</head>';
+		$content .= '<body>';
 		$content .= $template_content;
-		$content .= '</page>';
+		$content .= '</body>';
+		$content .= '</html>';
+
+		error_log( print_r( $content, true ) ); die;
 
 		// Creates PDF.
 		$lang = isset( explode( '_', get_locale() )[0] ) ? explode( '_', get_locale() )[0] : 'en';
@@ -623,6 +643,37 @@ class Helpers_Firmafy {
 		);
 
 		return in_array( $font, $base_fonts, true ) ? false : true;
+	}
+
+	/**
+	 * Get Gutenberg CSS
+	 *
+	 * @return string
+	 */
+	public static function get_gutenberg_css() {
+		$combined = '';
+    
+		if ( file_exists( ABSPATH . 'wp-includes/css/dist/block-library/style.css' ) ) {
+			$combined .= file_get_contents( ABSPATH . 'wp-includes/css/dist/block-library/style.css' );
+		}
+
+		if ( file_exists( ABSPATH . 'wp-includes/css/dist/block-library/theme.css' ) ) {
+			$combined .= file_get_contents( ABSPATH . 'wp-includes/css/dist/block-library/theme.css' );
+		}
+
+		return $combined;
+	}
+
+
+	/**
+	 * Get block dynamic CSS
+	 *
+	 * @return string
+	 */
+	public static function get_block_dynamic_css() {
+		$css_url  = admin_url('load-styles.php?c=1&dir=ltr&load=wp-block-library,wp-block-editor,wp-block-editor-content,wp-editor,wp-components');
+		$response = file_get_contents( $css_url );
+		return $response;
 	}
 }
 
