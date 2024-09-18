@@ -1,0 +1,14 @@
+body {
+  max-width: 1280px;
+  margin: 0 auto;
+}
+
+.firmafy-pdf-table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 20px;
+
+	text-align: left;
+	float: left;
+	margin-right: 0;
+}
