@@ -300,6 +300,7 @@ class Helpers_Firmafy {
 		$settings         = get_option( 'firmafy_options' );
 		$id_show          = isset( $settings['id_show'] ) ? $settings['id_show'] : '';
 		$font             = isset( $settings['pdf_font'] ) ? strtolower( $settings['pdf_font'] ) : 'helvetica';
+		$pdf_background   =  isset( $settings['pdf_background'] ) ? $settings['pdf_background'] : '';
 		$signer           = array();
 		$temp_content_pre = '';
 
@@ -376,7 +377,18 @@ class Helpers_Firmafy {
 		$content .= '<style>';
 
 		// Prepare Font family tag ready to replace.
-		$content .= 'body { font-family: "{{fontFamily}}", sans-serif !important; }';
+		$body_replace_tags = array(
+			'font-family: "{{fontFamily}}", sans-serif !important;',
+		);
+		$content .= 'body {  }';
+
+		// Prepare for the PDF background.
+		if ( ! empty( $pdf_background ) ) {
+			$body_replace_tags[] = 'background-image: url(' . $pdf_background . '); background-size: cover;  background-position: center; background-repeat: no-repeat;';
+		}
+
+		// Append the body CSS.
+		$content .= 'body { ' . implode( ' ', $body_replace_tags ) . ' }';
 
 		// Gets Template Style.
 		$template_css_file = get_template_directory() . '/style.css';
