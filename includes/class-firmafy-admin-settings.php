@@ -58,6 +58,14 @@ class FIRMAFY_ADMIN_SETTINGS {
 			array(),
 			FIRMAFY_VERSION
 		);
+
+		wp_register_script(
+			'firmafy-admin-js',
+			FIRMAFY_PLUGIN_URL . '/includes/assets/admin.js',
+			array(),
+			FIRMAFY_VERSION,
+			true
+		);
 	}
 	/**
 	 * Adds plugin page.
@@ -252,6 +260,14 @@ class FIRMAFY_ADMIN_SETTINGS {
 		);
 
 		add_settings_field(
+			'firmafy_pdf_background',
+			__( 'PDF image background', 'firmafy' ),
+			array( $this, 'firmafy_pdf_background_callback' ),
+			'firmafy_options',
+			'admin_firmafy_settings'
+		);
+
+		add_settings_field(
 			'firmafy_signers',
 			__( 'Signers by default', 'firmafy' ),
 			array( $this, 'signers_callback' ),
@@ -347,6 +363,12 @@ class FIRMAFY_ADMIN_SETTINGS {
 		if ( isset( $input['pdf_font'] ) ) {
 			$sanitary_values['pdf_font'] = sanitize_text_field( $input['pdf_font'] );
 		}
+
+		if ( isset( $_POST['pdf_background'] ) ) {
+			$sanitary_values['pdf_background'] = sanitize_text_field( $_POST['pdf_background'] );
+		}
+
+		
 
 		// Save Signers options.
 		if ( isset( $input['signers'] ) ) {
@@ -457,13 +479,24 @@ class FIRMAFY_ADMIN_SETTINGS {
 		// Get all fonts.
 		$fonts = $helpers_firmafy->get_available_pdf_fonts();
 
-		echo '<select name="firmafy_options[pdf_font]" id="pdf_font">';
+		echo '<select class="regular-text" name="firmafy_options[pdf_font]" id="pdf_font">';
 		foreach ( $fonts as $font ) {
 			echo '<option value="' . esc_html( $font ) . '" ';
 			selected( $font, isset( $this->firmafy_settings['pdf_font'] ) ? $this->firmafy_settings['pdf_font'] : '' );
 			echo '>' . esc_html( $font ) . '</option>';
 		}
 		echo '</select>';
+	}
+
+	public function firmafy_pdf_background_callback() {
+		global $helpers_firmafy;
+
+		wp_enqueue_script( 'firmafy-admin-js' );
+		wp_enqueue_media();
+
+		echo '<input class="regular-text" type="text" name="pdf_background" id="pdf_background" value="' . esc_attr( $this->firmafy_settings['pdf_background'] ) . '">';
+		echo '<div class="js-firmafy-upload-file button firmafy-upload-btn">' . esc_html( 'Upload', 'firmafy ') . '</div>';
+
 	}
 
 	/**
