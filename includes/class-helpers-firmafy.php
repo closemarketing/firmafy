@@ -12,8 +12,8 @@ defined( 'ABSPATH' ) || exit;
 
 require FIRMAFY_PLUGIN_PATH . '/vendor/autoload.php';
 
-use Spipu\Html2Pdf\Html2Pdf;
-
+use Dompdf\Dompdf;
+use Dompdf\Options;
 /**
  * Class Firmafy.
  *
@@ -397,13 +397,10 @@ class Helpers_Firmafy {
 		// Get the Gutenberg styles.
 		$content .= $this::get_gutenberg_css();
 
-		// Get block generated css.
-		$content .= $this::get_block_dynamic_css();
-
 		// Append the line height to the style (only for p tags).
-		//$line_height = ! empty( $settings['line_height'] ) ? $settings['line_height'] : '16';
+		$line_height = ! empty( $settings['line_height'] ) ? $settings['line_height'] : '16';
 
-		//$content .= 'p { line-height: ' . $line_height . 'px; }';
+		$content .= 'p.firmafy-lh { line-height: ' . $line_height . 'px; }';
 		$content .= '</style>';
 		$content .= '</head>';
 		$content .= '<body>';
@@ -411,37 +408,35 @@ class Helpers_Firmafy {
 		$content .= '</body>';
 		$content .= '</html>';
 
-		error_log( print_r( $content, true ) ); die;
-
 		// Creates PDF.
-		$lang = isset( explode( '_', get_locale() )[0] ) ? explode( '_', get_locale() )[0] : 'en';
-
 		try {
-			$html2pdf = new Html2Pdf(
-				'P',
-				'A4',
-				$lang,
-				true,
-				'UTF-8',
-				array( 10, 10, 10, 10 ) // in mm.
-			);
-
-
 			// Check if selected font is custom or not. If is custom, we must add the full path.
 			if ( $this::font_is_custom( $font ) ) {
-				$font_path = self::get_custom_pdf_fonts();
-				$font_path = $font_path . $font . '.ttf';
-				$font      = TCPDF_FONTS::addTTFfont( $font_path, 'TrueTypeUnicode', '', 96 );
+				//$font_path = self::get_custom_pdf_fonts();
+
 			}
 
-			$html2pdf->addFont( $font );
-			$html2pdf->setDefaultFont( $font );
-			$html2pdf->setTestTdInOnePage( false );
-			$html2pdf->writeHTML( $content );
-			$pdf_content = $html2pdf->Output( $filename, 'S' );
-		} catch ( Html2PdfException $e ) { //phpcs:ignore
-			$formatter = new ExceptionFormatter( $e ); //phpcs:ignore
-			error_log( 'Unexpected Error!<br>Can not load PDF this time! ' . $formatter->getHtmlMessage() );
+			// Define the options.
+			$options = new Options();
+			$options->set( 'isHtml5ParserEnabled', true ); // Enable HTML5 parser.
+			$options->set( 'isRemoteEnabled', true ); // Enable remote file access.
+
+			// Initialize the Dompdf instance.
+			$dompdf = new Dompdf( $options );
+
+			// Setup the paper size and orientation.
+			$dompdf->setPaper( 'A4', 'portrait' );
+
+			// Load HTML content.
+			$dompdf->loadHtml( $content );
+
+			// Render the HTML to PDF.
+			$dompdf->render();
+			// Local show PDF on navigator.
+			$dompdf->stream("dompdf_out.pdf", array("Attachment" => false)); die;
+			//$pdf_content = $html2pdf->Output( $filename, 'S' );
+		} catch ( Exception $e ) { //phpcs:ignore
+			error_log( 'Unexpected Error!<br>Can not load PDF this time! ' . $e->getMessage() );
 		}
 
 		$token         = $this->login();
@@ -675,6 +670,51 @@ class Helpers_Firmafy {
 		$response = file_get_contents( $css_url );
 		return $response;
 	}
+
+	/**
+	 * Get template content
+	 *
+	 * @param integer $template_id Template ID.
+	 * @return string
+	 */
+	public static function get_template_content( $template_id ) {
+		$_post  = get_post( $template_id );
+		$blocks = parse_blocks( $_post->post_content );
+
+		ob_start();
+		foreach ( $blocks as $block ) {
+			echo render_block( $block );
+		}
+
+		return ob_get_clean();
+	}
+
+	public static function get_css_defined_vars() {
+		// Get the global colors.
+		$global_colors = wp_get_global_settings( array( 'color', 'palette', 'theme' ) );
+		$css           = '';
+
+		if ( isset( $global_colors['palette'] ) && is_array( $global_colors['palette'] ) ) {
+			foreach ( $global_colors['palette'] as $color ) {
+				$slug        = isset( $color['slug'] ) ? $color['slug'] : '';
+				$color_value = isset( $color['color'] ) ? $color['color'] : '';
+
+				if ( $slug && $color_value ) {
+					$css .= "
+						.has-{$slug}-color {
+								color: {$color_value};
+						}
+						.has-{$slug}-background-color {
+								background-color: {$color_value};
+						}
+					";
+				}
+			}
+		}
+
+		return $css;
+	}
+
 }
 
 $helpers_firmafy = new Helpers_Firmafy();
