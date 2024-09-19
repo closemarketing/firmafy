@@ -457,9 +457,9 @@ class Helpers_Firmafy {
 
 			// Render the HTML to PDF.
 			$dompdf->render();
-			// Local show PDF on navigator.
-			$dompdf->stream("dompdf_out.pdf", array("Attachment" => false)); die;
-			//$pdf_content = $html2pdf->Output( $filename, 'S' );
+
+			// Output the generated PDF.
+			$pdf_content = $dompdf->output();
 		} catch ( Exception $e ) { //phpcs:ignore
 			error_log( 'Unexpected Error!<br>Can not load PDF this time! ' . $e->getMessage() );
 		}
@@ -476,6 +476,7 @@ class Helpers_Firmafy {
 			'pdf_name'   => $filename,
 			'pdf_base64' => chunk_split( base64_encode( $pdf_content ) ),
 		);
+
 		$result_api = $this->api_post( $settings, 'request', $query );
 
 		if ( 'error' === $result_api['status'] ) {
@@ -483,6 +484,7 @@ class Helpers_Firmafy {
 		} else {
 			$result_api['id'] = isset( $result_api['data'] ) ? $result_api['data'] : '';
 		}
+
 		return $result_api;
 	}
 
