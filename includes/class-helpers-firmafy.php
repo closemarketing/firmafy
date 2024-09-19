@@ -38,7 +38,6 @@ class Helpers_Firmafy {
 		$this->available_pdf_fonts = array(
 			'roboto'       => 'Roboto',
 			'courier'      => 'Courier',
-			'helvetica'    => 'Helvetica',
 			'times'        => 'Times',
 			'zapfdingbats' => 'ZapfDingbats',
 		);
@@ -376,6 +375,9 @@ class Helpers_Firmafy {
 		$content .= '<head>';
 		$content .= '<style>';
 
+		// Prepare Font family tag ready to replace.
+		$content .= 'body { font-family: "{{fontFamily}}", sans-serif !important; }';
+
 		// Gets Template Style.
 		$template_css_file = get_template_directory() . '/style.css';
 		if ( file_exists( $template_css_file ) ) {
@@ -410,19 +412,30 @@ class Helpers_Firmafy {
 
 		// Creates PDF.
 		try {
-			// Check if selected font is custom or not. If is custom, we must add the full path.
-			if ( $this::font_is_custom( $font ) ) {
-				//$font_path = self::get_custom_pdf_fonts();
-
-			}
-
 			// Define the options.
 			$options = new Options();
 			$options->set( 'isHtml5ParserEnabled', true ); // Enable HTML5 parser.
 			$options->set( 'isRemoteEnabled', true ); // Enable remote file access.
+			$options->set( 'isFontSubsettingEnabled', true );
 
 			// Initialize the Dompdf instance.
 			$dompdf = new Dompdf( $options );
+
+			// Check if selected font is custom or not. If is custom, we must add the full path.
+			if ( $this::font_is_custom( $font ) ) {
+				$custom_font = self::get_custom_pdf_font( $font );
+
+				if ( ! empty( $custom_font ) ) {
+					foreach( $custom_font as $pdf_font ) {
+						$dompdf->getFontMetrics()->registerFont( $pdf_font[0], $pdf_font[1] );
+					}
+				} else {
+					$font = 'helvetica';
+				}
+			}
+			
+			// Set the font.
+			$content = str_replace( '{{fontFamily}}', ucfirst( $font ), $content );
 
 			// Setup the paper size and orientation.
 			$dompdf->setPaper( 'A4', 'portrait' );
@@ -619,8 +632,46 @@ class Helpers_Firmafy {
 	 * @return string
 	 */
 	public static function get_custom_pdf_fonts() {
-		$path = FIRMAFY_PLUGIN_PATH . 'includes/fonts/';
-		return apply_filters( 'firmafy_custom_font_path', $path );
+		$fonts = array(
+			'roboto' => array(
+				array( // Regular.
+					array(
+						'family' => 'Roboto',
+						'style'  => 'normal',
+						'weight' => 'normal',
+					),
+					FIRMAFY_PLUGIN_PATH . 'includes/fonts-pdf/roboto-regular.ttf',
+				),
+				array( // 500.
+					array(
+						'family' => 'Roboto',
+						'style'  => 'normal',
+						'weight' => '500',
+					),
+					FIRMAFY_PLUGIN_PATH . 'includes/fonts-pdf/roboto-500.ttf',
+				),
+				array( // 700.
+					array(
+						'family' => 'Roboto',
+						'style'  => 'normal',
+						'weight' => '700',
+					),
+					FIRMAFY_PLUGIN_PATH . 'includes/fonts-pdf/roboto-700.ttf',
+				),
+			),
+		);
+		return apply_filters( 'firmafy_custom_font_path', $fonts );
+	}
+
+	/**
+	 * Get custom PDF font
+	 *
+	 * @param string $font Font to get.
+	 * @return string
+	 */
+	public static function get_custom_pdf_font( $font ) {
+		$fonts = self::get_custom_pdf_fonts();
+		return isset( $fonts[ $font ] ) ? $fonts[ $font ] : array();
 	}
 
 	/**
