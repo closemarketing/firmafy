@@ -380,7 +380,6 @@ class Helpers_Firmafy {
 		$body_replace_tags = array(
 			'font-family: "{{fontFamily}}", sans-serif !important;',
 		);
-		$content .= 'body {  }';
 
 		// Prepare for the PDF background.
 		if ( ! empty( $pdf_background ) ) {
@@ -457,6 +456,19 @@ class Helpers_Firmafy {
 
 			// Render the HTML to PDF.
 			$dompdf->render();
+
+			// Check if logo is configured.
+			$logo_path = ! empty( $settings['pdf_logo'] )
+				? $this::attachment_url_to_path( $settings['pdf_logo'] )
+				: '';
+
+			if ( $logo_path ) {
+				$dompdf->getCanvas()->page_script( function ( $pageNumber, $pageCount, $canvas, $fontMetrics ) use ( $logo_path ) {
+					if ( file_exists( $logo_path ) ) {
+						$canvas->image( $logo_path, 30, 15, 150, 25 );
+					}
+				});
+			}
 
 			// Output the generated PDF.
 			$pdf_content = $dompdf->output();
@@ -754,6 +766,11 @@ class Helpers_Firmafy {
 		return ob_get_clean();
 	}
 
+	/**
+	 * Get CSS defined vars
+	 *
+	 * @return string
+	 */
 	public static function get_css_defined_vars() {
 		// Get the global colors.
 		$global_colors = wp_get_global_settings( array( 'color', 'palette', 'theme' ) );
@@ -778,6 +795,26 @@ class Helpers_Firmafy {
 		}
 
 		return $css;
+	}
+
+	/**
+	 * Get the attachment absolute path from its url
+	 *
+	 * @param string $url the attachment url to get its absolute path
+	 *
+	 * @return bool|string It returns the absolute path of an attachment
+	 */
+	public static function attachment_url_to_path( $url )
+	{
+		$parsed_url = parse_url( $url );
+		
+		if ( empty( $parsed_url['path'] ) ) {
+			return false;
+		}
+		
+		$file = ABSPATH . ltrim( $parsed_url['path'], '/');
+		
+		return file_exists( $file ) ? $file : false;
 	}
 
 }
