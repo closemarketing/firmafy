@@ -268,6 +268,14 @@ class FIRMAFY_ADMIN_SETTINGS {
 		);
 
 		add_settings_field(
+			'firmafy_pdf_logo',
+			__( 'PDF logo image', 'firmafy' ),
+			array( $this, 'firmafy_pdf_logo_callback' ),
+			'firmafy_options',
+			'admin_firmafy_settings'
+		);
+
+		add_settings_field(
 			'firmafy_signers',
 			__( 'Signers by default', 'firmafy' ),
 			array( $this, 'signers_callback' ),
@@ -368,7 +376,9 @@ class FIRMAFY_ADMIN_SETTINGS {
 			$sanitary_values['pdf_background'] = sanitize_text_field( $_POST['pdf_background'] );
 		}
 
-		
+		if ( isset( $_POST['pdf_logo'] ) ) {
+			$sanitary_values['pdf_logo'] = sanitize_text_field( $_POST['pdf_logo'] );
+		}
 
 		// Save Signers options.
 		if ( isset( $input['signers'] ) ) {
@@ -488,6 +498,11 @@ class FIRMAFY_ADMIN_SETTINGS {
 		echo '</select>';
 	}
 
+	/**
+	 * PDF Background callback.
+	 *
+	 * @return void
+	 */
 	public function firmafy_pdf_background_callback() {
 		global $helpers_firmafy;
 
@@ -496,7 +511,19 @@ class FIRMAFY_ADMIN_SETTINGS {
 
 		echo '<input class="regular-text" type="text" name="pdf_background" id="pdf_background" value="' . esc_attr( $this->firmafy_settings['pdf_background'] ) . '">';
 		echo '<div class="js-firmafy-upload-file button firmafy-upload-btn">' . esc_html( 'Upload', 'firmafy ') . '</div>';
+	}
 
+	/**
+	 * PDF Logo callback.
+	 *
+	 * @return void
+	 */
+	public function firmafy_pdf_logo_callback() {
+		wp_enqueue_script( 'firmafy-admin-js' );
+		wp_enqueue_media();
+
+		echo '<input class="regular-text" type="text" name="pdf_logo" id="pdf_logo" value="' . esc_attr( $this->firmafy_settings['pdf_logo'] ) . '">';
+		echo '<div class="js-firmafy-upload-logo-file button firmafy-upload-btn">' . esc_html( 'Upload', 'firmafy ') . '</div>';
 	}
 
 	/**
