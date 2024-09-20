@@ -3,9 +3,9 @@ Contributors: closetechnology, davidperez, sacrajaimez, firmafy
 Tags: forms, signature, gravityforms, contact form 7, woocommerce
 Requires at least: 4.0
 Requires PHP: 5.6
-Tested up to: 6.5
-Stable tag: 1.2.2
-Version: 1.2.2
+Tested up to: 6.6
+Stable tag: 1.3.0
+Version: 1.3.0
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -92,7 +92,7 @@ WordPress installation and then activate the Plugin from Plugins page.
 [Official Repository GitHub](https://github.com/closemarketing/firmafy/)
 
 == Changelog ==
-= 1.2.2 =
+= 1.3.0 =
 *  Added field {referencia} and get the ID of the form entry or order id. Useful to use in templates.
 *  Added: Page break in PDF. Use {salto_pagina} for that.
 *  Added: Name of template in the PDF file.
