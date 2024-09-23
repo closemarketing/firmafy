@@ -465,7 +465,7 @@ class Helpers_Firmafy {
 			if ( $logo_path ) {
 				$dompdf->getCanvas()->page_script( function ( $pageNumber, $pageCount, $canvas, $fontMetrics ) use ( $logo_path ) {
 					if ( file_exists( $logo_path ) ) {
-						$canvas->image( $logo_path, 30, 15, 150, 25 );
+						$canvas->image( $logo_path, 30, 10, 100, 18 );
 					}
 				});
 			}
