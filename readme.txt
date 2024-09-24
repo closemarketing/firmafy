@@ -1,5 +1,5 @@
 === Firmafy eSignature ===
-Contributors: closetechnology, davidperez, sacrajaimez, firmafy
+Contributors: closetechnology, davidperez, sacrajaimez, firmafy, alexbreagarcia
 Tags: forms, signature, gravityforms, contact form 7, woocommerce
 Requires at least: 4.0
 Requires PHP: 5.6
