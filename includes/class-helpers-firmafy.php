@@ -577,9 +577,35 @@ class Helpers_Firmafy {
 		// Page Break.
 		$content = str_replace( '{salto_pagina}', ' <div style="page-break-after:always; clear:both"></div>', $content );
 
+		// Get and replace all spacers.
+		$content = $this->replace_space_with_margin( $content );
+
 		return $content;
 	}
 
+	/**
+	 * Replace spacers by margin-bottom.
+	 *
+	 * @param string $content Content to process.
+	 * @return string
+	 */
+	public function replace_space_with_margin( $content ) {
+    // Regex.
+    $regex = '/\{espacio_(\d+)\}/';
+
+    $content = preg_replace_callback(
+			$regex,
+			function ( $matches ) {
+				return '<span style="display:block; margin-bottom: ' . $matches[1] . 'px;" </p>';
+			},
+			$content
+    );
+
+    return $content;
+}
+
+
+	
 	/**
 	 * Process images
 	 *
