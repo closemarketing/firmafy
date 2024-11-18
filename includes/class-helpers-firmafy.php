@@ -413,7 +413,7 @@ class Helpers_Firmafy {
 		// Append the line height to the style (only for p tags).
 		$line_height = ! empty( $settings['line_height'] ) ? $settings['line_height'] : '16';
 
-		$content .= 'p.firmafy-lh { line-height: ' . $line_height . 'px; }';
+		$content .= '.firmafy-lh { line-height: ' . $line_height . 'px; }';
 		$content .= '</style>';
 		$content .= '</head>';
 		$content .= '<body>';
