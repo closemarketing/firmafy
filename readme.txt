@@ -71,6 +71,10 @@ Fields that you can use in your template:
 - Reference: {referencia}
 - Page break: {salto_pagina}
 
+**WooCommerce Subscriptions**
+
+Firmafy supports WooCommerce Subscriptions. That means that the signature will be sent only in the first order of the subscription.
+
 **Firmafy use examples:**
 
 Does you client need to sign a direct debit document? You can create a direct debit template with Firmafy and getting it signed automatically in your WordPress, without doing anything.
@@ -103,6 +107,7 @@ function my_custom_function( $data ) {
 == Changelog ==
 = 1.3.2 =
 *  Added action hook to the webhook response.
+*  Added support to WooCommerce Subscriptions. Send only in first order.
 
 = 1.3.1 =
 *  Fixed: Auto Width for logo in PDF.
