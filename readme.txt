@@ -89,6 +89,15 @@ Extract the zip file and just drop the contents in the wp-content/plugins/ direc
 WordPress installation and then activate the Plugin from Plugins page.
 
 == Developers ==
+Added an action hook to the webhook response:
+```php
+add_action( 'firmafy_webhook_received', 'my_custom_function', 10, 1 );
+
+function my_custom_function( $data ) {
+    // Do something with the received data
+}
+```
+
 [Official Repository GitHub](https://github.com/closemarketing/firmafy/)
 
 == Changelog ==
