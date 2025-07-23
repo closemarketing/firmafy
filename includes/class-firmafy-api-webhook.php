@@ -73,8 +73,6 @@ class Firmafy_API_Webhook {
 		);
 		$orders = wc_get_orders( $args );
 
-		do_action( 'firmafy_webhook_received', $body );
-
 		if ( empty( $orders ) ) {
 			$log        = new WC_Logger();
 			$log_entry  = __( 'Order not found asked from Firmafy', 'firmafy' );
