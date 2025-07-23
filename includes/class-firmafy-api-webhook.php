@@ -64,6 +64,8 @@ class Firmafy_API_Webhook {
 			$body['signer'] = json_decode( $body['signer'], true );
 		}
 
+		do_action( 'firmafy_webhook_received', $body );
+
 		// Search order by meta.
 		$args = array(
 			'meta_key'     => '_firmafy_csv',
