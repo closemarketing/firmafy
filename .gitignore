@@ -5,6 +5,7 @@ node_modules/
 *.log
 *.zip
 .DS_Store
+.phpunit.result.cache
 
 # OS or Editor folders
 ._*.cache

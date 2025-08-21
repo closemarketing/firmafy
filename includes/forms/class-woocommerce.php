@@ -131,6 +131,20 @@ class Firmafy_WooCommerce {
 			),
 		);
 
+		// Conditional in subcriptions not send recurrent orders to firmafy.
+		if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order_id ) ) {
+			$subscriptions = wcs_get_subscriptions_for_order( $order_id );
+			if ( ! empty( $subscriptions ) ) {
+				foreach ( $subscriptions as $subscription ) {
+					$parent_order_id = $subscription->get_parent_id();
+
+					if ( $parent_order_id !== $order_id ) {
+						return; // Do not process this order, it is a subscription renewal.
+					}
+				}
+			}
+		}
+
 		$woocommerce_mode = isset( $this->settings['woocommerce_mode'] ) ? $this->settings['woocommerce_mode'] : 'all';
 
 		// Terms and conditions Sign.
