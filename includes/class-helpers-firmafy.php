@@ -582,7 +582,7 @@ class HELPER {
 	 */
 	public static function process_images( $content ) {
 		// Utilizar DOMDocument para analizar y modificar el HTML.
-		$doc = new DOMDocument();
+		$doc = new \DOMDocument();
 		@$doc->loadHTML( mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
 		$images = $doc->getElementsByTagName( 'img' );
 

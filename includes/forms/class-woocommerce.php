@@ -165,7 +165,7 @@ class Firmafy_WooCommerce {
 		if ( 'products' === $woocommerce_mode || 'all' === $woocommerce_mode ) {
 			$ordered_items = $order->get_items();
 			foreach ( $ordered_items as $order_item ) {
-				$product_id = $order_item['product_id'];
+				$product_id = (int)$order_item['product_id'];
 
 				$firmafy_options = get_post_meta( $product_id, 'firmafy', true );
 
@@ -340,7 +340,7 @@ class Firmafy_WooCommerce {
 	 */
 	public function metabox_show_product( $post ) {
 		$firmafy_options  = get_post_meta( $post->ID, 'firmafy', true );
-		$firmafy_template = isset( $firmafy_options['template'] ) ? $firmafy_options['template'] : 0;
+		$firmafy_template = isset( $firmafy_options['template'] ) ? (int) $firmafy_options['template'] : 0;
 		?>
 		<table>
 			<tr><!-- SELECT template-->
@@ -351,7 +351,12 @@ class Firmafy_WooCommerce {
 					$options = HELPER::get_templates();
 					echo '<option value="" ' . ( empty( $firmafy_template ) ? 'selected="selected"' : null ) . '>' . esc_html__( 'Not use Fimafy template', 'firmafy' ) . '</option>';
 					foreach ( $options as $option ) {
-						echo '<option value="' . esc_html( $option['value'] ) . '" ' . ( $firmafy_template == $option['value'] ? 'selected="selected"' : null ) . '>' . esc_html( $option['label'] ) . '</option>';
+						printf(
+							'<option value="%s"%s>%s</option>',
+							esc_attr( $option['value'] ),
+							selected( $firmafy_template, $option['value'], false ),
+							esc_html( $option['label'] )
+						);
 					}
 					?>
 					</select>
