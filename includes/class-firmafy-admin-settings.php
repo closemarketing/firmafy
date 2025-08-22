@@ -10,6 +10,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+use \Firmafy\HELPER;
+
 /**
  * Library for WooCommerce Settings
  *
@@ -130,7 +132,6 @@ class FIRMAFY_ADMIN_SETTINGS {
 	 * @return void
 	 */
 	public function create_admin_page() {
-		global $helpers_firmafy;
 		$this->firmafy_settings = get_option( 'firmafy_options' );
 		?>
 		<div class="header-wrap">
@@ -144,7 +145,7 @@ class FIRMAFY_ADMIN_SETTINGS {
 					</div>
 					<div class="connection">
 						<?php
-						$login_result = $helpers_firmafy->login();
+						$login_result = HELPER::login();
 						if ( 'error' === $login_result['status'] ) {
 							echo '<p><span class="dashicons dashicons-no-alt"></span>';
 							esc_html_e( 'ERROR: We could not connect to Firmafy.', 'firmafy' );
@@ -155,7 +156,7 @@ class FIRMAFY_ADMIN_SETTINGS {
 							$token                  = ! empty( $login_result['data'] ) ? $login_result['data'] : '';
 							$credentials['token']   = $token;
 							$credentials['id_show'] = isset( $this->firmafy_settings['id_show'] ) ? $this->firmafy_settings['id_show'] : '';
-							$result_weebhook        = $helpers_firmafy->webhook( $credentials );
+							$result_weebhook        = HELPER::webhook( $credentials );
 
 							if ( ! $result_weebhook ) {
 								echo '<p><span class="dashicons dashicons-no-alt"></span>';
@@ -163,11 +164,10 @@ class FIRMAFY_ADMIN_SETTINGS {
 								echo esc_html( $result_weebhook['data'] ) . '</p>';
 							} else {
 								echo '<p><span class="dashicons dashicons-saved"></span>';
-								esc_html_e( 'Syncronization actived', 'firmafy' ) . '</p>';
+								esc_html_e( 'Syncronization actived', 'firmafy' );
 							}
 						}
 						?>
-						</p>
 					</div>
 				</div>
 			</div>
@@ -327,7 +327,6 @@ class FIRMAFY_ADMIN_SETTINGS {
 	 * @return array
 	 */
 	public function sanitize_fields_api( $input ) {
-		global $helpers_firmafy;
 		$sanitary_values = array();
 
 		if ( isset( $input['username'] ) ) {
@@ -400,7 +399,7 @@ class FIRMAFY_ADMIN_SETTINGS {
 			);
 		}
 
-		$helpers_firmafy->login( $sanitary_values['username'], $sanitary_values['password'] );
+		HELPER::login( $sanitary_values['username'], $sanitary_values['password'] );
 
 		return $sanitary_values;
 	}
@@ -484,10 +483,8 @@ class FIRMAFY_ADMIN_SETTINGS {
 	 * @return void
 	 */
 	public function firmafy_pdf_font_callback() {
-		global $helpers_firmafy;
-
 		// Get all fonts.
-		$fonts = $helpers_firmafy->get_available_pdf_fonts();
+		$fonts = HELPER::get_available_pdf_fonts();
 
 		echo '<select class="regular-text" name="firmafy_options[pdf_font]" id="pdf_font">';
 		foreach ( $fonts as $font ) {
@@ -504,7 +501,6 @@ class FIRMAFY_ADMIN_SETTINGS {
 	 * @return void
 	 */
 	public function firmafy_pdf_background_callback() {
-		global $helpers_firmafy;
 
 		wp_enqueue_script( 'firmafy-admin-js' );
 		wp_enqueue_media();
@@ -808,11 +804,9 @@ class FIRMAFY_ADMIN_SETTINGS {
 	 * @return void
 	 */
 	public function manage_firmafy_template_columns( $column_name, $id ) {
-		global $helpers_firmafy;
-
 		switch ( $column_name ) {
 			case 'variables':
-				$variables = $helpers_firmafy->get_variables_template( $id );
+				$variables = HELPER::get_variables_template( $id );
 				if ( is_array( $variables ) ) {
 					echo esc_html( implode( ', ', array_column( $variables, 'label' ) ) );
 				}

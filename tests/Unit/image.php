@@ -16,15 +16,14 @@ echo 'Testing images...<br>';
 
 define( 'WPAT_PLUGINPATH', dirname( __DIR__ ) . '/' );
 
-require_once '../includes/class-helpers-firmafy.php';
+require_once '../includes/class-helper.php';
 echo 'Antes...<br>';
 echo '<pre>$content';
 print_r(htmlentities($content));
 echo '</pre>';
 $content = file_get_contents( WPAT_PLUGINPATH . 'test/examples/image.html' );
 
-global $helpers_firmafy;
-$content = $helpers_firmafy->process_images( $content );
+$content = \Firmafy\HELPER::process_images( $content );
 
 echo 'Despues...<br>';
 echo '<pre>$content';
