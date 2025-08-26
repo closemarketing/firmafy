@@ -9,7 +9,7 @@ Version: 1.3.2
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Validate legaly your forms created with main plugins in the market.
+Legally validate your forms or orders securely and confidently.
 
 == Description ==
 
@@ -17,9 +17,9 @@ Your clients will be able to sign any document through a form that you insert in
 
 And the signed document will have full legal validity.
 
-Firmafy is an advanced electronic signature system that collects 6 evicendes to guarantee the signatory identity and the signed document validity.
+Firmafy is an advanced electronic signature system that collects 6 evidences to guarantee the signatory identity and the signed document validity.
 
-The document is generated as a result of the data inserted by your clients in your WordPress form.
+The document is generated as a result of the data inserted by your clients in your WordPress form or an order in your WooCommerce Shop.
 
 Firmafy connects with the most popular and reliable WordPress form plugins:
 
@@ -42,7 +42,7 @@ The signature process will start as soon as your client clics on the email link.
 Both of you will receive an email with the signed document copy. That signature will have a full legal validity.
 
 Please, watch this video with to know what's Firmafy:
-[youtube https://www.youtube.com/watch?v=PbC-KIEw-4M]
+[youtube https://www.youtube.com/watch?v=p5iWroU3ih4]
 
 And watch this video with the step by step to step for the setup:
 [youtube https://www.youtube.com/watch?v=ZJ2ljXgLW_s]
