@@ -10,6 +10,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+use \Firmafy\HELPER;
+
 /**
  * Library for Contact Forms Settings
  *
@@ -53,8 +55,6 @@ class Firmafy_CF7_Settings {
 	 * @return void
 	 */
 	public function settings_add_firmafy( $args ) {
-		global $helpers_firmafy;
-
 		$cf7_firmafy_defaults = array();
 		$cf7_firmafy          = get_option( 'cf7_firmafy_' . $args->id(), $cf7_firmafy_defaults );
 		?>
@@ -69,7 +69,7 @@ class Firmafy_CF7_Settings {
 							selected( $cf7_firmafy['firmafy_template'], '' );
 						}
 						echo '>' . __( 'Select template', 'firmafy' ) . '</option>';
-						foreach ( $helpers_firmafy->get_templates() as $template ) {
+						foreach ( HELPER::get_templates() as $template ) {
 							echo '<option value="' . esc_html( $template['value'] ) . '" ';
 							if ( isset( $template['value'] ) ) {
 								selected( $cf7_firmafy['firmafy_template'], $template['value'] );
@@ -84,7 +84,7 @@ class Firmafy_CF7_Settings {
 				<p>
 					<label for="wpcf7-firmafy-firmafy_signers"><?php esc_html_e( 'Self signers:', 'firmafy' ); ?></label><br />
 					<?php
-					$signers = $helpers_firmafy->get_signers();
+					$signers = HELPER::get_signers();
 					foreach ( $signers as $signer ) {
 						echo '<p><input type="checkbox"';
 						echo 'name="wpcf7-firmafy[' . esc_html( $signer['name'] ) . ']"';
@@ -99,7 +99,7 @@ class Firmafy_CF7_Settings {
 
 		<?php
 		if ( isset( $cf7_firmafy['firmafy_template'] ) && $cf7_firmafy['firmafy_template'] ) {
-			$firmafy_fields = $helpers_firmafy->get_variables_template( $cf7_firmafy['firmafy_template'] );
+			$firmafy_fields = HELPER::get_variables_template( $cf7_firmafy['firmafy_template'] );
 			?>
 			<table class="cf7-map-table" cellspacing="0" cellpadding="0">
 				<tbody>
@@ -150,14 +150,13 @@ class Firmafy_CF7_Settings {
 	 * @return void
 	 */
 	public function firmafy_process_entry( $obj ) {
-		global $helpers_firmafy;
 		$cf7_firmafy = get_option( 'cf7_firmafy_' . $obj->id() );
 		$submission  = WPCF7_Submission::get_instance();
 
 		if ( $cf7_firmafy ) {
 			$merge_vars      = $this->get_merge_vars( $cf7_firmafy, $submission->get_posted_data() );
-			$signers         = $helpers_firmafy->filter_signers( $cf7_firmafy );
-			$response_result = $helpers_firmafy->create_entry( $cf7_firmafy['firmafy_template'], $merge_vars, $signers );
+			$signers         = HELPER::filter_signers( $cf7_firmafy );
+			$response_result = HELPER::create_entry( $cf7_firmafy['firmafy_template'], $merge_vars, $signers );
 
 			if ( 'error' === $response_result['status'] ) {
 				firmafy_debug_email( $cf7_firmafy['fc_firmafy_type'], 'Error ' . $response_result['message'], $merge_vars );

@@ -8,6 +8,8 @@
  * @version    1.0
  */
 
+namespace Firmafy;
+
 defined( 'ABSPATH' ) || exit;
 
 require FIRMAFY_PLUGIN_PATH . '/vendor/autoload.php';
@@ -21,27 +23,19 @@ use Dompdf\Options;
  *
  * @since 1.0
  */
-class Helpers_Firmafy {
+class HELPER {
 
 	/**
 	 * Available PDF Fonts
 	 *
 	 * @var array
 	 */
-	public $available_pdf_fonts;
-
-	/**
-	 * Constructor
-	 */
-	public function __construct() {
-		// Add the available_pdf_fonts.
-		$this->available_pdf_fonts = array(
-			'roboto'       => 'Roboto',
-			'courier'      => 'Courier',
-			'times'        => 'Times',
-			'zapfdingbats' => 'ZapfDingbats',
-		);
-	}
+	public static $available_pdf_fonts = array(
+		'roboto'       => 'Roboto',
+		'courier'      => 'Courier',
+		'times'        => 'Times',
+		'zapfdingbats' => 'ZapfDingbats',
+	);
 
 	/**
 	 * POSTS API from Firmafy
@@ -51,7 +45,7 @@ class Helpers_Firmafy {
 	 * @param string $query Query.
 	 * @return array
 	 */
-	public function api_post( $credentials, $action, $query = array() ) {
+	public static function api_post( $credentials, $action, $query = array() ) {
 		$args['timeout'] = 120;
 		if ( 'webhook' === $action ) {
 			$args['body'] = array(
@@ -104,7 +98,7 @@ class Helpers_Firmafy {
 	 * @param string $password Password.
 	 * @return array
 	 */
-	public function login( $username = '', $password = '' ) {
+	public static function login( $username = '', $password = '' ) {
 		if ( empty( $username ) || empty( $password ) ) {
 			$credentials = get_option( 'firmafy_options' );
 		} else {
@@ -114,7 +108,7 @@ class Helpers_Firmafy {
 			);
 		}
 
-		return $this->api_post( $credentials, 'login' );
+		return self::api_post( $credentials, 'login' );
 	}
 
 	/**
@@ -124,13 +118,13 @@ class Helpers_Firmafy {
 	 *
 	 * @return boolean
 	 */
-	public function webhook( $credentials ) {
+	public static function webhook( $credentials ) {
 		if ( empty( $token ) ) {
-			$result = $this->login();
+			$result = self::login();
 			$token  = ! empty( $result['data'] ) ? $result['data'] : '';
 		}
 
-		$result = $this->api_post(
+		$result = self::api_post(
 			$credentials,
 			'webhook',
 			array(
@@ -147,7 +141,7 @@ class Helpers_Firmafy {
 	 *
 	 * @return array
 	 */
-	public function get_templates() {
+	public static function get_templates() {
 		$templates   = array();
 		$args_query  = array(
 			'post_type'      => 'firmafy_template',
@@ -170,7 +164,7 @@ class Helpers_Firmafy {
 	 * @param string $type Type of signers.
 	 * @return array
 	 */
-	public function get_signers( $type = 'form' ) {
+	public static function get_signers( $type = 'form' ) {
 		$settings       = get_option( 'firmafy_options' );
 		$signers_option = isset( $settings['signers'] ) ? $settings['signers'] : array();
 		$signers        = array();
@@ -196,7 +190,7 @@ class Helpers_Firmafy {
 	 * @param array $meta Meta to filter.
 	 * @return array
 	 */
-	public function filter_signers( $meta ) {
+	public static function filter_signers( $meta ) {
 		$signers = array();
 		foreach ( $meta as $key => $value ) {
 			if ( str_contains( $key, 'firmafy_signer_' ) && 1 === (int) $value ) {
@@ -213,7 +207,7 @@ class Helpers_Firmafy {
 	 * @param integer $template_id Template ID.
 	 * @return array
 	 */
-	public function get_variables_template( $template_id ) {
+	public static function get_variables_template( $template_id ) {
 		$fields              = array();
 		$template            = get_post( $template_id );
 		$required_api_fields = array(
@@ -226,7 +220,7 @@ class Helpers_Firmafy {
 		preg_match_all( '#\{(.*?)\}#', $template->post_content, $matches );
 		if ( ! empty( $matches[1] ) && is_array( $matches[1] ) ) {
 			foreach ( $matches[1] as $field ) {
-				if ( $this->not_strange_string( $field ) ) {
+				if ( self::not_strange_string( $field ) ) {
 					$fields[] = $field;
 				}
 			}
@@ -236,7 +230,7 @@ class Helpers_Firmafy {
 				$fields[] = array(
 					'name'     => $field,
 					'label'    => $field,
-					'required' => $this->is_field_required( $field ),
+					'required' => self::is_field_required( $field ),
 				);
 			}
 			return $fields;
@@ -249,7 +243,7 @@ class Helpers_Firmafy {
 	 * @param array $field Field to check.
 	 * @return boolean
 	 */
-	private function is_field_required( $field ) {
+	private static function is_field_required( $field ) {
 		if ( 'nombre' === $field || 'nif' === $field || 'telefono' === $field || 'email' === $field ) {
 			return true;
 		}
@@ -263,7 +257,7 @@ class Helpers_Firmafy {
 	 * @param string $string String to check.
 	 * @return boolean
 	 */
-	private function not_strange_string( $string ) {
+	private static function not_strange_string( $string ) {
 		if ( false !== strpos( $string, '"' ) ) {
 			return false;
 		}
@@ -296,7 +290,7 @@ class Helpers_Firmafy {
 	 *
 	 * @return array
 	 */
-	public function create_entry( $template_id, $merge_vars, $force_signers = array(), $entry_id = null, $add_header = false ) {
+	public static function create_entry( $template_id, $merge_vars, $force_signers = array(), $entry_id = null, $add_header = false ) {
 		$settings         = get_option( 'firmafy_options' );
 		$id_show          = isset( $settings['id_show'] ) ? $settings['id_show'] : '';
 		$font             = isset( $settings['pdf_font'] ) ? strtolower( $settings['pdf_font'] ) : 'helvetica';
@@ -351,9 +345,9 @@ class Helpers_Firmafy {
 			if ( isset( $variable['name'] ) ) {
 				$value            = is_array( $variable['value'] ) ? implode( ', ', $variable['value'] ) : $variable['value'];
 				$template_content = str_replace( '{' . $variable['name'] . '}', $value, $template_content );
-				if ( $this->signer_tags( $variable['name'] ) && 'nif' === $variable['name'] ) {
+				if ( self::signer_tags( $variable['name'] ) && 'nif' === $variable['name'] ) {
 					$signer[ $variable['name'] ] = str_replace( '.', '', $variable['value'] );
-				} elseif ( $this->signer_tags( $variable['name'] ) ) {
+				} elseif ( self::signer_tags( $variable['name'] ) ) {
 					$signer[ $variable['name'] ] = $variable['value'];
 				}
 			}
@@ -362,10 +356,10 @@ class Helpers_Firmafy {
 		$signer['type_notifications'] = implode( ',', $notification );
 
 		// Replace tags.
-		$template_content = $this->replace_tags( $template_content, $template_id, $entry_id );
+		$template_content = self::replace_tags( $template_content, $template_id, $entry_id );
 
 		// Process images.
-		$template_content = $this->process_images( $template_content );
+		$template_content = self::process_images( $template_content );
 
 		// Generates PDF.
 		$filename  = 'firmafy-' . sanitize_title( get_bloginfo( 'name' ) );
@@ -408,7 +402,7 @@ class Helpers_Firmafy {
 		}
 
 		// Get the Gutenberg styles.
-		$content .= $this::get_gutenberg_css();
+		$content .= self::get_gutenberg_css();
 
 		// Append the line height to the style (only for p tags).
 		$line_height = ! empty( $settings['line_height'] ) ? $settings['line_height'] : '16';
@@ -433,7 +427,7 @@ class Helpers_Firmafy {
 			$dompdf = new Dompdf( $options );
 
 			// Check if selected font is custom or not. If is custom, we must add the full path.
-			if ( $this::font_is_custom( $font ) ) {
+			if ( self::font_is_custom( $font ) ) {
 				$custom_font = self::get_custom_pdf_font( $font );
 
 				if ( ! empty( $custom_font ) ) {
@@ -459,7 +453,7 @@ class Helpers_Firmafy {
 
 			// Check if logo is configured.
 			$logo_path = ! empty( $settings['pdf_logo'] )
-				? $this::attachment_url_to_path( $settings['pdf_logo'] )
+				? self::attachment_url_to_path( $settings['pdf_logo'] )
 				: '';
 
 			if ( $logo_path ) {
@@ -476,7 +470,7 @@ class Helpers_Firmafy {
 			error_log( 'Unexpected Error!<br>Can not load PDF this time! ' . $e->getMessage() );
 		}
 
-		$token         = $this->login();
+		$token         = self::login();
 		$final_signers = ! empty( $company_signers ) ? array_merge( array( $signer ), $company_signers ) : array( $signer );
 
 		// Sends to Firmafy.
@@ -489,7 +483,7 @@ class Helpers_Firmafy {
 			'pdf_base64' => chunk_split( base64_encode( $pdf_content ) ),
 		);
 
-		$result_api = $this->api_post( $settings, 'request', $query );
+		$result_api = self::api_post( $settings, 'request', $query );
 
 		if ( 'error' === $result_api['status'] ) {
 			$result_api['message'] = isset( $result_api['data'] ) ? $result_api['data'] : '';
@@ -506,7 +500,7 @@ class Helpers_Firmafy {
 	 * @param string $check Tag to check.
 	 * @return boolean
 	 */
-	private function signer_tags( $check ) {
+	private static function signer_tags( $check ) {
 		$signer_tags = array(
 			'nombre',
 			'nif',
@@ -531,7 +525,7 @@ class Helpers_Firmafy {
 	 *
 	 * @return string
 	 */
-	private function replace_tags( $content, $post_id, $entry_id = null ) {
+	private static function replace_tags( $content, $post_id, $entry_id = null ) {
 		$months = array(
 			1  => __( 'January', 'firmafy' ),
 			2  => __( 'February', 'firmafy' ),
@@ -586,9 +580,9 @@ class Helpers_Firmafy {
 	 * @param string $content Content to process.
 	 * @return string
 	 */
-	public function process_images( $content ) {
+	public static function process_images( $content ) {
 		// Utilizar DOMDocument para analizar y modificar el HTML.
-		$doc = new DOMDocument();
+		$doc = new \DOMDocument();
 		@$doc->loadHTML( mb_convert_encoding($content, 'HTML-ENTITIES', 'UTF-8'), LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD );
 		$images = $doc->getElementsByTagName( 'img' );
 
@@ -639,8 +633,8 @@ class Helpers_Firmafy {
 	 *
 	 * @return array
 	 */
-	public function get_available_pdf_fonts() {
-		return $this->available_pdf_fonts;
+	public static function get_available_pdf_fonts() {
+		return self::$available_pdf_fonts;
 	}
 
 	/**
@@ -648,8 +642,8 @@ class Helpers_Firmafy {
 	 *
 	 * @param string $font Font to add.
 	 */
-	public function add_available_pdf_fonts( $font ) {
-		$this->available_pdf_fonts[] = $font;
+	public static function add_available_pdf_fonts( $font ) {
+		self::$available_pdf_fonts[] = $font;
 	}
 
 	/**
@@ -818,5 +812,3 @@ class Helpers_Firmafy {
 	}
 
 }
-
-$helpers_firmafy = new Helpers_Firmafy();

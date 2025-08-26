@@ -10,6 +10,8 @@
  * @version    1.0
  */
 
+use \Firmafy\HELPER;
+
 GFForms::include_feed_addon_framework();
 global $firmafy_api;
 
@@ -81,8 +83,6 @@ class GFFirmafy extends GFFeedAddOn {
 	}
 
 	public function feed_settings_fields() {
-		global $helpers_firmafy;
-
 		return array(
 			array(
 				'title'       => __( 'Firmafy Feed', 'firmafy' ),
@@ -102,21 +102,21 @@ class GFFirmafy extends GFFeedAddOn {
 						'type'     => 'select',
 						'class'    => 'medium',
 						'onchange' => 'jQuery(this).parents("form").submit();',
-						'choices'  => $helpers_firmafy->get_templates(),
+						'choices'  => HELPER::get_templates(),
 					),
 					array(
 						'name'     => 'firmafy_signers',
 						'label'    => __( 'Signers from company', 'firmafy' ),
 						'type'     => 'checkbox',
 						'class'    => 'medium',
-						'choices'  => $helpers_firmafy->get_signers(),
+						'choices'  => HELPER::get_signers(),
 					),
 					array(
 						'name'       => 'listFields',
 						'label'      => __( 'Map Fields', 'firmafy' ),
 						'type'       => 'field_map',
 						'dependency' => 'firmafy_template',
-						'field_map'  => $helpers_firmafy->get_variables_template( $this->get_setting( 'firmafy_template' ) ),
+						'field_map'  => HELPER::get_variables_template( $this->get_setting( 'firmafy_template' ) ),
 						'tooltip'    => '<h6>' . __( 'Map Fields', 'firmafy' ) . '</h6>' . __('Associate your CRM custom fields to the appropriate Gravity Form fields by selecting the appropriate form field from the list.', 'firmafy' ),
 					),
 				),
@@ -168,8 +168,6 @@ class GFFirmafy extends GFFeedAddOn {
 	 * @return void
 	 */
 	public function process_feed( $feed, $entry, $form ) {
-		global $helpers_firmafy;
-
 		$merge_vars = array();
 		$field_maps = $this->get_field_map_fields( $feed, 'listFields' );
 
@@ -238,8 +236,8 @@ class GFFirmafy extends GFFeedAddOn {
 		}
 
 		$template        = isset( $feed['meta']['firmafy_template'] ) ? $feed['meta']['firmafy_template'] : '';
-		$signers         = $helpers_firmafy->filter_signers( $feed['meta'] );
-		$response_result = $helpers_firmafy->create_entry( $template, $merge_vars, $signers, $entry['id'] );
+		$signers         = HELPER::filter_signers( $feed['meta'] );
+		$response_result = HELPER::create_entry( $template, $merge_vars, $signers, $entry['id'] );
 		$api_status      = isset( $response_result['status'] ) ? $response_result['status'] : '';
 
 		$status = 'success';

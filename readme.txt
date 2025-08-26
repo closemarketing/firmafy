@@ -1,4 +1,4 @@
-=== Firmafy eSignature ===
+=== Firmafy Legal eSignature ===
 Contributors: closetechnology, davidperez, sacrajaimez, firmafy, alexbreagarcia
 Tags: forms, signature, gravityforms, contact form 7, woocommerce
 Requires at least: 4.0
@@ -108,6 +108,7 @@ function my_custom_function( $data ) {
 = 1.3.2 =
 *  Added action hook to the webhook response.
 *  Added support to WooCommerce Subscriptions. Send only in first order.
+*  Fixed: Better library handling.
 
 = 1.3.1 =
 *  Fixed: Auto Width for logo in PDF.

@@ -16,3 +16,11 @@ vendor/spipu/html2pdf/doc/
 vendor/spipu/html2pdf/examples/
 vendor/tecnickcom/tcpdf/examples/
 test/
+
+# PHP Unit
+.phpcs.xml.dist
+.phpunit.result.cache
+phpunit.xml.dist
+phpcs.xml.dist
+tests/
+bin/

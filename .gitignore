@@ -10,3 +10,4 @@ node_modules/
 # OS or Editor folders
 ._*.cache
 test/
+.phpunit.result.cache

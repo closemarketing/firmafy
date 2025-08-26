@@ -10,6 +10,8 @@
 
 defined( 'ABSPATH' ) || exit;
 
+use \Firmafy\HELPER;
+
 /**
  * Library for Contact Forms Settings
  *
@@ -63,7 +65,6 @@ class Firmafy_WooCommerce {
 	 * @return void
 	 */
 	public function process_entry( $order_id, $order ) {
-		global $helpers_firmafy;
 		$merge_vars = array(
 			array(
 				'name'  => 'pedido_numero',
@@ -150,7 +151,7 @@ class Firmafy_WooCommerce {
 		// Terms and conditions Sign.
 		if ( 'orders' === $woocommerce_mode || 'all' === $woocommerce_mode ) {
 			$template_id     = wc_terms_and_conditions_page_id();
-			$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, array(), $order_id, true );
+			$response_result = HELPER::create_entry( $template_id, $merge_vars, array(), $order_id, true );
 
 			if ( 'error' === $response_result['status'] ) {
 				$order_msg = __( 'Order sent correctly to Firmafy', 'firmafy' );
@@ -164,7 +165,7 @@ class Firmafy_WooCommerce {
 		if ( 'products' === $woocommerce_mode || 'all' === $woocommerce_mode ) {
 			$ordered_items = $order->get_items();
 			foreach ( $ordered_items as $order_item ) {
-				$product_id = $order_item['product_id'];
+				$product_id = (int)$order_item['product_id'];
 
 				$firmafy_options = get_post_meta( $product_id, 'firmafy', true );
 
@@ -190,7 +191,7 @@ class Firmafy_WooCommerce {
 						'value' => $value,
 					);
 				}
-				$response_result = $helpers_firmafy->create_entry( $template_id, $merge_vars, array(), $order_id, true );
+				$response_result = HELPER::create_entry( $template_id, $merge_vars, array(), $order_id, true );
 
 				if ( 'error' === $response_result['status'] ) {
 					$order_msg  = __( 'There was an error sending the order to Firmafy', 'firmafy' );
@@ -338,9 +339,8 @@ class Firmafy_WooCommerce {
 	 * @return void
 	 */
 	public function metabox_show_product( $post ) {
-		global $helpers_firmafy;
 		$firmafy_options  = get_post_meta( $post->ID, 'firmafy', true );
-		$firmafy_template = isset( $firmafy_options['template'] ) ? $firmafy_options['template'] : 0;
+		$firmafy_template = isset( $firmafy_options['template'] ) ? (int) $firmafy_options['template'] : 0;
 		?>
 		<table>
 			<tr><!-- SELECT template-->
@@ -348,10 +348,15 @@ class Firmafy_WooCommerce {
 					<label for="firmafy_template"><?php echo esc_html( 'Select the Firmafy template', 'firmafy' ); ?></label>
 					<select id="firmafy_template" name="firmafy_template" data-post-id="<?php echo esc_html( $post->ID ); ?>">
 					<?php
-					$options = $helpers_firmafy->get_templates();
+					$options = HELPER::get_templates();
 					echo '<option value="" ' . ( empty( $firmafy_template ) ? 'selected="selected"' : null ) . '>' . esc_html__( 'Not use Fimafy template', 'firmafy' ) . '</option>';
 					foreach ( $options as $option ) {
-						echo '<option value="' . esc_html( $option['value'] ) . '" ' . ( $firmafy_template == $option['value'] ? 'selected="selected"' : null ) . '>' . esc_html( $option['label'] ) . '</option>';
+						printf(
+							'<option value="%s"%s>%s</option>',
+							esc_attr( $option['value'] ),
+							selected( $firmafy_template, $option['value'], false ),
+							esc_html( $option['label'] )
+						);
 					}
 					?>
 					</select>
@@ -415,14 +420,13 @@ class Firmafy_WooCommerce {
 	 * @return html
 	 */
 	private function get_table_fields( $firmafy_template, $post_id ) {
-		global $helpers_firmafy;
 		if ( empty( $firmafy_template ) ) {
 			return '';
 		}
 		$firmafy_options  = get_post_meta( $post_id, 'firmafy', true );
 
 		$html = '<table>';
-		$firmafy_fields = $helpers_firmafy->get_variables_template( $firmafy_template );
+		$firmafy_fields = HELPER::get_variables_template( $firmafy_template );
 
 		$html .= '<tr>';
 		$html .= '<th>' . __( 'Template', 'firmafy' ) . '</th>';
@@ -461,12 +465,11 @@ class Firmafy_WooCommerce {
 	 * @return void
 	 */
 	public function save_metaboxes_product( $post_id ) {
-		global $helpers_firmafy;
 		if ( isset( $_POST['firmafy_template'] ) ) {
 			$firmafy_options = array(
 				'template' => sanitize_text_field( $_POST['firmafy_template'] ),
 			);
-			$firmafy_fields = $helpers_firmafy->get_variables_template( $firmafy_options['template'] );
+			$firmafy_fields = HELPER::get_variables_template( $firmafy_options['template'] );
 			foreach ( $firmafy_fields as $field ) {
 				if ( ! empty( $_POST[ 'firmafy_field_' . $field['name'] ] ) ) {
 					$firmafy_options[ $field['name'] ] = sanitize_text_field( $_POST[ 'firmafy_field_' . $field['name'] ] );
