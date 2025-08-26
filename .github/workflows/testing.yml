@@ -39,5 +39,8 @@ jobs:
       - name: Setup tests
         run: bash bin/install-wp-tests.sh wordpress_tests root root 127.0.0.1 latest true
 
+      - name: Install Composer dependencies (no dev)
+        run: composer install --no-dev --prefer-dist --no-interaction --no-progress
+
       - name: Run tests
         run: phpunit
