@@ -168,11 +168,10 @@ class Firmafy_WooCommerce {
 				$product_id = (int)$order_item['product_id'];
 
 				$firmafy_options = get_post_meta( $product_id, 'firmafy', true );
-
-				if ( empty( $firmafy_options ) ) {
+				if ( empty( $firmafy_options['template'] ) ) {
 					continue;
 				}
-				$template_id = isset( $firmafy_options['template'] ) ? $firmafy_options['template'] : 0;
+				$template_id = isset( $firmafy_options['template'] ) ? (int) $firmafy_options['template'] : 0;
 				unset( $firmafy_options['template'] );
 
 				$merge_vars = array();
