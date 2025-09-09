@@ -24,3 +24,4 @@ phpunit.xml.dist
 phpcs.xml.dist
 tests/
 bin/
+phpstan.neon.dist

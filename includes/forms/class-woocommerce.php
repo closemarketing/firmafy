@@ -172,7 +172,7 @@ class Firmafy_WooCommerce {
 				if ( empty( $firmafy_options ) ) {
 					continue;
 				}
-				$template_id = isset( $firmafy_options['template'] ) ? $firmafy_options['template'] : 0;
+				$template_id = isset( $firmafy_options['template'] ) ? (int) $firmafy_options['template'] : 0;
 				unset( $firmafy_options['template'] );
 
 				$merge_vars = array();

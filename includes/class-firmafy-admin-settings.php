@@ -506,7 +506,7 @@ class FIRMAFY_ADMIN_SETTINGS {
 		wp_enqueue_media();
 
 		echo '<input class="regular-text" type="text" name="pdf_background" id="pdf_background" value="' . esc_attr( $this->firmafy_settings['pdf_background'] ) . '">';
-		echo '<div class="js-firmafy-upload-file button firmafy-upload-btn">' . esc_html( 'Upload', 'firmafy ') . '</div>';
+		echo '<div class="js-firmafy-upload-file button firmafy-upload-btn">' . esc_html__( 'Upload', 'firmafy ') . '</div>';
 	}
 
 	/**
@@ -519,7 +519,7 @@ class FIRMAFY_ADMIN_SETTINGS {
 		wp_enqueue_media();
 
 		echo '<input class="regular-text" type="text" name="pdf_logo" id="pdf_logo" value="' . esc_attr( $this->firmafy_settings['pdf_logo'] ) . '">';
-		echo '<div class="js-firmafy-upload-logo-file button firmafy-upload-btn">' . esc_html( 'Upload', 'firmafy ') . '</div>';
+		echo '<div class="js-firmafy-upload-logo-file button firmafy-upload-btn">' . esc_html__( 'Upload', 'firmafy ') . '</div>';
 	}
 
 	/**
