@@ -174,6 +174,10 @@ class Firmafy_WooCommerce {
 				$template_id = isset( $firmafy_options['template'] ) ? (int) $firmafy_options['template'] : 0;
 				unset( $firmafy_options['template'] );
 
+				if ( empty( $template_id ) ) {
+					continue;
+				}
+
 				$merge_vars = array();
 				foreach ( $firmafy_options as $key => $function ) {
 					if ( 'billing_vat' === $function ) {
