@@ -200,7 +200,8 @@ class Firmafy_WooCommerce {
 					$order_msg  = __( 'There was an error sending the order to Firmafy', 'firmafy' );
 					$order_msg .= ' ' . $response_result['data'];
 				} else {
-					$order_msg = __( 'Order sent correctly to Firmafy', 'firmafy' );
+					$order_msg = __( 'Order sent correctly to Firmafy with template:', 'firmafy' );
+					$order_msg .= ' ' . get_the_title( $template_id );
 					$order->add_meta_data( '_firmafy_csv', $response_result['data'], true );
 					$order->add_meta_data( '_firmafy_status', 'PENDIENTE', true );
 				}
