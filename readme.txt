@@ -105,6 +105,10 @@ function my_custom_function( $data ) {
 [Official Repository GitHub](https://github.com/closemarketing/firmafy/)
 
 == Changelog ==
+= 1.3.3 =
+*  Fixed: Don't send settings signer if does not have NIF.
+*  Fixed: Don't send sign product if does not have template.
+
 = 1.3.2 =
 *  Added action hook to the webhook response.
 *  Added support to WooCommerce Subscriptions. Send only in first order.

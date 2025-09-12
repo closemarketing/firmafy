@@ -168,12 +168,15 @@ class Firmafy_WooCommerce {
 				$product_id = (int)$order_item['product_id'];
 
 				$firmafy_options = get_post_meta( $product_id, 'firmafy', true );
-
-				if ( empty( $firmafy_options ) ) {
+				if ( empty( $firmafy_options['template'] ) ) {
 					continue;
 				}
-				$template_id = isset( $firmafy_options['template'] ) ? $firmafy_options['template'] : 0;
+				$template_id = isset( $firmafy_options['template'] ) ? (int) $firmafy_options['template'] : 0;
 				unset( $firmafy_options['template'] );
+
+				if ( empty( $template_id ) ) {
+					continue;
+				}
 
 				$merge_vars = array();
 				foreach ( $firmafy_options as $key => $function ) {
@@ -197,7 +200,8 @@ class Firmafy_WooCommerce {
 					$order_msg  = __( 'There was an error sending the order to Firmafy', 'firmafy' );
 					$order_msg .= ' ' . $response_result['data'];
 				} else {
-					$order_msg = __( 'Order sent correctly to Firmafy', 'firmafy' );
+					$order_msg = __( 'Order sent correctly to Firmafy with template:', 'firmafy' );
+					$order_msg .= ' ' . get_the_title( $template_id );
 					$order->add_meta_data( '_firmafy_csv', $response_result['data'], true );
 					$order->add_meta_data( '_firmafy_status', 'PENDIENTE', true );
 				}

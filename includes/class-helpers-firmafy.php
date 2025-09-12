@@ -304,32 +304,6 @@ class HELPER {
 			<!-- /wp:table -->';
 		}
 
-		if ( isset( $settings['signers'] ) ) {
-			$company_signers = $settings['signers'];
-
-			// Check duplicated signers.ƒ
-			if ( ! empty( $force_signers ) ) {
-				$delete = array_diff( array_column( $company_signers, 'nif' ), $force_signers );
-
-				foreach ( $delete as $key => $value ) {
-					if ( isset( $company_signers[ $key ] ) ) {
-						unset( $company_signers[ $key ] );
-					}
-				}
-			}
-
-			// Remove company field empty.
-			$index = 0;
-			foreach ( $company_signers as $signer_item ) {
-				foreach ( $signer_item as $key => $value ) {
-					if ( empty( $value ) ) {
-						unset( $company_signers[ $index ][ $key ] );
-					}
-				}
-				$index++;
-			}
-		}
-
 		$temp_content_pre .= get_the_content( '', false, $template_id );
 
 		// Replace merge vars for values.
@@ -471,7 +445,7 @@ class HELPER {
 		}
 
 		$token         = self::login();
-		$final_signers = ! empty( $company_signers ) ? array_merge( array( $signer ), $company_signers ) : array( $signer );
+		$final_signers = self::check_signers( $settings, $force_signers, $signer );
 
 		// Sends to Firmafy.
 		$query      = array(
@@ -492,6 +466,53 @@ class HELPER {
 		}
 
 		return $result_api;
+	}
+
+	/**
+	 * Get final signers
+	 *
+	 * @param array $settings      Settings.
+	 * @param array $force_signers Force signers.
+	 * @param array $signer Signer.
+	 * @return array
+	 */
+	private static function check_signers( $settings, $force_signers, $signer ) {
+		if ( isset( $settings['signers'] ) ) {
+			$company_signers = $settings['signers'];
+
+			// Check duplicated signers.ƒ
+			if ( ! empty( $force_signers ) ) {
+				$delete = array_diff( array_column( $company_signers, 'nif' ), $force_signers );
+
+				foreach ( $delete as $key => $value ) {
+					if ( isset( $company_signers[ $key ] ) ) {
+						unset( $company_signers[ $key ] );
+					}
+				}
+			}
+
+			// Remove company field empty.
+			$index = 0;
+			foreach ( $company_signers as $signer_item ) {
+				foreach ( $signer_item as $key => $value ) {
+					if ( empty( $value ) ) {
+						unset( $company_signers[ $index ][ $key ] );
+					}
+				}
+				$index++;
+			}
+		}
+		$final_signers = array( $signer );
+		if ( empty( $company_signers ) ) {
+			return $final_signers;
+		}
+		foreach ( $company_signers as $company_signer ) {
+			if ( empty( $company_signer['nif'] ) ) {
+				continue;
+			}
+			$final_signers[] = $company_signer;
+		}
+		return $final_signers;
 	}
 
 	/**
@@ -687,7 +708,7 @@ class HELPER {
 	 * Get custom PDF font
 	 *
 	 * @param string $font Font to get.
-	 * @return string
+	 * @return array
 	 */
 	public static function get_custom_pdf_font( $font ) {
 		$fonts = self::get_custom_pdf_fonts();
