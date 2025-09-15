@@ -39,7 +39,7 @@ class Firmafy_WooCommerce {
 			if ( 'new_order' === $firmafy_woo_when ) {
 				add_action( 'woocommerce_new_order', array( $this, 'process_entry' ), 10, 2 );
 			} else {
-				add_action( 'woocommerce_order_paid', array( $this, 'process_entry' ), 10, 2 );
+				add_action( 'woocommerce_order_status_processing', array( $this, 'process_entry' ), 10, 2 );
 			}
 
 			// EU VAT.
