@@ -36,7 +36,11 @@ class Firmafy_WooCommerce {
 		$firmafy_woocommerce = isset( $this->settings['woocommerce'] ) ? $this->settings['woocommerce'] : 'no';
 		if ( 'yes' === $firmafy_woocommerce ) {
 			$firmafy_woo_when = isset( $this->settings['woocommerce_when'] ) ? $this->settings['woocommerce_when'] : 'new_order';
-			add_action( 'woocommerce_' . $firmafy_woo_when, array( $this, 'process_entry' ), 10, 2 );
+			if ( 'new_order' === $firmafy_woo_when ) {
+				add_action( 'woocommerce_new_order', array( $this, 'process_entry' ), 10, 2 );
+			} else {
+				add_action( 'woocommerce_order_paid', array( $this, 'process_entry' ), 10, 2 );
+			}
 
 			// EU VAT.
 			add_filter( 'woocommerce_billing_fields', array( $this, 'add_billing_fields' ) );
