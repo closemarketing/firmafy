@@ -4,8 +4,8 @@ Tags: forms, signature, gravityforms, contact form 7, woocommerce
 Requires at least: 4.0
 Requires PHP: 5.6
 Tested up to: 6.8
-Stable tag: 1.3.2
-Version: 1.3.2
+Stable tag: 1.3.3
+Version: 1.3.3
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -106,7 +106,7 @@ function my_custom_function( $data ) {
 
 == Changelog ==
 = 1.3.3 =
-*  Fixed: Process entry to sign when order is paid.
+*  Fixed: Option to define when to sign the order in processing status.
 *  Fixed: Don't send settings signer if does not have NIF.
 *  Fixed: Don't send sign product if does not have template.
 

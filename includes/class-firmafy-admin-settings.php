@@ -565,7 +565,7 @@ class FIRMAFY_ADMIN_SETTINGS {
 		?>
 		<select name="firmafy_options[woocommerce_when]" id="woocommerce_when">
 			<option value="new_order" <?php selected( $woocommerce_when, 'new_order' ); ?>><?php esc_html_e( 'After a new order is created', 'firmafy' ); ?></option>
-			<option value="payment_complete" <?php selected( $woocommerce_when, 'payment_complete' ); ?>><?php esc_html_e( 'After the order is paid', 'firmafy' ); ?></option>
+			<option value="status_processing" <?php selected( $woocommerce_when, 'status_processing' ); ?>><?php esc_html_e( 'When the order status is processing', 'firmafy' ); ?></option>
 		</select>
 		<?php
 	}
