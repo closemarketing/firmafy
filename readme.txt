@@ -106,6 +106,7 @@ function my_custom_function( $data ) {
 
 == Changelog ==
 = 1.3.3 =
+*  Fixed: Process entry to sign when order is paid.
 *  Fixed: Don't send settings signer if does not have NIF.
 *  Fixed: Don't send sign product if does not have template.
 
