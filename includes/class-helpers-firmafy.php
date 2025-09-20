@@ -326,6 +326,9 @@ class HELPER {
 				}
 			}
 		}
+
+		$template_content = apply_filters( 'firmafy_before_create_entry_content', $template_content, $entry_id );
+		
 		$notification                 = isset( $settings['notification'] ) ? (array) $settings['notification'] : $settings['email'];
 		$signer['type_notifications'] = implode( ',', $notification );
 
