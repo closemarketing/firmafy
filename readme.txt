@@ -1,11 +1,11 @@
 === Firmafy Legal eSignature ===
-Contributors: closetechnology, davidperez, sacrajaimez, firmafy, alexbreagarcia
+Contributors: closetechnology, davidperez, sacrajaimez, firmafy, alexbreagarcia, damasovelazquez
 Tags: forms, signature, gravityforms, contact form 7, woocommerce
 Requires at least: 4.0
 Requires PHP: 5.6
 Tested up to: 6.8
-Stable tag: 1.3.3
-Version: 1.3.3
+Stable tag: 1.3.4
+Version: 1.3.4
 License: GPL2
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -94,17 +94,20 @@ WordPress installation and then activate the Plugin from Plugins page.
 
 == Developers ==
 Added an action hook to the webhook response:
-```php
-add_action( 'firmafy_webhook_received', 'my_custom_function', 10, 1 );
 
-function my_custom_function( $data ) {
-    // Do something with the received data
-}
-```
+  add_action( 'firmafy_webhook_received', 'my_custom_function', 10, 1 );
+
+  function my_custom_function( $data ) {
+      // Do something with the received data
+  }
 
 [Official Repository GitHub](https://github.com/closemarketing/firmafy/)
 
 == Changelog ==
+= 1.3.4 =
+*  WooCommerce Subscriptions: signature is sent only on the first order of the subscription.
+*  Maintenance release. Code improvements and compatibility updates.
+
 = 1.3.3 =
 *  Fixed: Option to define when to sign the order in processing status.
 *  Fixed: Don't send settings signer if does not have NIF.
