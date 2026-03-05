@@ -1,4 +1,5 @@
 <?php
+
 /**
  * WooCommerce Wrapper
  *
@@ -136,17 +137,25 @@ class Firmafy_WooCommerce {
 			),
 		);
 
+		if ( function_exists( 'wcs_get_subscriptions_for_order' ) ) {
+			$subscriptions = wcs_get_subscriptions_for_order( $order_id, array(
+				'order_type' => array( 'parent', 'renewal' )
+			) );
+			if ( !empty( $subscriptions ) ) {
+				$subscription = reset( $subscriptions );
+				if ($subscription->get_completed_payment_count()>1)
+				return;
+			}
+		}
+		
 		// Conditional in subcriptions not send recurrent orders to firmafy.
-		if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_subscription( $order_id ) ) {
-			$subscriptions = wcs_get_subscriptions_for_order( $order_id );
-			if ( ! empty( $subscriptions ) ) {
-				foreach ( $subscriptions as $subscription ) {
-					$parent_order_id = $subscription->get_parent_id();
-
-					if ( $parent_order_id !== $order_id ) {
-						return; // Do not process this order, it is a subscription renewal.
-					}
-				}
+		if ( class_exists( 'WC_Subscriptions' ) && wcs_order_contains_renewal( $order_id ) ) {
+			if (function_exists( 'wcs_get_subscriptions_for_order' ) && 
+				! wcs_order_contains_renewal( $order_id ) &&
+				! empty( wcs_get_subscriptions_for_order( $order_id, array( 'order_type' => 'parent' ) ) )
+			)
+			{
+				return; // Do not process this order, it is a subscription renewal.
 			}
 		}
 
